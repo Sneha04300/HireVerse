@@ -3,8 +3,12 @@ const app = express();
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.json({ message: 'HireVerse API is running' });
+const authRoutes = require("./routes/authRoutes");
+
+app.use("/api/auth", authRoutes);
+
+app.get("/", (req, res) => {
+  res.send("HireVerse API Running");
 });
 
 module.exports = app;
