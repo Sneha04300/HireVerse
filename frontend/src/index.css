@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background-color: #0d0f1a;
+    color: #ffffff;
+    font-family: "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #1a1f2e inset;
+    -webkit-text-fill-color: #ffffff;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+@layer components {
+  .input-field {
+    @apply w-full bg-[#1a1f2e] border border-[#252d3d] rounded-lg px-4 py-3 pl-10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#4B5563] focus:ring-1 focus:ring-[#4B5563] transition-colors;
+  }
+  .btn-gradient {
+    background: linear-gradient(90deg, #7c3aed 0%, #06b6d4 100%);
+  }
+  .btn-gradient:hover {
+    background: linear-gradient(90deg, #6d28d9 0%, #0891b2 100%);
+  }
+  .feature-pill {
+    @apply flex items-center gap-2 bg-[#111827] border border-[#252d3d] rounded-xl px-4 py-3 text-sm font-medium text-gray-300;
+  }
+  .social-btn {
+    @apply flex items-center justify-center gap-2 bg-transparent border border-[#252d3d] rounded-lg px-4 py-3 text-white text-sm font-medium hover:bg-[#1a1f2e] hover:border-[#4B5563] transition-colors cursor-pointer;
+  }
+}
