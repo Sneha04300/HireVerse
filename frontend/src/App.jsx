@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import DashboardPage from "./pages/DashboardPage";
+import ResumeAnalyzerPage from "./pages/ResumeAnalyzerPage";
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/resume" element={<ResumeAnalyzerPage />} />
       </Routes>
     </BrowserRouter>
   );
