@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import DashboardPage from "./pages/DashboardPage";
 import ResumeAnalyzerPage from "./pages/ResumeAnalyzerPage";
 import DSATrackerPage from "./pages/DSATrackerPage";
+import MockInterviewPage from "./pages/MockInterviewPage";
 
 export default function App() {
   return (
@@ -15,6 +16,8 @@ export default function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/resume" element={<ResumeAnalyzerPage />} />
         <Route path="/dsa" element={<DSATrackerPage />} />
+        <Route path="/MockInterviewPage" element={<MockInterviewPage />} />
+        
       </Routes>
     </BrowserRouter>
   );

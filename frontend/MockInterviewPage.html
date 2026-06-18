@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HireVerse — AI Mock Interview</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #060810;
+    color: #fff;
+    min-height: 100vh;
+  }
+
+  /* ── Navbar ── */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(6,8,16,0.92);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .navbar-left { display: flex; align-items: center; gap: 14px; }
+  .menu-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 6px; border-radius: 8px; color: #9ca3af;
+    transition: background .15s;
+  }
+  .menu-btn:hover { background: rgba(255,255,255,0.07); }
+  .search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 7px 14px;
+    width: 300px;
+  }
+  .search-bar input {
+    background: none; border: none; outline: none;
+    color: #9ca3af; font-size: 13px; width: 100%;
+  }
+  .search-bar input::placeholder { color: #4b5563; }
+  .navbar-right { display: flex; align-items: center; gap: 14px; }
+  .icon-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 6px; border-radius: 8px; color: #9ca3af;
+  }
+  .avatar-ring {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #a855f7, #06b6d4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+  .user-info { text-align: right; line-height: 1.3; }
+  .user-info .name { font-size: 13px; font-weight: 600; }
+  .user-info .role { font-size: 11px; color: #6b7280; }
+
+  /* ── Main ── */
+  .main { max-width: 1360px; margin: 0 auto; padding: 32px 24px; }
+  .page-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #06b6d4; margin-bottom: 4px; }
+  .page-title { font-size: 38px; font-weight: 700; line-height: 1.15; margin-bottom: 6px; }
+  .page-sub { font-size: 14px; color: #6b7280; margin-bottom: 28px; }
+
+  /* Two col grid */
+  .grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; align-items: start; }
+  .left-col { display: flex; flex-direction: column; gap: 16px; }
+  .right-col { position: sticky; top: 72px; }
+
+  /* Cards */
+  .card {
+    background: rgba(13,15,26,0.85);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 22px 24px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+  }
+
+  /* Setup */
+  .setup-row { display: flex; gap: 40px; flex-wrap: wrap; margin-bottom: 0; }
+  .selector-group { display: flex; flex-direction: column; gap: 10px; }
+  .selector-label {
+    font-size: 10px; font-weight: 700; letter-spacing: .14em; color: #6b7280;
+  }
+  .btn-group { display: flex; gap: 8px; }
+  .sel-btn {
+    padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04); color: #d1d5db;
+    transition: all .18s;
+  }
+  .sel-btn:hover { background: rgba(255,255,255,0.09); color: #fff; }
+  .sel-btn.active {
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    border-color: transparent; color: #fff;
+    box-shadow: 0 0 16px rgba(124,58,237,0.35);
+  }
+  .setup-footer { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .start-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border-radius: 12px;
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    color: #fff; font-size: 14px; font-weight: 600;
+    border: none; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.35);
+    transition: opacity .15s, box-shadow .15s;
+  }
+  .start-btn:hover { opacity: .88; box-shadow: 0 4px 28px rgba(124,58,237,0.55); }
+
+  /* Interview panel */
+  .recruiter-row { display: flex; align-items: center; gap: 20px; }
+  .avatar-wrap {
+    position: relative; flex-shrink: 0;
+    width: 80px; height: 80px;
+  }
+  .avatar-bg {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #5b21b6, #7c3aed);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 24px rgba(124,58,237,0.45);
+  }
+  .avatar-bg svg { width: 32px; height: 32px; color: #fff; }
+  .avatar-ring-outer {
+    position: absolute; inset: -4px; border-radius: 50%;
+    border: 2px solid rgba(167,139,250,0.3);
+  }
+  .recruiter-info { flex: 1; }
+  .recruiter-label { font-size: 10px; font-weight: 700; letter-spacing: .14em; color: #6b7280; margin-bottom: 4px; }
+  .question-text { font-size: 20px; font-weight: 600; color: #fff; line-height: 1.35; }
+  .mic-badge {
+    flex-shrink: 0;
+    padding: 6px 14px; border-radius: 20px;
+    border: 1px solid rgba(34,197,94,0.5);
+    background: rgba(34,197,94,0.1);
+    color: #4ade80; font-size: 11px; font-weight: 600;
+  }
+
+  /* Transcript */
+  .section-label { font-size: 10px; font-weight: 700; letter-spacing: .14em; color: #6b7280; margin-bottom: 12px; }
+  .transcript-box {
+    background: rgba(8,10,20,0.7);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 100px;
+  }
+  .transcript-text { font-size: 14px; color: #e5e7eb; line-height: 1.7; }
+  .cursor {
+    display: inline-block; width: 6px; height: 16px;
+    background: #06b6d4; border-radius: 2px;
+    margin-left: 4px; vertical-align: middle;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .transcript-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+  .transcript-meta { font-size: 12px; color: #4b5563; }
+  .transcript-meta span { color: #9ca3af; }
+  .end-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 18px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.04); color: #d1d5db;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: background .15s;
+  }
+  .end-btn:hover { background: rgba(255,255,255,0.09); }
+
+  /* Report */
+  .report-label { font-size: 10px; font-weight: 700; letter-spacing: .14em; color: #6b7280; margin-bottom: 16px; }
+  .ring-wrap { display: flex; justify-content: center; margin-bottom: 4px; }
+  .ring-svg { overflow: visible; }
+
+  /* Skill bars */
+  .skill-row { margin-bottom: 16px; }
+  .skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .skill-name { font-size: 13px; color: #d1d5db; }
+  .skill-score { font-size: 13px; font-weight: 600; color: #fff; }
+  .bar-track {
+    height: 6px; border-radius: 99px;
+    background: rgba(255,255,255,0.08); overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 99px;
+    transition: width 1.2s cubic-bezier(.22,1,.36,1);
+  }
+  .bar-purple { background: linear-gradient(90deg, #a855f7, #06b6d4); }
+  .bar-green  { background: linear-gradient(90deg, #4ade80, #10b981); }
+
+  /* AI Feedback */
+  .feedback-card {
+    margin-top: 16px;
+    background: rgba(10,12,24,0.8);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .feedback-card-label { font-size: 10px; font-weight: 700; letter-spacing: .14em; color: #6b7280; margin-bottom: 10px; }
+  .feedback-item { font-size: 13px; color: #d1d5db; line-height: 1.6; margin-bottom: 6px; }
+  .decision-badge {
+    display: inline-flex; align-items: center;
+    margin-top: 14px;
+    padding: 8px 18px; border-radius: 20px;
+    border: 1px solid rgba(34,197,94,0.5);
+    background: rgba(34,197,94,0.08);
+    color: #4ade80; font-size: 13px; font-weight: 600;
+  }
+
+  /* State buttons */
+  .state-switcher {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 8px; z-index: 100;
+  }
+  .state-btn {
+    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(13,15,26,0.9); color: #9ca3af;
+    transition: all .15s;
+  }
+  .state-btn.active-state {
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    color: #fff; border-color: transparent;
+  }
+
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: 1fr; }
+    .right-col { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="navbar">
+  <div class="navbar-left">
+    <button class="menu-btn" aria-label="Toggle sidebar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <div class="search-bar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" placeholder="Search features, roadmap, companies..." />
+    </div>
+  </div>
+  <div class="navbar-right">
+    <button class="icon-btn" aria-label="Notifications">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+    </button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="avatar-ring"><span>SG</span></div>
+      <div class="user-info">
+        <div class="name">Sneha Gupta</div>
+        <div class="role">CSE • 2026</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="main">
+  <p class="page-eyebrow">PRACTICE</p>
+  <h1 class="page-title">AI Mock Interview</h1>
+  <p class="page-sub">Real recruiter-style interviews with live transcript and post-call report.</p>
+
+  <div class="grid">
+    <!-- Left col -->
+    <div class="left-col">
+
+      <!-- Setup card -->
+      <div class="card">
+        <div class="setup-row">
+          <div class="selector-group">
+            <span class="selector-label">INTERVIEW TYPE</span>
+            <div class="btn-group">
+              <button class="sel-btn active" onclick="selectBtn(this,'type')">Technical</button>
+              <button class="sel-btn" onclick="selectBtn(this,'type')">HR</button>
+              <button class="sel-btn" onclick="selectBtn(this,'type')">Mixed</button>
+            </div>
+          </div>
+          <div class="selector-group">
+            <span class="selector-label">DIFFICULTY</span>
+            <div class="btn-group">
+              <button class="sel-btn" onclick="selectBtn(this,'diff')">Easy</button>
+              <button class="sel-btn active" onclick="selectBtn(this,'diff')">Medium</button>
+              <button class="sel-btn" onclick="selectBtn(this,'diff')">Hard</button>
+            </div>
+          </div>
+        </div>
+        <div class="setup-footer">
+          <button class="start-btn" onclick="setState('interview')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            Start Interview
+          </button>
+        </div>
+      </div>
+
+      <!-- Interview panel card -->
+      <div class="card" id="interview-panel">
+        <div class="recruiter-row">
+          <div class="avatar-wrap">
+            <div class="avatar-bg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </div>
+            <div class="avatar-ring-outer"></div>
+          </div>
+          <div class="recruiter-info">
+            <p class="recruiter-label">AI RECRUITER</p>
+            <p class="question-text">"Tell me about yourself."</p>
+          </div>
+          <div class="mic-badge" id="mic-badge" style="display:none;">Mic on</div>
+        </div>
+      </div>
+
+      <!-- Transcript card -->
+      <div class="card" id="transcript-card">
+        <p class="section-label">LIVE TRANSCRIPT</p>
+        <div class="transcript-box">
+          <p class="transcript-text" id="transcript-text" style="color:#374151;font-style:italic;">
+            Transcript will appear here once the interview starts...
+          </p>
+        </div>
+        <div class="transcript-footer" id="transcript-footer" style="display:none;">
+          <p class="transcript-meta">
+            <span id="elapsed">00:42</span> elapsed &nbsp;•&nbsp;
+            Question <span id="qnum">1</span> / 6
+          </p>
+          <button class="end-btn" id="end-btn" style="display:none;" onclick="setState('completed')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+            </svg>
+            End Interview
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right col — Report -->
+    <div class="right-col">
+      <div class="card" id="report-card">
+        <p class="report-label">LAST INTERVIEW REPORT</p>
+
+        <!-- Empty placeholder -->
+        <div id="report-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0;text-align:center;">
+          <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <p style="font-size:13px;color:#4b5563;">Complete an interview to see your report</p>
+        </div>
+
+        <!-- Report content -->
+        <div id="report-content" style="display:none;">
+          <div class="ring-wrap">
+            <svg class="ring-svg" width="180" height="180" viewBox="0 0 180 180">
+              <defs>
+                <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#a855f7"/>
+                  <stop offset="100%" stop-color="#06b6d4"/>
+                </linearGradient>
+              </defs>
+              <circle cx="90" cy="90" r="70" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10"/>
+              <circle id="score-arc" cx="90" cy="90" r="70" fill="none" stroke="url(#rg)" stroke-width="10"
+                stroke-linecap="round"
+                stroke-dasharray="439.82"
+                stroke-dashoffset="439.82"
+                transform="rotate(-90 90 90)"
+                style="transition: stroke-dashoffset 1.3s cubic-bezier(.22,1,.36,1);" />
+              <text x="90" y="87" text-anchor="middle" fill="white" font-size="26" font-weight="700" font-family="system-ui,sans-serif">78%</text>
+              <text x="90" y="106" text-anchor="middle" fill="#6b7280" font-size="10" font-weight="600" letter-spacing="2.5" font-family="system-ui,sans-serif">OVERALL</text>
+            </svg>
+          </div>
+
+          <!-- Skill bars -->
+          <div id="skill-bars">
+            <div class="skill-row">
+              <div class="skill-header"><span class="skill-name">Communication</span><span class="skill-score">72</span></div>
+              <div class="bar-track"><div class="bar-fill bar-purple" id="bar-comm" style="width:0%"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-header"><span class="skill-name">Confidence</span><span class="skill-score">81</span></div>
+              <div class="bar-track"><div class="bar-fill bar-green" id="bar-conf" style="width:0%"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-header"><span class="skill-name">Technical</span><span class="skill-score">79</span></div>
+              <div class="bar-track"><div class="bar-fill bar-purple" id="bar-tech" style="width:0%"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-header"><span class="skill-name">Problem Solving</span><span class="skill-score">80</span></div>
+              <div class="bar-track"><div class="bar-fill bar-green" id="bar-prob" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <!-- AI Feedback -->
+          <div class="feedback-card">
+            <p class="feedback-card-label">AI FEEDBACK</p>
+            <p class="feedback-item">Speak more confidently in the first 30s.</p>
+            <p class="feedback-item">Improve project explanations with measurable impact.</p>
+            <p class="feedback-item">Structure answers using the STAR method for behavioral questions.</p>
+          </div>
+
+          <div class="decision-badge">Likely Shortlist</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- State switcher -->
+<div class="state-switcher">
+  <button class="state-btn" id="btn-empty" onclick="setState('empty')">empty</button>
+  <button class="state-btn" id="btn-interview" onclick="setState('interview')">interview</button>
+  <button class="state-btn active-state" id="btn-completed" onclick="setState('completed')">completed</button>
+</div>
+
+<script>
+  const TRANSCRIPT = `"Hi, I'm Sneha, a final-year CSE student at IIIT Delhi. I work on full-stack apps, mostly React and Node, and recently shipped a project that...`;
+  let timerInterval = null;
+  let seconds = 42;
+
+  function selectBtn(el, group) {
+    el.closest('.btn-group').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function setState(state) {
+    clearInterval(timerInterval);
+
+    // Update switcher
+    ['empty','interview','completed'].forEach(s => {
+      document.getElementById('btn-' + s).classList.toggle('active-state', s === state);
+    });
+
+    const micBadge    = document.getElementById('mic-badge');
+    const transcriptT = document.getElementById('transcript-text');
+    const footer      = document.getElementById('transcript-footer');
+    const endBtn      = document.getElementById('end-btn');
+    const reportEmpty = document.getElementById('report-empty');
+    const reportCont  = document.getElementById('report-content');
+
+    if (state === 'empty') {
+      micBadge.style.display = 'none';
+      transcriptT.style.color = '#374151';
+      transcriptT.style.fontStyle = 'italic';
+      transcriptT.innerHTML = 'Transcript will appear here once the interview starts...';
+      footer.style.display = 'none';
+      reportEmpty.style.display = 'flex';
+      reportCont.style.display = 'none';
+    }
+
+    if (state === 'interview') {
+      micBadge.style.display = 'flex';
+      transcriptT.style.color = '#e5e7eb';
+      transcriptT.style.fontStyle = 'normal';
+      transcriptT.innerHTML = TRANSCRIPT + ' <span class="cursor"></span>';
+      footer.style.display = 'flex';
+      endBtn.style.display = 'flex';
+      reportEmpty.style.display = 'none';
+      reportCont.style.display = 'block';
+      animateReport();
+      seconds = 42;
+      document.getElementById('elapsed').textContent = fmt(seconds);
+      timerInterval = setInterval(() => {
+        seconds++;
+        document.getElementById('elapsed').textContent = fmt(seconds);
+      }, 1000);
+    }
+
+    if (state === 'completed') {
+      micBadge.style.display = 'none';
+      transcriptT.style.color = '#e5e7eb';
+      transcriptT.style.fontStyle = 'normal';
+      transcriptT.innerHTML = `"Hi, I'm Sneha, a final-year CSE student at IIIT Delhi. I work on full-stack apps, mostly React and Node, and recently shipped a project that reduced student job-search time by 40%. I've also integrated real-time features using WebSockets and have contributed to open-source projects in the ML tooling space."`;
+      footer.style.display = 'flex';
+      endBtn.style.display = 'none';
+      reportEmpty.style.display = 'none';
+      reportCont.style.display = 'block';
+      animateReport();
+    }
+  }
+
+  function fmt(s) {
+    return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+  }
+
+  function animateReport() {
+    const arc = document.getElementById('score-arc');
+    const circ = 2 * Math.PI * 70;
+    arc.style.strokeDashoffset = circ;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        arc.style.strokeDashoffset = circ - (78/100) * circ;
+      });
+    });
+
+    const bars = [
+      { id: 'bar-comm', val: 72 },
+      { id: 'bar-conf', val: 81 },
+      { id: 'bar-tech', val: 79 },
+      { id: 'bar-prob', val: 80 },
+    ];
+    bars.forEach(b => {
+      const el = document.getElementById(b.id);
+      el.style.width = '0%';
+      setTimeout(() => { el.style.width = b.val + '%'; }, 200);
+    });
+  }
+
+  // Boot with completed state
+  setState('completed');
+</script>
+</body>
+</html>
