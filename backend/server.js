@@ -17,6 +17,7 @@ const errorHandler = require("./src/middleware/errorHandler");
 // ... your existing route imports ...
 const resumeRoutes = require("./src/routes/resumeRoutes"); // ← ADD
 const dsaRoutes     = require("./src/routes/dsaRoutes");    // ← ADD
+const mockRoutes    = require("./src/routes/mockInterviewRoutes"); // ← ADD
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // ... your existing routes ...
 app.use("/api/resume", resumeRoutes); // ← ADD
 app.use("/api/dsa", dsaRoutes);       // ← ADD
+app.use("/api/mock", mockRoutes);     // ← ADD
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get("/api/health", (_req, res) => res.json({ status: "ok", timestamp: new Date() }));
@@ -45,6 +47,6 @@ app.use(errorHandler);
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(` HireVerse API running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 HireVerse API running on port ${PORT}`));
 
 module.exports = app;

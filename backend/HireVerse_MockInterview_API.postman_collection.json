@@ -1,0 +1,100 @@
+{
+  "info": {
+    "name": "HireVerse — AI Mock Interview API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",     "value": "http://localhost:5000/api" },
+    { "key": "token",       "value": "YOUR_JWT_TOKEN_HERE" },
+    { "key": "interviewId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Start Interview",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type",  "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"Technical\",\n  \"difficulty\": \"Medium\"\n}"
+        },
+        "url": "{{baseUrl}}/mock/start"
+      }
+    },
+    {
+      "name": "2. Get Current Interview",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/mock/{{interviewId}}"
+      }
+    },
+    {
+      "name": "3. Submit Answer",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type",  "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"answer\": \"I'm a final-year CSE student with experience in the MERN stack. I built HireVerse, a placement platform, where I reduced page load time by 38% through code-splitting and lazy loading.\"\n}"
+        },
+        "url": "{{baseUrl}}/mock/{{interviewId}}/answer"
+      }
+    },
+    {
+      "name": "4. End Interview",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/mock/{{interviewId}}/end"
+      }
+    },
+    {
+      "name": "5. Get Interview Report",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/mock/{{interviewId}}/report"
+      }
+    },
+    {
+      "name": "6. Get Interview History",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw":   "{{baseUrl}}/mock/history?page=1&limit=10",
+          "query": [
+            { "key": "page",  "value": "1" },
+            { "key": "limit", "value": "10" }
+          ],
+          "path": ["mock", "history"]
+        }
+      }
+    },
+    {
+      "name": "7. Delete Interview",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/mock/{{interviewId}}"
+      }
+    }
+  ]
+}
