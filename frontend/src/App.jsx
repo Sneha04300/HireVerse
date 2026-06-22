@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Signup from "./pages/Signup";
-import  Login from "./pages/Login";
+import Login from "./pages/Login";
 import DashboardPage from "./pages/DashboardPage";
 import ResumeAnalyzerPage from "./pages/ResumeAnalyzerPage";
 import DSATrackerPage from "./pages/DSATrackerPage";
 import MockInterviewPage from "./pages/MockInterviewPage";
+import CareerCopilotPage from "./pages/CareerCopilotPage";
 
 export default function App() {
   return (
@@ -16,7 +17,8 @@ export default function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/resume" element={<ResumeAnalyzerPage />} />
         <Route path="/dsa" element={<DSATrackerPage />} />
-        <Route path="/MockInterviewPage" element={<MockInterviewPage />} />
+        <Route path="/mock" element={<MockInterviewPage />} />
+        <Route path="/copilot" element={<CareerCopilotPage />} />
       </Routes>
     </BrowserRouter>
   );
