@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import InputField from "../ui/InputField";
+import API from "../../services/api";
 
 const IconMail = () => (
   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -36,11 +37,20 @@ export default function SigninForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    // TODO: connect to backend /api/auth/login
-    await new Promise((r) => setTimeout(r, 1000));
-    setLoading(false);
-    navigate("/dashboard"); // update when dashboard exists
+    try {
+      setLoading(true);
+      const response = await API.post("/auth/login", {
+        email: form.email,
+        password: form.password,
+      });
+      console.log(response.data);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Login Failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

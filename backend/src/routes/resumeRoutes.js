@@ -10,7 +10,7 @@
 const express    = require("express");
 const router     = express.Router();
 const { upload } = require("../config/multerConfig");
-const protect    = require("../middleware/authMiddleware"); // your existing JWT middleware
+const { protect } = require("../middleware/authMiddleware"); // your existing JWT middleware
 const {
   uploadResume,
   analyzeResume,

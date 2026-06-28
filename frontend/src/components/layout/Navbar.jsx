@@ -55,7 +55,7 @@ export default function Navbar({ onSidebarToggle }) {
 
       {/* Right */}
       <div className="flex items-center gap-3 ml-auto flex-shrink-0">
-        <Link to="/signin" className="text-gray-300 hover:text-white text-sm font-medium transition-colors hidden sm:block">
+        <Link to="/login" className="text-gray-300 hover:text-white text-sm font-medium transition-colors hidden sm:block">
           Sign in
         </Link>
         <Link

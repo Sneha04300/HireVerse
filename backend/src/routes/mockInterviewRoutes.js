@@ -13,7 +13,7 @@
 
 const express = require("express");
 const router  = express.Router();
-const protect = require("../middleware/authMiddleware"); // your existing JWT middleware
+const { protect } = require("../middleware/authMiddleware"); // your existing JWT middleware
 
 const {
   startInterview,

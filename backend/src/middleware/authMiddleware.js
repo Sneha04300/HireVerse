@@ -7,7 +7,7 @@
  */
 
 const jwt  = require("jsonwebtoken");
-const User = require("../models/User"); // adjust path to your User model
+const User = require("../models/user");
 
 const protect = async (req, res, next) => {
   try {
@@ -41,4 +41,4 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = protect;
+module.exports = { protect };
