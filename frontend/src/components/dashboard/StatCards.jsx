@@ -11,7 +11,7 @@ const STATS = [
     id: "leetcode",
     label: "LeetCode Solved",
     value: "340",
-    sub: "28-day streak 🔥",
+    sub: "28-day streak ",
     subColor: "#f97316",
     gradient: "linear-gradient(135deg,#0a1a2a 0%,#0a2218 100%)",
   },

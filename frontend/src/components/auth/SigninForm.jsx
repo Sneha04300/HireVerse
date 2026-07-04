@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import InputField from "../ui/InputField";
 import API from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
 const IconMail = () => (
   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -32,6 +33,7 @@ const IconGitHub = () => (
 
 export default function SigninForm() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
@@ -43,7 +45,7 @@ export default function SigninForm() {
         email: form.email,
         password: form.password,
       });
-      console.log(response.data);
+      login(response.data.token, response.data.user);
       navigate("/dashboard");
     } catch (error) {
       console.error(error);

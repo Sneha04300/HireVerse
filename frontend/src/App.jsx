@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import DashboardPage from "./pages/DashboardPage";
@@ -10,7 +11,8 @@ import CareerCopilotPage from "./pages/CareerCopilotPage";
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
+      <AuthProvider>
+        <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/Login" element={<Login />} />
@@ -19,7 +21,8 @@ export default function App() {
         <Route path="/dsa" element={<DSATrackerPage />} />
         <Route path="/mock" element={<MockInterviewPage />} />
         <Route path="/copilot" element={<CareerCopilotPage />} />
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

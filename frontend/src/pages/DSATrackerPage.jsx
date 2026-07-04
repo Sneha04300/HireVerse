@@ -88,10 +88,10 @@ export default function DSATrackerPage() {
                   <TopicProgress topics={TOPICS} />
 
                   {/* Activity Heatmap */}
-                  <ActivityHeatmap data={HEATMAP_DATA} />
+                  {/* <ActivityHeatmap data={HEATMAP_DATA} /> */}
 
-                  {/* Topic Breakdown table */}
-                  <TopicBreakdown topics={TOPICS} />
+                  {/* Topic Breakdown table
+                  <TopicBreakdown topics={TOPICS} /> */}
 
                   {/* Struggle Analysis + Contest Performance side by side */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -100,7 +100,7 @@ export default function DSATrackerPage() {
                   </div>
 
                   {/* Suggested Problems */}
-                  <SuggestedProblems problems={SUGGESTED_PROBLEMS} />
+                  {/* <SuggestedProblems problems={SUGGESTED_PROBLEMS} /> */}
 
                 </div>
 
@@ -108,7 +108,7 @@ export default function DSATrackerPage() {
                 <div className="flex flex-col gap-6 xl:sticky xl:top-20 xl:self-start">
                   <AIInsights insights={AI_INSIGHTS} />
                   <LeetCodeCard data={LEETCODE} />
-                  <GoalsCard goals={WEEKLY_GOALS} />
+                  {/* <GoalsCard goals={WEEKLY_GOALS} /> */}
                 </div>
 
               </div>

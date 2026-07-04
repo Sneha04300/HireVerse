@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import InputField from "../ui/InputField";
 import API from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
 const GRAD_YEARS = ["2025", "2026", "2027", "2028", "2029"];
 
@@ -46,6 +47,7 @@ const IconGitHub = () => (
 
 export default function SignupForm() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({
     fullName: "",
     college: "",
@@ -73,11 +75,9 @@ export default function SignupForm() {
       password: form.password,
     });
 
-    console.log(response.data);
+    login(response.data.token, response.data.user);
 
-    alert("Registration Successful!");
-
-    navigate("/login");
+    navigate("/dashboard");
   } catch (error) {
     console.error(error);
 

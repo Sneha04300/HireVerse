@@ -11,24 +11,102 @@ import ResumeReadiness from "../components/resume/ResumeReadiness";
 import ResumeInsightsPanel from "../components/resume/ResumeInsightsPanel";
 import ResumeQuickActions from "../components/resume/ResumeQuickActions";
 import { LoadingState, EmptyState } from "../components/resume/ResumeStates";
-import { DUMMY_RESUME } from "../data/resumeDummyData";
+import api from "../services/api";
 
 export default function ResumeAnalyzerPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [file, setFile] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzed, setAnalyzed] = useState(false);
-  const data = DUMMY_RESUME;
+  const [data, setData] = useState(null);
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
+
+  if (!file) {
+    alert("Please upload a resume.");
+    return;
+  }
+
+  try {
+
     setAnalyzing(true);
     setAnalyzed(false);
-    // Simulate AI analysis delay
-    setTimeout(() => {
-      setAnalyzing(false);
-      setAnalyzed(true);
-    }, 3000);
-  };
+
+    const formData = new FormData();
+
+    formData.append("resume", file);
+
+    const response = await api.post(
+      "/resume/analyze",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    const result = response.data.data;
+
+    const sectionEntries = Object.entries(result.sectionScores || {});
+
+    const breakdown = sectionEntries.map(([key, score]) => ({
+      label: key.charAt(0).toUpperCase() + key.slice(1),
+      score,
+      status: score >= 70 ? "Good" : score >= 50 ? "Average" : "Needs Work",
+    }));
+
+    const sections = sectionEntries.map(([key, score]) => ({
+      id: key,
+      label: key.charAt(0).toUpperCase() + key.slice(1),
+      score,
+      feedback: `Your ${key} section scored ${score}/100. ${
+        score >= 70 ? "This is performing well." : score >= 50 ? "Consider improving this area." : "This needs significant improvement."
+      }`,
+      suggestions: [
+        score < 70 && `Add more relevant ${key} content to your resume.`,
+        score < 50 && `Review best practices for the ${key} section structure.`,
+        "Tailor this section to match job description requirements.",
+      ].filter(Boolean),
+    }));
+
+    const missingKeywords = result.missingKeywords || [];
+
+    setData({
+      atsScore: result.atsScore,
+      strengths: result.strengths,
+      weaknesses: result.weaknesses,
+      missingKeywords,
+      suggestions: result.suggestions,
+      breakdown,
+      sections,
+      placementImpact: "Excellent",
+      batchRank: "Top 20%",
+      atsTrend: [result.atsScore - 15, result.atsScore - 10, result.atsScore - 5, result.atsScore - 2, result.atsScore],
+      industryBenchmark: 65,
+      topMissingSkills: missingKeywords.slice(0, 4),
+      resumeRank: Math.max(1, 100 - result.atsScore + 1),
+      totalResumes: 10000,
+    });
+
+    setAnalyzed(true);
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      error.response?.data?.message ||
+      "Resume analysis failed."
+    );
+
+  } finally {
+
+    setAnalyzing(false);
+
+  }
+
+};
 
   const handleFileChange = (f) => {
     setFile(f);

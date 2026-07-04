@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const IconMenu = () => (
   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -20,7 +21,18 @@ const IconBell = () => (
 );
 
 export default function Navbar({ onSidebarToggle }) {
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
   const [query, setQuery] = useState("");
+
+  const initials = user?.name
+    ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "?";
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <header
@@ -55,32 +67,37 @@ export default function Navbar({ onSidebarToggle }) {
 
       {/* Right */}
       <div className="flex items-center gap-3 ml-auto flex-shrink-0">
-        <Link to="/login" className="text-gray-300 hover:text-white text-sm font-medium transition-colors hidden sm:block">
-          Sign in
-        </Link>
-        <Link
-          to="/signup"
-          className="text-sm font-semibold px-4 py-1.5 rounded-lg text-white"
-          style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
-        >
-          Sign up
-        </Link>
-        <button className="text-gray-400 hover:text-white transition-colors">
-          <IconBell />
-        </button>
-        {/* Avatar */}
-        <div className="flex items-center gap-2">
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-            style={{ background: "linear-gradient(135deg,#7C3AED,#06B6D4)" }}
-          >
-            SG
-          </div>
-          <div className="hidden md:block leading-tight">
-            <div className="text-white text-sm font-semibold">Sneha Gupta</div>
-            <div className="text-gray-500 text-[11px]">CSE • 2026</div>
-          </div>
-        </div>
+        {isAuthenticated ? (
+          <>
+            <button className="text-gray-400 hover:text-white transition-colors">
+              <IconBell />
+            </button>
+            <div className="flex items-center gap-2 cursor-pointer" onClick={handleLogout} title="Logout">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                style={{ background: "linear-gradient(135deg,#7C3AED,#06B6D4)" }}
+              >
+                {initials}
+              </div>
+              <div className="hidden md:block leading-tight">
+                <div className="text-white text-sm font-semibold">{user?.name}</div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="text-gray-300 hover:text-white text-sm font-medium transition-colors hidden sm:block">
+              Sign in
+            </Link>
+            <Link
+              to="/signup"
+              className="text-sm font-semibold px-4 py-1.5 rounded-lg text-white"
+              style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+            >
+              Sign up
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );
