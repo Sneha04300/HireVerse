@@ -1,0 +1,118 @@
+{
+  "info": {
+    "name": "HireVerse — Career Copilot API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "token",   "value": "YOUR_JWT_TOKEN_HERE" },
+    { "key": "goalId",  "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Get Dashboard",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/copilot/dashboard"
+      }
+    },
+    {
+      "name": "2. Get Chat History",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/copilot/chat"
+      }
+    },
+    {
+      "name": "3. Send Chat Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type",  "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message\": \"Can I crack Amazon in 4 months?\"\n}"
+        },
+        "url": "{{baseUrl}}/copilot/chat"
+      }
+    },
+    {
+      "name": "3b. Send Chat Message (next week)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type",  "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message\": \"What should I learn next week?\"\n}"
+        },
+        "url": "{{baseUrl}}/copilot/chat"
+      }
+    },
+    {
+      "name": "3c. Send Chat Message (review profile)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type",  "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message\": \"Review my profile\"\n}"
+        },
+        "url": "{{baseUrl}}/copilot/chat"
+      }
+    },
+    {
+      "name": "4. Generate 30-Day Plan",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type",  "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"company\": \"Amazon\"\n}"
+        },
+        "url": "{{baseUrl}}/copilot/generate-plan"
+      }
+    },
+    {
+      "name": "5. Update Weekly Goal",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type",  "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"goalId\": \"{{goalId}}\",\n  \"completed\": true\n}"
+        },
+        "url": "{{baseUrl}}/copilot/update-goal"
+      }
+    },
+    {
+      "name": "6. Get Readiness",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/copilot/readiness"
+      }
+    }
+  ]
+}

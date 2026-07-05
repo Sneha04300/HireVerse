@@ -15,10 +15,10 @@ const errorHandler = require("./src/middleware/errorHandler");
 
 // ── Import routes ─────────────────────────────────────────────────────────────
 // ... your existing route imports ...
-const authRoutes    = require("./src/routes/authRoutes");
-const resumeRoutes = require("./src/routes/resumeRoutes");
-const dsaRoutes     = require("./src/routes/dsaRoutes");
-const mockRoutes    = require("./src/routes/mockInterviewRoutes");
+const resumeRoutes = require("./src/routes/resumeRoutes"); // ← ADD
+const dsaRoutes     = require("./src/routes/dsaRoutes");    // ← ADD
+const mockRoutes    = require("./src/routes/mockInterviewRoutes"); // ← ADD
+const copilotRoutes = require("./src/routes/copilotRoutes"); // ← ADD
 
 const app = express();
 
@@ -36,10 +36,10 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ── API Routes ────────────────────────────────────────────────────────────────
 // ... your existing routes ...
-app.use("/api/auth", authRoutes);
-app.use("/api/resume", resumeRoutes);
-app.use("/api/dsa", dsaRoutes);
-app.use("/api/mock", mockRoutes);
+app.use("/api/resume", resumeRoutes); // ← ADD
+app.use("/api/dsa", dsaRoutes);       // ← ADD
+app.use("/api/mock", mockRoutes);     // ← ADD
+app.use("/api/copilot", copilotRoutes); // ← ADD
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get("/api/health", (_req, res) => res.json({ status: "ok", timestamp: new Date() }));
