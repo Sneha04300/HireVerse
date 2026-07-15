@@ -14,11 +14,19 @@ const connectDB    = require("./src/config/db");
 const errorHandler = require("./src/middleware/errorHandler");
 
 // ── Import routes ─────────────────────────────────────────────────────────────
-// ... your existing route imports ...
-const resumeRoutes = require("./src/routes/resumeRoutes"); // ← ADD
-const dsaRoutes     = require("./src/routes/dsaRoutes");    // ← ADD
-const mockRoutes    = require("./src/routes/mockInterviewRoutes"); // ← ADD
-const copilotRoutes = require("./src/routes/copilotRoutes"); // ← ADD
+const resumeRoutes = require("./src/routes/resumeRoutes");
+const dsaRoutes     = require("./src/routes/dsaRoutes");
+const mockRoutes    = require("./src/routes/mockInterviewRoutes");
+const copilotRoutes = require("./src/routes/copilotRoutes");
+const authRoutes = require("./src/routes/authRoutes");
+const userRoutes = require("./src/routes/userRoutes");
+const profileRoutes = require("./src/routes/profileRoutes");
+const atsRoutes = require("./src/routes/atsRoutes");
+const githubRoutes = require("./src/routes/githubRoutes");
+const leetcodeRoutes = require("./src/routes/leetcodeRoutes");
+const roadmapRoutes = require("./src/routes/roadmapRoutes");
+const weeklyPlanRoutes = require("./src/routes/weeklyPlanRoutes");
+const internshipRoutes = require("./src/routes/internshipRoutes");
 
 const app = express();
 
@@ -31,15 +39,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ── Serve uploaded files statically ──────────────────────────────────────────
-// ← ADD — allows frontend to load resume files via /uploads/filename.pdf
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ── API Routes ────────────────────────────────────────────────────────────────
-// ... your existing routes ...
-app.use("/api/resume", resumeRoutes); // ← ADD
-app.use("/api/dsa", dsaRoutes);       // ← ADD
-app.use("/api/mock", mockRoutes);     // ← ADD
-app.use("/api/copilot", copilotRoutes); // ← ADD
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/resume", resumeRoutes);
+app.use("/api/ats", atsRoutes);
+app.use("/api/github", githubRoutes);
+app.use("/api/leetcode", leetcodeRoutes);
+app.use("/api/roadmap", roadmapRoutes);
+app.use("/api/weekly-plan", weeklyPlanRoutes);
+app.use("/api/internship", internshipRoutes);
+app.use("/api/dsa", dsaRoutes);
+app.use("/api/mock", mockRoutes);
+app.use("/api/copilot", copilotRoutes);
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get("/api/health", (_req, res) => res.json({ status: "ok", timestamp: new Date() }));
