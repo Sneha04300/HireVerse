@@ -7,26 +7,23 @@ export default function InterviewSetup({ onStart, pageState }) {
   const [selectedType, setSelectedType] = useState("Technical");
   const [selectedDifficulty, setSelectedDifficulty] = useState("Medium");
 
-  // Handle Start Interview
   const handleStartInterview = async () => {
-    try {
-      // Request microphone permission
-      await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
-
-      // If permission is granted, start the interview
-      onStart({
-        type: selectedType,
-        difficulty: selectedDifficulty,
-      });
-    } catch (error) {
-      console.error("Microphone Permission Error:", error);
-
-      alert(
-        "Microphone permission is required to start the interview."
-      );
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert("Microphone access is not available in this browser.");
+      return;
     }
+
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err) {
+      console.error("[InterviewSetup] Microphone permission denied:", err);
+      alert("Microphone permission is required for speech recognition. You can still type answers manually.");
+    }
+
+    onStart({
+      type: selectedType,
+      difficulty: selectedDifficulty,
+    });
   };
 
   return (

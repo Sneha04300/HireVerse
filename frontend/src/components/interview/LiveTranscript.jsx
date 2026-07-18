@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 
 export default function LiveTranscript({
   transcript,
+  speechText,
+  interimText,
   elapsed,
   questionNum,
   totalQuestions,
@@ -9,21 +11,56 @@ export default function LiveTranscript({
   onSubmitAnswer,
   pageState,
   loading,
+  isListening,
+  isAiSpeaking,
 }) {
   const [answer, setAnswer] = useState("");
   const textareaRef = useRef(null);
+  const manuallyEditedRef = useRef(false);
   const isEmpty = pageState === "empty";
 
+  console.log("[LiveTranscript render]");
+  console.log("[LiveTranscript render]   speechText:", speechText);
+  console.log("[LiveTranscript render]   interimText:", interimText);
+  console.log("[LiveTranscript render]   isListening:", isListening);
+  console.log("[LiveTranscript render]   isAiSpeaking:", isAiSpeaking);
+  console.log("[LiveTranscript render]   transcript (formatted):", transcript);
+  console.log("[LiveTranscript render]   pageState:", pageState);
+  console.log("[LiveTranscript render]   questionNum:", questionNum);
+  console.log("[LiveTranscript render]   totalQuestions:", totalQuestions);
+  console.log("[LiveTranscript render]   elapsed:", elapsed);
+  console.log("[LiveTranscript render]   loading:", loading);
+  console.log("[LiveTranscript render]   isLive:", pageState === "interview" && (interimText || isListening));
+  console.log("[LiveTranscript render]   answer state:", answer);
+
   useEffect(() => {
-    if (pageState === "interview" && textareaRef.current) {
-      setAnswer("");
-      textareaRef.current.focus();
+    console.log("LiveTranscript effect 1 - pageState:", pageState, "questionNum:", questionNum, "speechText:", speechText);
+    if (pageState === "interview") {
+      setAnswer(speechText || "");
+      manuallyEditedRef.current = false;
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
     }
   }, [pageState, questionNum]);
 
+  useEffect(() => {
+    console.log("LiveTranscript effect 2 - speechText:", speechText, "manuallyEdited:", manuallyEditedRef.current, "pageState:", pageState);
+    if (pageState === "interview" && !manuallyEditedRef.current) {
+      setAnswer(speechText || "");
+    }
+  }, [speechText, pageState]);
+
   const handleSubmit = () => {
+    console.log("[LiveTranscript] handleSubmit called");
+    console.log("[LiveTranscript]   answer from textarea:", JSON.stringify(answer));
+    console.log("[LiveTranscript]   answer.trim():", JSON.stringify(answer.trim()));
+    console.log("[LiveTranscript]   loading:", loading);
+    console.log("[LiveTranscript]   manuallyEditedRef.current:", manuallyEditedRef.current);
     if (!answer.trim() || loading) return;
+    console.log("[LiveTranscript] >>> Calling onSubmitAnswer with:", JSON.stringify(answer.trim()));
     onSubmitAnswer(answer.trim());
+    manuallyEditedRef.current = false;
   };
 
   const handleKeyDown = (e) => {
@@ -33,34 +70,52 @@ export default function LiveTranscript({
     }
   };
 
+  const isLive =
+    pageState === "interview" && (interimText || isListening);
+
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-5 shadow-xl mt-4">
       <p className="text-xs font-semibold tracking-widest text-gray-400 mb-3">
         LIVE TRANSCRIPT
       </p>
 
-      <div className="rounded-xl border border-white/8 bg-[#080a14]/60 p-4 min-h-[100px] flex items-start">
+      <div className="rounded-xl border border-white/8 bg-[#080a14]/60 p-4 min-h-[100px]">
         {isEmpty ? (
           <p className="text-gray-600 text-sm italic">
             Transcript will appear here once the interview starts...
           </p>
         ) : (
-          <p className="text-gray-200 text-sm leading-relaxed whitespace-pre-line">
-            {transcript}
-            {pageState === "interview" && (
+          <>
+            <p className="text-gray-200 text-sm leading-relaxed whitespace-pre-line">
+              {transcript}
+            </p>
+            {isLive && (
+              <p className="text-gray-200 text-sm leading-relaxed whitespace-pre-line mt-2 pt-2 border-t border-white/5">
+                {speechText && (
+                  <span>{speechText}</span>
+                )}
+                {interimText && (
+                  <span className="text-gray-400">{interimText}</span>
+                )}
+                <span className="inline-block w-1.5 h-4 bg-cyan-400 ml-1 animate-pulse rounded-sm align-middle" />
+              </p>
+            )}
+            {!isLive && pageState === "interview" && !interimText && !isListening && (
               <span className="inline-block w-1.5 h-4 bg-cyan-400 ml-1 animate-pulse rounded-sm align-middle" />
             )}
-          </p>
+          </>
         )}
       </div>
 
-      {/* Answer input — only during interview */}
       {pageState === "interview" && (
         <div className="mt-4">
           <textarea
             ref={textareaRef}
             value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
+            onChange={(e) => {
+              manuallyEditedRef.current = true;
+              setAnswer(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Type your answer here..."
             rows={3}
@@ -100,6 +155,18 @@ export default function LiveTranscript({
             <span className="text-gray-300">
               Question {questionNum || 1} / {totalQuestions || 6}
             </span>
+            {isListening && (
+              <>
+                <span className="mx-2">•</span>
+                <span className="text-green-400">Listening</span>
+              </>
+            )}
+            {isAiSpeaking && (
+              <>
+                <span className="mx-2">•</span>
+                <span className="text-purple-400">AI speaking</span>
+              </>
+            )}
           </p>
 
           {pageState === "interview" && (

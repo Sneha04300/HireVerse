@@ -1,17 +1,15 @@
-export default function InterviewPanel({ question, pageState }) {
+export default function InterviewPanel({ question, pageState, isListening, isAiSpeaking }) {
   const isActive = pageState === "interview";
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-5 shadow-xl">
       <div className="flex items-center gap-5">
-        {/* Avatar */}
         <div className="relative flex-shrink-0">
           <div
             className={`w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-700 to-purple-500 shadow-lg shadow-purple-500/40 ${
               isActive ? "animate-pulse" : ""
             }`}
           >
-            {/* Outer ring */}
             <div className="absolute inset-0 rounded-full border-2 border-purple-400/40" />
             <svg
               className="w-8 h-8 text-white"
@@ -29,7 +27,6 @@ export default function InterviewPanel({ question, pageState }) {
           </div>
         </div>
 
-        {/* Question */}
         <div className="flex-1 min-w-0">
           <p className="text-xs font-semibold tracking-widest text-gray-400 mb-1">
             AI RECRUITER
@@ -39,14 +36,18 @@ export default function InterviewPanel({ question, pageState }) {
           </p>
         </div>
 
-        {/* Mic badge */}
-        {isActive && (
-          <div className="flex-shrink-0">
+        <div className="flex-shrink-0 flex gap-2">
+          {isListening && (
             <span className="px-3 py-1.5 rounded-full border border-green-500/60 bg-green-500/10 text-green-400 text-xs font-semibold">
               Mic on
             </span>
-          </div>
-        )}
+          )}
+          {isAiSpeaking && (
+            <span className="px-3 py-1.5 rounded-full border border-purple-500/60 bg-purple-500/10 text-purple-400 text-xs font-semibold">
+              Speaking
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
