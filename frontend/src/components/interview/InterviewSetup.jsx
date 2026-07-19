@@ -7,19 +7,7 @@ export default function InterviewSetup({ onStart, pageState }) {
   const [selectedType, setSelectedType] = useState("Technical");
   const [selectedDifficulty, setSelectedDifficulty] = useState("Medium");
 
-  const handleStartInterview = async () => {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert("Microphone access is not available in this browser.");
-      return;
-    }
-
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch (err) {
-      console.error("[InterviewSetup] Microphone permission denied:", err);
-      alert("Microphone permission is required for speech recognition. You can still type answers manually.");
-    }
-
+  const handleStartInterview = () => {
     onStart({
       type: selectedType,
       difficulty: selectedDifficulty,
@@ -29,7 +17,6 @@ export default function InterviewSetup({ onStart, pageState }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-6 shadow-xl">
       <div className="flex flex-wrap gap-10">
-        {/* Interview Type */}
         <div>
           <p className="text-xs font-semibold tracking-widest text-gray-400 mb-3">
             INTERVIEW TYPE
@@ -52,7 +39,6 @@ export default function InterviewSetup({ onStart, pageState }) {
           </div>
         </div>
 
-        {/* Difficulty */}
         <div>
           <p className="text-xs font-semibold tracking-widest text-gray-400 mb-3">
             DIFFICULTY
@@ -76,7 +62,6 @@ export default function InterviewSetup({ onStart, pageState }) {
         </div>
       </div>
 
-      {/* CTA */}
       <div className="mt-6 flex justify-end">
         <button
           onClick={handleStartInterview}

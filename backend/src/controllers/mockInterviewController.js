@@ -1,13 +1,10 @@
-/**
- * mockInterviewController.js
- * Handles HTTP layer for AI Mock Interview — validates input, delegates to
- * service, returns frontend-ready responses matching MockInterviewPage.jsx.
- */
-
-const MockInterview        = require("../models/MockInterview");
+const fs = require("fs");
+const MockInterview = require("../models/MockInterview");
 const mockInterviewService = require("../services/mockInterviewService");
+const groqService = require("../services/groqService");
+const piperService = require("../services/piperService");
+const { QUESTIONS_PER_INTERVIEW } = mockInterviewService;
 
-// ── Helper: fetch interview + ownership check ────────────────────────────────
 const findOwnedInterview = async (interviewId, userId) => {
   const doc = await MockInterview.findById(interviewId);
   if (!doc) return { doc: null, error: { status: 404, message: "Interview not found." } };
@@ -17,10 +14,6 @@ const findOwnedInterview = async (interviewId, userId) => {
   return { doc, error: null };
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/mock/start
-// Body: { type: "Technical" | "HR" | "Mixed", difficulty: "Easy" | "Medium" | "Hard" }
-// ─────────────────────────────────────────────────────────────────────────────
 const startInterview = async (req, res) => {
   try {
     const { type, difficulty } = req.body;
@@ -47,10 +40,10 @@ const startInterview = async (req, res) => {
       success: true,
       message: "Interview started successfully.",
       data: {
-        interviewId:     doc._id,
+        interviewId: doc._id,
         currentQuestion: doc.questions[doc.currentQuestionIndex].question,
-        totalQuestions:  doc.questions.length,
-        status:          doc.status,
+        totalQuestions: QUESTIONS_PER_INTERVIEW,
+        status: doc.status,
       },
     });
   } catch (err) {
@@ -59,10 +52,6 @@ const startInterview = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/mock/:interviewId
-// Returns current question, transcript, elapsed time, status.
-// ─────────────────────────────────────────────────────────────────────────────
 const getInterview = async (req, res) => {
   try {
     const { interviewId } = req.params;
@@ -76,16 +65,16 @@ const getInterview = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: {
-        interviewId:          doc._id,
-        type:                  doc.type,
-        difficulty:            doc.difficulty,
-        status:                doc.status,
-        currentQuestion:       doc.currentQuestionIndex < doc.questions.length
+        interviewId: doc._id,
+        type: doc.type,
+        difficulty: doc.difficulty,
+        status: doc.status,
+        currentQuestion: doc.currentQuestionIndex < doc.questions.length
           ? doc.questions[doc.currentQuestionIndex].question
           : null,
         currentQuestionIndex: doc.currentQuestionIndex,
-        totalQuestions:        doc.questions.length,
-        transcript:            doc.transcript,
+        totalQuestions: QUESTIONS_PER_INTERVIEW,
+        transcript: doc.transcript,
         elapsed,
       },
     });
@@ -95,10 +84,6 @@ const getInterview = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/mock/:interviewId/answer
-// Body: { answer: "User answer text" }
-// ─────────────────────────────────────────────────────────────────────────────
 const submitAnswer = async (req, res) => {
   try {
     const { interviewId } = req.params;
@@ -121,12 +106,12 @@ const submitAnswer = async (req, res) => {
       success: true,
       message: "Answer submitted successfully.",
       data: {
-        interviewId:          updated._id,
-        nextQuestion:          isLastQuestion ? null : updated.questions[updated.currentQuestionIndex].question,
+        interviewId: updated._id,
+        nextQuestion: isLastQuestion ? null : updated.questions[updated.currentQuestionIndex].question,
         currentQuestionIndex: updated.currentQuestionIndex,
-        totalQuestions:        updated.questions.length,
+        totalQuestions: QUESTIONS_PER_INTERVIEW,
         isLastQuestion,
-        status:                updated.status,
+        status: updated.status,
       },
     });
   } catch (err) {
@@ -135,10 +120,6 @@ const submitAnswer = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/mock/:interviewId/end
-// Finalizes interview, calculates report, saves to history.
-// ─────────────────────────────────────────────────────────────────────────────
 const endInterview = async (req, res) => {
   try {
     const { interviewId } = req.params;
@@ -160,9 +141,9 @@ const endInterview = async (req, res) => {
       message: "Interview ended successfully.",
       data: {
         interviewId: updated._id,
-        status:      updated.status,
-        duration:    updated.duration,
-        report:      updated.report,
+        status: updated.status,
+        duration: updated.duration,
+        report: updated.report,
       },
     });
   } catch (err) {
@@ -171,9 +152,6 @@ const endInterview = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/mock/:interviewId/report
-// ─────────────────────────────────────────────────────────────────────────────
 const getReport = async (req, res) => {
   try {
     const { interviewId } = req.params;
@@ -194,22 +172,18 @@ const getReport = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/mock/history
-// Returns all previous interviews for the logged-in user, newest first.
-// ─────────────────────────────────────────────────────────────────────────────
 const getHistory = async (req, res) => {
   try {
-    const page  = parseInt(req.query.page)  || 1;
+    const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const skip  = (page - 1) * limit;
+    const skip = (page - 1) * limit;
 
     const [history, total] = await Promise.all([
       MockInterview.find({ userId: req.user._id })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .select("-transcript -questions") // lighter payload for list view
+        .select("-transcript -questions")
         .lean(),
       MockInterview.countDocuments({ userId: req.user._id }),
     ]);
@@ -227,9 +201,6 @@ const getHistory = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DELETE /api/mock/:interviewId
-// ─────────────────────────────────────────────────────────────────────────────
 const deleteInterview = async (req, res) => {
   try {
     const { interviewId } = req.params;
@@ -237,11 +208,56 @@ const deleteInterview = async (req, res) => {
     if (error) return res.status(error.status).json({ success: false, message: error.message });
 
     await doc.deleteOne();
-
     return res.status(200).json({ success: true, message: "Interview deleted successfully." });
   } catch (err) {
     console.error("[deleteInterview]", err);
     return res.status(500).json({ success: false, message: "Failed to delete interview.", error: err.message });
+  }
+};
+
+const transcribeAudio = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "Audio file is required." });
+    }
+
+    const text = await groqService.transcribeAudio(req.file.path);
+
+    fs.unlink(req.file.path, (err) => {
+      if (err) console.error("[transcribeAudio] Failed to delete temp file:", err.message);
+    });
+
+    return res.status(200).json({ success: true, text });
+  } catch (err) {
+    console.error("[transcribeAudio]", err);
+    return res.status(500).json({ success: false, message: "Unable to transcribe audio." });
+  }
+};
+
+const speakQuestion = async (req, res) => {
+  try {
+    const { interviewId } = req.params;
+    const { text } = req.body;
+
+    if (!text || !text.trim()) {
+      return res.status(400).json({ success: false, message: "text is required." });
+    }
+
+    const { doc, error } = await findOwnedInterview(interviewId, req.user._id);
+    if (error) return res.status(error.status).json({ success: false, message: error.message });
+
+    const result = await piperService.speak(text);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        url: result.url,
+        filename: result.filename,
+      },
+    });
+  } catch (err) {
+    console.error("[speakQuestion]", err);
+    return res.status(500).json({ success: false, message: "Failed to generate speech.", error: err.message });
   }
 };
 
@@ -253,4 +269,6 @@ module.exports = {
   getReport,
   getHistory,
   deleteInterview,
+  transcribeAudio,
+  speakQuestion,
 };

@@ -7,8 +7,8 @@ import { STATES } from "../components/interview/InterviewStates";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
 import * as mockInterviewService from "../services/mockInterviewService";
-import useSpeechRecognition from "../hooks/useSpeechRecognition";
-import { speak, stopSpeaking } from "../services/speechService";
+import useAudioRecorder from "../hooks/useAudioRecorder";
+import { playAudio, stopAudio } from "../services/piperSpeechService";
 
 function formatTime(seconds) {
   const m = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -23,7 +23,6 @@ function formatTranscript(transcriptLines) {
 }
 
 function transformReport(backendReport) {
-  console.log("[transformReport] input:", backendReport);
   const skills = [
     { name: "Communication", score: backendReport.communication, color: "from-purple-500 to-cyan-400" },
     { name: "Confidence", score: backendReport.confidence, color: "from-green-400 to-emerald-500" },
@@ -31,19 +30,15 @@ function transformReport(backendReport) {
     { name: "Problem Solving", score: backendReport.problemSolving, color: "from-green-400 to-emerald-500" },
   ];
 
-  const transformed = {
+  return {
     overallScore: backendReport.overallScore,
     skills,
     feedback: backendReport.feedback,
     decision: backendReport.verdict,
   };
-  console.log("[transformReport] output:", transformed);
-  return transformed;
 }
 
 export default function MockInterviewPage() {
-  console.log("[FATAL] MockInterviewPage function body entered");
-
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [state, setState] = useState(STATES.EMPTY);
   const [interviewId, setInterviewId] = useState(null);
@@ -56,22 +51,27 @@ export default function MockInterviewPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isAiSpeaking, setIsAiSpeaking] = useState(false);
   const [error, setError] = useState(null);
+  const [transcriptReady, setTranscriptReady] = useState(false);
 
   const timerRef = useRef(null);
-  const recog = useSpeechRecognition();
+  const recorder = useAudioRecorder();
 
-  console.log("[FATAL] recog.start type:", typeof recog.start);
-  console.log("[FATAL] window.SpeechRecognition:", window.SpeechRecognition);
-  console.log("[FATAL] window.webkitSpeechRecognition:", window.webkitSpeechRecognition);
-  console.log("[FATAL] recog.isListening:", recog.isListening);
-  console.log("[FATAL] recog.finalText:", JSON.stringify(recog.finalText));
-  console.log("[FATAL] recog.interimText:", JSON.stringify(recog.interimText));
+  const speakQuestionViaPiper = useCallback(async (questionText) => {
+    if (!interviewId) return;
+    setIsAiSpeaking(true);
+    try {
+      stopAudio();
+      const result = await mockInterviewService.speakQuestion(interviewId, questionText);
+      await playAudio(`http://localhost:3001${result.url}`);
+    } catch (err) {
+      console.error("[Piper] Speech generation failed:", err);
+    } finally {
+      setIsAiSpeaking(false);
+    }
+  }, [interviewId]);
 
   useEffect(() => {
-    console.log("[LIFECYCLE] MockInterviewPage MOUNTED (effect running)");
-    return () => {
-      console.log("[LIFECYCLE] MockInterviewPage CLEANUP (unmount/StrictMode)");
-    };
+    return () => { stopAudio(); };
   }, []);
 
   useEffect(() => {
@@ -84,29 +84,17 @@ export default function MockInterviewPage() {
   }, [state]);
 
   useEffect(() => {
-    console.log("[TRACE] interviewId changed:", interviewId);
-  }, [interviewId]);
-
-  useEffect(() => {
-    console.log("[TRACE] transcriptLines updated:", JSON.stringify(transcriptLines, null, 2));
-  }, [transcriptLines]);
-
-  useEffect(() => {
-    console.log("[TRACE] report state updated:", report);
-  }, [report]);
+    if (recorder.recordingState === "ready" && recorder.transcript) {
+      setTranscriptReady(true);
+    }
+  }, [recorder.recordingState, recorder.transcript]);
 
   const handleStart = useCallback(async ({ type, difficulty }) => {
-    console.log("=== handleStart called ===");
-    console.log("[handleStart] type:", type, "difficulty:", difficulty);
     setError(null);
     setIsProcessing(true);
     try {
       const data = await mockInterviewService.startInterview(type, difficulty);
       const { interviewId: id, currentQuestion: question, totalQuestions: total } = data;
-
-      console.log("[handleStart] interviewId:", id);
-      console.log("[handleStart] currentQuestion:", question);
-      console.log("[handleStart] totalQuestions:", total);
 
       if (!id) throw new Error("interviewId is missing from response");
       if (!question) throw new Error("currentQuestion is missing from response");
@@ -117,43 +105,11 @@ export default function MockInterviewPage() {
       setTotalQuestions(total);
       setTranscriptLines([{ speaker: "AI", text: question }]);
       setElapsed(0);
+      setTranscriptReady(false);
       setState(STATES.INTERVIEW);
       setIsProcessing(false);
 
-      setIsAiSpeaking(true);
-      await speak(question);
-      setIsAiSpeaking(false);
-
-      stopSpeaking();
-      await new Promise((r) => setTimeout(r, 500));
-
-      recog.resetTranscript();
-
-      // ── Proactive microphone permission request ─────────────────────────
-      // Browser SpeechRecognition needs an active user gesture context AND
-      // microphone permission.  The original gesture (button click) may be
-      // lost after async API calls + TTS, so we re-request permission here
-      // to ensure the browser's audio pipeline is ready.
-      try {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          console.log("[handleStart] Requesting microphone permission via getUserMedia...");
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          console.log("[handleStart] getUserMedia succeeded, got stream id:", stream.id);
-          // Release the stream immediately — we only need the permission grant
-          stream.getTracks().forEach((t) => t.stop());
-          console.log("[handleStart] Microphone tracks released");
-        } else {
-          console.warn("[handleStart] getUserMedia not available in this browser");
-        }
-      } catch (micErr) {
-        console.error("[handleStart] Microphone permission denied or unavailable:", micErr);
-        // Non-fatal — user can still type answers
-      }
-      
-      console.log("BEFORE recog.start()");
-      recog.start();
-      console.log("AFTER recog.start()")
-      console.log("[handleStart] speech recognition started");
+      await speakQuestionViaPiper(question);
     } catch (err) {
       console.error("[handleStart] error:", err.response?.data || err.message);
       setError(
@@ -163,18 +119,13 @@ export default function MockInterviewPage() {
       );
       setIsProcessing(false);
     }
-  }, [recog]);
+  }, [speakQuestionViaPiper]);
 
   const handleSubmitAnswer = useCallback(async (answer) => {
-    console.log("=== handleSubmitAnswer called ===");
-    console.log("[handleSubmitAnswer] interviewId:", interviewId);
-    console.log("[handleSubmitAnswer] answer:", `"${answer}"`);
-    if (!answer.trim() || !interviewId) {
-      console.warn("[handleSubmitAnswer] aborted — missing answer or interviewId");
-      return;
-    }
+    if (!answer.trim() || !interviewId) return;
 
-    recog.stop();
+    recorder.resetTranscript();
+    setTranscriptReady(false);
     setIsProcessing(true);
     setError(null);
 
@@ -182,56 +133,26 @@ export default function MockInterviewPage() {
       const data = await mockInterviewService.submitAnswer(interviewId, answer);
       const { nextQuestion, currentQuestionIndex: newIdx, isLastQuestion } = data;
 
-      console.log("[handleSubmitAnswer] isLastQuestion:", isLastQuestion);
-      console.log("[handleSubmitAnswer] currentQuestionIndex:", newIdx);
-      console.log("[handleSubmitAnswer] nextQuestion:", nextQuestion || "(none)");
-
-      setTranscriptLines((prev) => {
-        const updated = [...prev, { speaker: "User", text: answer }];
-        console.log("[handleSubmitAnswer] transcriptLines after user answer:", JSON.stringify(updated, null, 2));
-        return updated;
-      });
+      setTranscriptLines((prev) => [...prev, { speaker: "User", text: answer }]);
 
       if (!isLastQuestion && nextQuestion) {
         setCurrentQuestion(nextQuestion);
         setCurrentQuestionIndex(newIdx);
-        setTranscriptLines((prev) => {
-          const updated = [...prev, { speaker: "AI", text: nextQuestion }];
-          console.log("[handleSubmitAnswer] transcriptLines after AI question:", JSON.stringify(updated, null, 2));
-          return updated;
-        });
+        setTranscriptLines((prev) => [...prev, { speaker: "AI", text: nextQuestion }]);
         setIsProcessing(false);
 
-        setIsAiSpeaking(true);
-        await speak(nextQuestion);
-        setIsAiSpeaking(false);
-
-        stopSpeaking();
-        await new Promise((r) => setTimeout(r, 500));
-
-        recog.resetTranscript();
-        recog.start();
-        console.log("[handleSubmitAnswer] speech recognition restarted for next question");
+        await speakQuestionViaPiper(nextQuestion);
       } else if (isLastQuestion) {
-        console.log("=== Last question submitted — ending interview ===");
-
         const endResult = await mockInterviewService.endInterview(interviewId);
-        console.log("[handleSubmitAnswer] /end result:", endResult);
 
         const reportResponse = await mockInterviewService.getReport(interviewId);
-        console.log("[handleSubmitAnswer] /report result:", reportResponse);
-
-        console.log("[handleSubmitAnswer] calling transformReport with:", reportResponse);
         const transformed = transformReport(reportResponse);
-        console.log("[handleSubmitAnswer] transformed report:", transformed);
         setReport(transformed);
         setCurrentQuestion("");
         setCurrentQuestionIndex(newIdx);
         setState(STATES.COMPLETED);
         setIsProcessing(false);
-        console.log("[handleSubmitAnswer] state set to COMPLETED");
       } else {
-        console.warn("[handleSubmitAnswer] unexpected state — isLastQuestion=false but no nextQuestion");
         setIsProcessing(false);
       }
     } catch (err) {
@@ -243,32 +164,20 @@ export default function MockInterviewPage() {
       );
       setIsProcessing(false);
     }
-  }, [interviewId, recog]);
+  }, [interviewId, speakQuestionViaPiper, recorder]);
 
   const handleEnd = useCallback(async () => {
-    console.log("=== handleEnd called ===");
-    console.log("[handleEnd] interviewId:", interviewId);
-    if (!interviewId) {
-      console.warn("[handleEnd] aborted — no interviewId");
-      return;
-    }
-    recog.stop();
-    stopSpeaking();
+    if (!interviewId) return;
+    stopAudio();
     setIsProcessing(true);
     setError(null);
     try {
-      const endResult = await mockInterviewService.endInterview(interviewId);
-      console.log("[handleEnd] /end response:", endResult);
+      await mockInterviewService.endInterview(interviewId);
 
       const reportResponse = await mockInterviewService.getReport(interviewId);
-      console.log("[handleEnd] /report response:", reportResponse);
-
-      console.log("[handleEnd] calling transformReport with:", reportResponse);
       const transformed = transformReport(reportResponse);
-      console.log("[handleEnd] transformed report:", transformed);
       setReport(transformed);
       setState(STATES.COMPLETED);
-      console.log("[handleEnd] state set to COMPLETED");
     } catch (err) {
       console.error("[handleEnd] ERROR:", err.response?.data || err.message);
       setError(
@@ -279,11 +188,11 @@ export default function MockInterviewPage() {
     } finally {
       setIsProcessing(false);
     }
-  }, [interviewId, recog]);
+  }, [interviewId]);
 
   const showReport = state === STATES.INTERVIEW || state === STATES.COMPLETED;
   const isLoading = isProcessing || isAiSpeaking;
-  const displayError = error || recog.error;
+  const displayError = error || recorder.error;
 
   return (
     <div className="min-h-screen" style={{ background: "linear-gradient(160deg,#0a0d18 0%,#080f1a 50%,#050d14 100%)" }}>
@@ -317,14 +226,16 @@ export default function MockInterviewPage() {
               <InterviewPanel
                 question={currentQuestion ? `"${currentQuestion}"` : null}
                 pageState={state}
-                isListening={recog.isListening}
+                isListening={recorder.recordingState === "recording"}
                 isAiSpeaking={isAiSpeaking}
               />
 
               <LiveTranscript
                 transcript={formatTranscript(transcriptLines)}
-                speechText={recog.finalText}
-                interimText={recog.interimText}
+                speechText={recorder.transcript}
+                recordingState={recorder.recordingState}
+                onStartRecording={recorder.startRecording}
+                onStopRecording={recorder.stopRecording}
                 elapsed={formatTime(elapsed)}
                 questionNum={state === STATES.INTERVIEW || state === STATES.COMPLETED ? currentQuestionIndex + 1 : 1}
                 totalQuestions={totalQuestions}
@@ -332,8 +243,8 @@ export default function MockInterviewPage() {
                 onSubmitAnswer={handleSubmitAnswer}
                 pageState={state}
                 loading={isLoading}
-                isListening={recog.isListening}
                 isAiSpeaking={isAiSpeaking}
+                transcriptReady={transcriptReady}
               />
             </div>
 

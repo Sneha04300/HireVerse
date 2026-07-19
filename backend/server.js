@@ -40,6 +40,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ── Serve uploaded files statically ──────────────────────────────────────────
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/audio", express.static(path.join(__dirname, "audio")));
 
 // ── API Routes ────────────────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);

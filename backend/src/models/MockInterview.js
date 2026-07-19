@@ -10,9 +10,11 @@ const VERDICTS = ["Strong Hire", "Likely Shortlist", "Average Candidate", "Needs
 // ── Sub-schema: one question + the user's answer + its score ────────────────
 const questionSchema = new mongoose.Schema(
   {
-    question: { type: String, required: true },
-    answer:   { type: String, default: "" },
-    score:    { type: Number, min: 0, max: 100, default: null },
+    question:    { type: String, required: true },
+    answer:      { type: String, default: "" },
+    score:       { type: Number, min: 0, max: 100, default: null },
+    generatedBy: { type: String, enum: ["GPT", "static", "groq-llama", "groq-whisper"], default: "groq-llama" },
+    createdAt:   { type: Date, default: Date.now },
   },
   { _id: false }
 );
