@@ -1,8 +1,19 @@
-# HireVerse — Collaborative Project README
+### HireVerse — AI-Powered Placement Preparation Platform
 
-> A placement preparation platform with Resume ATS Analysis, DSA Tracking, AI Mock Interviews, and a Career Copilot.
+A full-stack AI-powered placement preparation platform that helps students prepare for technical interviews through Resume Analysis, ATS Score Checking, DSA Tracking, AI Mock Interviews, Career Roadmaps, and an AI Career Copilot.
 
-
+### Features
+ Secure Authentication (JWT + Bcrypt)
+ AI Resume Analyzer
+ ATS Resume Score Checker
+ DSA Progress Tracker
+ AI Mock Interview (Groq Llama 3.3)
+ Voice-based Interview using Piper TTS & Groq Whisper
+ Live Speech-to-Text Transcription
+ AI Interview Report & Performance Analytics
+ Career Roadmap Generator
+ AI Career Copilot
+ Dashboard with Placement Progress
 
 ## Project Structure
 
@@ -207,11 +218,11 @@ Final interview report is generated.
 ### Installation
 git clone https://github.com/Sneha04300/HireVerse.git
 cd HireVerse
-Backend
+### Backend
 cd backend
 npm install
 npm run dev
-Frontend
+### Frontend
 cd frontend
 npm install
 npm run dev
