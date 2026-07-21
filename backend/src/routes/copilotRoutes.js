@@ -14,11 +14,11 @@ const { protect } = require("../middleware/authMiddleware"); // your existing JW
 const {
   getDashboard,
   getChatHistory,
-  postChatMessage,
   generatePlan,
   updateGoal,
   getReadiness,
 } = require("../controllers/copilotController");
+const { postChatMessage } = require("../controllers/careerCopilotController");
 
 // Protect every route below this line
 router.use(protect);
@@ -30,7 +30,10 @@ router.get("/dashboard", getDashboard);
 router.get("/chat", getChatHistory);
 
 // POST /api/copilot/chat — send a message, get an AI response
-router.post("/chat", postChatMessage);
+router.post("/chat", (req, res, next) => {
+  console.log("[Career Copilot] Route Hit");
+  next();
+}, postChatMessage);
 
 // POST /api/copilot/generate-plan — generate + persist a 30-day plan
 router.post("/generate-plan", generatePlan);

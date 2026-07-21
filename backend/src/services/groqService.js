@@ -165,4 +165,26 @@ async function generateFinalReport(questions, answers, evaluations, averages, in
   };
 }
 
-module.exports = { generateInterviewQuestion, evaluateInterview, evaluateSingleAnswer, generateFinalReport };
+async function generateResponse(systemPrompt, userPrompt, options = {}) {
+  if (!process.env.GROQ_API_KEY) {
+    throw new Error("GROQ_API_KEY is not set in environment variables.");
+  }
+
+  const client = getClient();
+  const response = await client.chat.completions.create({
+    model: LLM_MODEL,
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+    max_tokens: options.maxTokens || 1000,
+    temperature: options.temperature ?? 0.7,
+  });
+
+  const content = response.choices[0]?.message?.content?.trim();
+  if (!content) throw new Error("Groq returned an empty response.");
+
+  return content;
+}
+
+module.exports = { generateInterviewQuestion, evaluateInterview, evaluateSingleAnswer, generateFinalReport, generateResponse };

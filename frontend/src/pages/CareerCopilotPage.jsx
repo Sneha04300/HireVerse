@@ -7,6 +7,7 @@ import { ReadinessRingCard } from "../components/copilot/ReadinessCard";
 import FocusAreas from "../components/copilot/FocusAreas";
 import QuickInsights, { WeeklyChecklistCard } from "../components/copilot/QuickInsights";
 import { CopilotLoadingState, CopilotEmptyState } from "../components/copilot/CopilotStates";
+import api from "../services/api";
 import {
   CHAT_HISTORY,
   AMAZON_READINESS,
@@ -29,21 +30,29 @@ export default function CareerCopilotPage() {
   const [messages, setMessages] = useState(PAGE_STATE === "empty" ? [] : CHAT_HISTORY);
   const [inputValue, setInputValue] = useState("");
 
-  const handleSend = (text) => {
+  const handleSend = async (text) => {
     setPageState("data");
     const userMsg = { id: nextId++, role: "user", text };
     setMessages((prev) => [...prev, userMsg]);
     setInputValue("");
 
-    // Simulated AI response
-    setTimeout(() => {
+    try {
+      const { data } = await api.post("/copilot/chat", { message: text });
       const aiMsg = {
         id: nextId++,
         role: "ai",
-        text: "Got it — based on your current progress, I'd recommend focusing on Dynamic Programming and mock interviews this week to close the gap fastest.",
+        text: data.reply,
       };
       setMessages((prev) => [...prev, aiMsg]);
-    }, 600);
+    } catch (err) {
+      console.error("[CareerCopilotPage] Chat error", err);
+      const errMsg = {
+        id: nextId++,
+        role: "ai",
+        text: "Sorry, I couldn't process that request. Please try again.",
+      };
+      setMessages((prev) => [...prev, errMsg]);
+    }
   };
 
   const handlePromptSelect = (prompt) => {
