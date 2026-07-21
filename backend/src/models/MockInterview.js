@@ -7,12 +7,31 @@ const INTERVIEW_STATUSES   = ["started", "in_progress", "completed", "abandoned"
 const TRANSCRIPT_SPEAKERS  = ["AI", "User"];
 const VERDICTS = ["Strong Hire", "Likely Shortlist", "Average Candidate", "Needs Improvement"];
 
-// ── Sub-schema: one question + the user's answer + its score ────────────────
+// ── Sub-schema: evaluation for a single answer ─────────────────────────────
+const evaluationSchema = new mongoose.Schema(
+  {
+    technicalScore:      { type: Number, min: 0, max: 100, default: null },
+    communicationScore:  { type: Number, min: 0, max: 100, default: null },
+    confidenceScore:     { type: Number, min: 0, max: 100, default: null },
+    problemSolvingScore: { type: Number, min: 0, max: 100, default: null },
+    overallScore:        { type: Number, min: 0, max: 100, default: null },
+    strengths:           { type: [String], default: [] },
+    weaknesses:          { type: [String], default: [] },
+    feedback:            { type: String, default: "" },
+    idealAnswer:         { type: String, default: "" },
+  },
+  { _id: false }
+);
+
+// ── Sub-schema: one question + the user's answer + its score + evaluation ──
 const questionSchema = new mongoose.Schema(
   {
+    number:      { type: Number, default: 1 },
     question:    { type: String, required: true },
     answer:      { type: String, default: "" },
     score:       { type: Number, min: 0, max: 100, default: null },
+    evaluation:  { type: evaluationSchema, default: null },
+    source:      { type: String, default: "groq" },
     generatedBy: { type: String, enum: ["GPT", "static", "groq-llama", "groq-whisper"], default: "groq-llama" },
     createdAt:   { type: Date, default: Date.now },
   },
@@ -32,13 +51,17 @@ const transcriptLineSchema = new mongoose.Schema(
 // ── Sub-schema: final report ─────────────────────────────────────────────────
 const reportSchema = new mongoose.Schema(
   {
-    overallScore:   { type: Number, min: 0, max: 100, default: null },
-    communication:  { type: Number, min: 0, max: 100, default: null },
-    confidence:     { type: Number, min: 0, max: 100, default: null },
-    technical:      { type: Number, min: 0, max: 100, default: null },
-    problemSolving: { type: Number, min: 0, max: 100, default: null },
-    feedback:       { type: [String], default: [] },
-    verdict:        { type: String, enum: VERDICTS, default: null },
+    overallScore:      { type: Number, min: 0, max: 100, default: null },
+    communication:     { type: Number, min: 0, max: 100, default: null },
+    technicalKnowledge:{ type: Number, min: 0, max: 100, default: null },
+    confidence:        { type: Number, min: 0, max: 100, default: null },
+    problemSolving:    { type: Number, min: 0, max: 100, default: null },
+    strengths:         { type: [String], default: [] },
+    weaknesses:        { type: [String], default: [] },
+    recommendations:   { type: [String], default: [] },
+    summary:           { type: String, default: "" },
+    hiringDecision:    { type: String, default: "" },
+    difficultyLevel:   { type: String, default: "" },
   },
   { _id: false }
 );

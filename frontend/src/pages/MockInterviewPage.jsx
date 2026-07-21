@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import InterviewSetup from "../components/interview/InterviewSetup";
 import InterviewPanel from "../components/interview/InterviewPanel";
 import LiveTranscript from "../components/interview/LiveTranscript";
@@ -8,7 +9,6 @@ import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
 import * as mockInterviewService from "../services/mockInterviewService";
 import useAudioRecorder from "../hooks/useAudioRecorder";
-import { playAudio, stopAudio } from "../services/piperSpeechService";
 
 function formatTime(seconds) {
   const m = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -22,23 +22,8 @@ function formatTranscript(transcriptLines) {
     .join("\n\n");
 }
 
-function transformReport(backendReport) {
-  const skills = [
-    { name: "Communication", score: backendReport.communication, color: "from-purple-500 to-cyan-400" },
-    { name: "Confidence", score: backendReport.confidence, color: "from-green-400 to-emerald-500" },
-    { name: "Technical", score: backendReport.technical, color: "from-purple-500 to-cyan-400" },
-    { name: "Problem Solving", score: backendReport.problemSolving, color: "from-green-400 to-emerald-500" },
-  ];
-
-  return {
-    overallScore: backendReport.overallScore,
-    skills,
-    feedback: backendReport.feedback,
-    decision: backendReport.verdict,
-  };
-}
-
 export default function MockInterviewPage() {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [state, setState] = useState(STATES.EMPTY);
   const [interviewId, setInterviewId] = useState(null);
@@ -49,29 +34,14 @@ export default function MockInterviewPage() {
   const [report, setReport] = useState(null);
   const [elapsed, setElapsed] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isAiSpeaking, setIsAiSpeaking] = useState(false);
   const [error, setError] = useState(null);
   const [transcriptReady, setTranscriptReady] = useState(false);
 
   const timerRef = useRef(null);
   const recorder = useAudioRecorder();
 
-  const speakQuestionViaPiper = useCallback(async (questionText) => {
-    if (!interviewId) return;
-    setIsAiSpeaking(true);
-    try {
-      stopAudio();
-      const result = await mockInterviewService.speakQuestion(interviewId, questionText);
-      await playAudio(`http://localhost:3001${result.url}`);
-    } catch (err) {
-      console.error("[Piper] Speech generation failed:", err);
-    } finally {
-      setIsAiSpeaking(false);
-    }
-  }, [interviewId]);
-
   useEffect(() => {
-    return () => { stopAudio(); };
+    return () => {};
   }, []);
 
   useEffect(() => {
@@ -94,22 +64,32 @@ export default function MockInterviewPage() {
     setIsProcessing(true);
     try {
       const data = await mockInterviewService.startInterview(type, difficulty);
-      const { interviewId: id, currentQuestion: question, totalQuestions: total } = data;
+      const { interviewId: id, question, questionNumber, audioUrl } = data;
 
       if (!id) throw new Error("interviewId is missing from response");
-      if (!question) throw new Error("currentQuestion is missing from response");
+      if (!question) throw new Error("question is missing from response");
 
       setInterviewId(id);
       setCurrentQuestion(question);
-      setCurrentQuestionIndex(0);
-      setTotalQuestions(total);
+      setCurrentQuestionIndex(questionNumber - 1);
+      setTotalQuestions(6);
       setTranscriptLines([{ speaker: "AI", text: question }]);
       setElapsed(0);
       setTranscriptReady(false);
+      setReport(null);
       setState(STATES.INTERVIEW);
       setIsProcessing(false);
 
-      await speakQuestionViaPiper(question);
+      if (audioUrl) {
+        const BACKEND_URL = "http://localhost:3001";
+        const fullUrl = audioUrl.startsWith("/") ? `${BACKEND_URL}${audioUrl}` : audioUrl;
+        try {
+          const audio = new Audio(fullUrl);
+          await audio.play();
+        } catch (playErr) {
+          console.error("[Audio] Playback failed:", playErr.message);
+        }
+      }
     } catch (err) {
       console.error("[handleStart] error:", err.response?.data || err.message);
       setError(
@@ -119,7 +99,7 @@ export default function MockInterviewPage() {
       );
       setIsProcessing(false);
     }
-  }, [speakQuestionViaPiper]);
+  }, []);
 
   const handleSubmitAnswer = useCallback(async (answer) => {
     if (!answer.trim() || !interviewId) return;
@@ -131,30 +111,33 @@ export default function MockInterviewPage() {
 
     try {
       const data = await mockInterviewService.submitAnswer(interviewId, answer);
-      const { nextQuestion, currentQuestionIndex: newIdx, isLastQuestion } = data;
+
+      console.log("[Interview] Answer submitted");
 
       setTranscriptLines((prev) => [...prev, { speaker: "User", text: answer }]);
 
-      if (!isLastQuestion && nextQuestion) {
-        setCurrentQuestion(nextQuestion);
-        setCurrentQuestionIndex(newIdx);
-        setTranscriptLines((prev) => [...prev, { speaker: "AI", text: nextQuestion }]);
-        setIsProcessing(false);
-
-        await speakQuestionViaPiper(nextQuestion);
-      } else if (isLastQuestion) {
-        const endResult = await mockInterviewService.endInterview(interviewId);
-
-        const reportResponse = await mockInterviewService.getReport(interviewId);
-        const transformed = transformReport(reportResponse);
-        setReport(transformed);
-        setCurrentQuestion("");
-        setCurrentQuestionIndex(newIdx);
+      if (data.report) {
+        setReport(data.report);
+        setTranscriptLines((prev) => [...prev, { speaker: "AI", text: "Interview completed. Generating report..." }]);
         setState(STATES.COMPLETED);
         setIsProcessing(false);
-      } else {
-        setIsProcessing(false);
+        return;
       }
+
+      if (data.nextQuestion) {
+        setCurrentQuestion(data.nextQuestion);
+        setCurrentQuestionIndex(data.nextQuestionNumber - 1);
+        setTranscriptLines((prev) => [...prev, { speaker: "AI", text: data.nextQuestion }]);
+
+        if (data.audioUrl) {
+          const BACKEND_URL = "http://localhost:3001";
+          const fullUrl = data.audioUrl.startsWith("/") ? `${BACKEND_URL}${data.audioUrl}` : data.audioUrl;
+          const audio = new Audio(fullUrl);
+          audio.play();
+        }
+      }
+
+      setIsProcessing(false);
     } catch (err) {
       console.error("[handleSubmitAnswer] ERROR:", err.response?.data || err.message);
       setError(
@@ -164,34 +147,22 @@ export default function MockInterviewPage() {
       );
       setIsProcessing(false);
     }
-  }, [interviewId, speakQuestionViaPiper, recorder]);
+  }, [interviewId, recorder]);
 
-  const handleEnd = useCallback(async () => {
-    if (!interviewId) return;
-    stopAudio();
-    setIsProcessing(true);
+  const handleRetake = useCallback(() => {
+    recorder.resetTranscript();
+    setReport(null);
+    setInterviewId(null);
+    setCurrentQuestion("");
+    setCurrentQuestionIndex(0);
+    setTranscriptLines([]);
+    setElapsed(0);
+    setTranscriptReady(false);
     setError(null);
-    try {
-      await mockInterviewService.endInterview(interviewId);
+    setState(STATES.EMPTY);
+  }, [recorder]);
 
-      const reportResponse = await mockInterviewService.getReport(interviewId);
-      const transformed = transformReport(reportResponse);
-      setReport(transformed);
-      setState(STATES.COMPLETED);
-    } catch (err) {
-      console.error("[handleEnd] ERROR:", err.response?.data || err.message);
-      setError(
-        err.response?.data?.message ||
-        err.message ||
-        "Failed to end interview. Please try again."
-      );
-    } finally {
-      setIsProcessing(false);
-    }
-  }, [interviewId]);
-
-  const showReport = state === STATES.INTERVIEW || state === STATES.COMPLETED;
-  const isLoading = isProcessing || isAiSpeaking;
+  const isLoading = isProcessing;
   const displayError = error || recorder.error;
 
   return (
@@ -221,35 +192,66 @@ export default function MockInterviewPage() {
 
           <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-5">
             <div className="flex flex-col gap-4">
-              <InterviewSetup onStart={handleStart} pageState={state} />
+              <InterviewSetup onStart={handleStart} pageState={state} onRetake={handleRetake} />
 
-              <InterviewPanel
-                question={currentQuestion ? `"${currentQuestion}"` : null}
-                pageState={state}
-                isListening={recorder.recordingState === "recording"}
-                isAiSpeaking={isAiSpeaking}
-              />
+              {state !== STATES.COMPLETED && (
+                <>
+                  <InterviewPanel
+                    question={currentQuestion ? `"${currentQuestion}"` : null}
+                    pageState={state}
+                    isListening={recorder.recordingState === "recording"}
+                    isAiSpeaking={false}
+                  />
 
-              <LiveTranscript
-                transcript={formatTranscript(transcriptLines)}
-                speechText={recorder.transcript}
-                recordingState={recorder.recordingState}
-                onStartRecording={recorder.startRecording}
-                onStopRecording={recorder.stopRecording}
-                elapsed={formatTime(elapsed)}
-                questionNum={state === STATES.INTERVIEW || state === STATES.COMPLETED ? currentQuestionIndex + 1 : 1}
-                totalQuestions={totalQuestions}
-                onEnd={handleEnd}
-                onSubmitAnswer={handleSubmitAnswer}
-                pageState={state}
-                loading={isLoading}
-                isAiSpeaking={isAiSpeaking}
-                transcriptReady={transcriptReady}
-              />
+                  <LiveTranscript
+                    transcript={formatTranscript(transcriptLines)}
+                    speechText={recorder.transcript}
+                    recordingState={recorder.recordingState}
+                    onStartRecording={recorder.startRecording}
+                    onStopRecording={recorder.stopRecording}
+                    elapsed={formatTime(elapsed)}
+                    questionNum={state === STATES.INTERVIEW ? currentQuestionIndex + 1 : 1}
+                    totalQuestions={totalQuestions}
+                    onSubmitAnswer={handleSubmitAnswer}
+                    pageState={state}
+                    loading={isLoading}
+                    isAiSpeaking={false}
+                    transcriptReady={transcriptReady}
+                  />
+                </>
+              )}
+
+              {state === STATES.COMPLETED && report && (
+                <InterviewReport
+                  report={report}
+                  elapsed={formatTime(elapsed)}
+                  onRetake={handleRetake}
+                  fullWidth
+                />
+              )}
             </div>
 
             <div className="xl:sticky xl:top-20 xl:self-start">
-              <InterviewReport report={showReport && report ? report : null} />
+              {state === STATES.COMPLETED && report ? (
+                <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-5 shadow-xl">
+                  <p className="text-xs font-semibold tracking-widest text-gray-400 mb-4">
+                    INTERVIEW SUMMARY
+                  </p>
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    {report.summary}
+                  </p>
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className="text-xs text-gray-500">Duration:</span>
+                    <span className="text-sm font-semibold text-gray-200">{formatTime(elapsed)}</span>
+                  </div>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="text-xs text-gray-500">Difficulty:</span>
+                    <span className="text-sm font-semibold text-gray-200">{report.difficultyLevel}</span>
+                  </div>
+                </div>
+              ) : (
+                <InterviewReport report={null} />
+              )}
             </div>
           </div>
 

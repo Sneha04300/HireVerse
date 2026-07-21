@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const TYPES = ["Technical", "HR", "Mixed"];
 const DIFFICULTIES = ["Easy", "Medium", "Hard"];
 
-export default function InterviewSetup({ onStart, pageState }) {
+export default function InterviewSetup({ onStart, pageState, onRetake }) {
+  const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState("Technical");
   const [selectedDifficulty, setSelectedDifficulty] = useState("Medium");
 
@@ -13,6 +15,33 @@ export default function InterviewSetup({ onStart, pageState }) {
       difficulty: selectedDifficulty,
     });
   };
+
+  if (pageState === "completed") {
+    return (
+      <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-6 shadow-xl">
+        <div className="flex items-center justify-center gap-4">
+          <button
+            onClick={onRetake}
+            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-semibold text-sm shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:opacity-90 transition-all duration-200"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Retake Interview
+          </button>
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-gray-200 text-sm font-medium transition-all duration-200"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-6 shadow-xl">

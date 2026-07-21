@@ -1,9 +1,8 @@
-const { execFile } = require("child_process");
+const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
-const crypto = require("crypto");
 
-const AUDIO_DIR = path.join(__dirname, "..", "..", "audio");
+const AUDIO_DIR = path.join(__dirname, "..", "..", "public", "audio");
 
 if (!fs.existsSync(AUDIO_DIR)) {
   fs.mkdirSync(AUDIO_DIR, { recursive: true });
@@ -25,38 +24,40 @@ function getPiperModel() {
   return modelPath;
 }
 
-function speak(text) {
+function generateSpeech(text) {
   return new Promise((resolve, reject) => {
-    const filename = `${crypto.randomBytes(12).toString("hex")}.wav`;
+    const timestamp = Date.now();
+    const filename = `question_${timestamp}.wav`;
     const outputPath = path.join(AUDIO_DIR, filename);
 
     const piperPath = getPiperPath();
     const modelPath = getPiperModel();
 
-    const child = execFile(
-      piperPath,
-      ["--model", modelPath, "--output_file", outputPath],
-      (error, stdout, stderr) => {
-        if (error) {
-          reject(new Error(`Piper failed: ${error.message}`));
-          return;
-        }
-        resolve({ filename, path: outputPath, url: `/audio/${filename}` });
+    console.log("[Piper] Speech Generated");
+
+    const child = spawn(piperPath, [
+      "--model", modelPath,
+      "--output_file", outputPath,
+    ], {
+      stdio: ["pipe", "ignore", "ignore"],
+    });
+
+    child.on("error", (err) => {
+      reject(new Error(`Piper failed: ${err.message}`));
+    });
+
+    child.on("close", (code) => {
+      if (code !== 0) {
+        reject(new Error(`Piper exited with code ${code}`));
+        return;
       }
-    );
+      console.log("[Piper] Audio Path:", `/audio/${filename}`);
+      resolve({ filename, path: outputPath, url: `/audio/${filename}` });
+    });
 
-    if (child.stdin) {
-      child.stdin.write(text);
-      child.stdin.end();
-    }
+    child.stdin.write(text);
+    child.stdin.end();
   });
 }
 
-function cleanupAudio(filename) {
-  const filePath = path.join(AUDIO_DIR, filename);
-  fs.unlink(filePath, (err) => {
-    if (err) console.error("[Piper] Failed to delete audio file:", err.message);
-  });
-}
-
-module.exports = { speak, cleanupAudio };
+module.exports = { generateSpeech, speak: generateSpeech };

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 function RecordingButton({ recordingState, onStart, onStop, disabled }) {
+  console.log("[RecordingButton] RENDER recordingState:", recordingState, "disabled:", disabled, "onStart type:", typeof onStart);
   if (recordingState === "recording") {
     return (
       <button
@@ -29,24 +30,18 @@ function RecordingButton({ recordingState, onStart, onStop, disabled }) {
     );
   }
 
-  if (recordingState === "ready") {
-    return (
-      <button
-        onClick={onStart}
-        disabled={disabled}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-700/60 hover:bg-green-700 text-white text-sm font-semibold transition-all duration-200 disabled:opacity-40"
-      >
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m-4 0h8" />
-        </svg>
-        Transcript Ready
-      </button>
-    );
-  }
-
+  console.log("[RecordingButton] RENDERING idle (Start Recording) | disabled:", disabled, "| onStart type:", typeof onStart);
   return (
     <button
-      onClick={onStart}
+      onClick={(e) => {
+        console.log("[RecordingButton] 'Start Recording' CLICKED, disabled prop is:", disabled, "| onStart type:", typeof onStart);
+        if (typeof onStart === "function") {
+          console.log("[RecordingButton] Calling onStart() now");
+          onStart();
+        } else {
+          console.error("[RecordingButton] onStart is NOT a function! Value:", onStart);
+        }
+      }}
       disabled={disabled}
       className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600/80 hover:bg-purple-600 text-white text-sm font-semibold transition-all duration-200 disabled:opacity-40"
     >
@@ -74,8 +69,8 @@ export default function LiveTranscript({
   isAiSpeaking,
   transcriptReady,
 }) {
+  console.log("[LiveTranscript] RENDER loading:", loading, "| isAiSpeaking:", isAiSpeaking, "| disabled (loading || isAiSpeaking):", loading || isAiSpeaking, "| recordingState:", recordingState, "| pageState:", pageState, "| onStartRecording type:", typeof onStartRecording);
   const [answer, setAnswer] = useState("");
-  const [transcriptConfirmed, setTranscriptConfirmed] = useState(false);
   const textareaRef = useRef(null);
   const manuallyEditedRef = useRef(false);
   const isEmpty = pageState === "empty";
@@ -84,7 +79,6 @@ export default function LiveTranscript({
     if (pageState === "interview") {
       setAnswer(speechText || "");
       manuallyEditedRef.current = false;
-      setTranscriptConfirmed(false);
       if (textareaRef.current) {
         textareaRef.current.focus();
       }
@@ -109,15 +103,6 @@ export default function LiveTranscript({
       handleSubmit();
     }
   };
-
-  const handleConfirmTranscript = () => {
-    setTranscriptConfirmed(true);
-    if (textareaRef.current) {
-      textareaRef.current.focus();
-    }
-  };
-
-  const showConfirmButton = transcriptReady && !transcriptConfirmed && answer.trim();
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-5 shadow-xl mt-4">
@@ -152,6 +137,14 @@ export default function LiveTranscript({
                 Recording
               </span>
             )}
+            {transcriptReady && recordingState !== "recording" && recordingState !== "transcribing" && (
+              <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-semibold">
+                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                Transcript Ready
+              </span>
+            )}
           </div>
 
           <textarea
@@ -169,29 +162,14 @@ export default function LiveTranscript({
           />
 
           <div className="flex items-center justify-between mt-3">
-            {showConfirmButton ? (
-              <p className="text-xs text-gray-500">
-                Review the transcript above, then click Confirm.
-              </p>
-            ) : (
-              <p className="text-xs text-gray-500">
-                Press <kbd className="px-1.5 py-0.5 rounded border border-white/10 bg-white/5 text-gray-400 text-xs">Enter</kbd> to submit
-              </p>
-            )}
+            <p className="text-xs text-gray-500">
+              Press <kbd className="px-1.5 py-0.5 rounded border border-white/10 bg-white/5 text-gray-400 text-xs">Enter</kbd> to submit
+            </p>
 
             <div className="flex gap-2">
-              {showConfirmButton && (
-                <button
-                  onClick={handleConfirmTranscript}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-500/50 bg-cyan-500/10 text-cyan-400 text-sm font-semibold hover:bg-cyan-500/20 transition-all duration-200"
-                >
-                  Confirm Transcript
-                </button>
-              )}
-
               <button
                 onClick={handleSubmit}
-                disabled={loading || !answer.trim() || (transcriptReady && !transcriptConfirmed)}
+                disabled={loading || !answer.trim()}
                 className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-sm font-semibold shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:opacity-90 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {loading ? (

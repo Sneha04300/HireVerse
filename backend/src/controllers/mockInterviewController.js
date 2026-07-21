@@ -2,6 +2,7 @@ const fs = require("fs");
 const MockInterview = require("../models/MockInterview");
 const mockInterviewService = require("../services/mockInterviewService");
 const groqService = require("../services/groqService");
+const whisperService = require("../services/whisperService");
 const piperService = require("../services/piperService");
 const { QUESTIONS_PER_INTERVIEW } = mockInterviewService;
 
@@ -35,19 +36,31 @@ const startInterview = async (req, res) => {
     }
 
     const doc = await mockInterviewService.startInterview(req.user._id, { type, difficulty });
+    const question = doc.questions[0].question;
+
+    console.log("[Interview] Question Generated");
+
+    let audioUrl = null;
+    try {
+      const speechResult = await piperService.generateSpeech(question);
+      audioUrl = speechResult.url;
+      console.log("[Interview] Speech Generated");
+    } catch (piperErr) {
+      console.error("[Piper] Error:", piperErr.message);
+    }
 
     return res.status(201).json({
       success: true,
       message: "Interview started successfully.",
       data: {
         interviewId: doc._id,
-        currentQuestion: doc.questions[doc.currentQuestionIndex].question,
-        totalQuestions: QUESTIONS_PER_INTERVIEW,
-        status: doc.status,
+        question,
+        questionNumber: 1,
+        audioUrl,
       },
     });
   } catch (err) {
-    console.error("[startInterview]", err);
+    console.error("[Groq] Error:", err.message);
     return res.status(500).json({ success: false, message: "Failed to start interview.", error: err.message });
   }
 };
@@ -76,6 +89,7 @@ const getInterview = async (req, res) => {
         totalQuestions: QUESTIONS_PER_INTERVIEW,
         transcript: doc.transcript,
         elapsed,
+        report: doc.status === "completed" ? doc.report : null,
       },
     });
   } catch (err) {
@@ -100,18 +114,29 @@ const submitAnswer = async (req, res) => {
       return res.status(400).json({ success: false, message: "This interview has already ended." });
     }
 
-    const { doc: updated, isLastQuestion } = await mockInterviewService.submitAnswer(doc, answer);
+    const { doc: updated, nextQuestion, nextQuestionNumber, report } = await mockInterviewService.submitAnswer(doc, answer);
+
+    let audioUrl = null;
+    if (nextQuestion) {
+      try {
+        const speechResult = await piperService.generateSpeech(nextQuestion);
+        audioUrl = speechResult.url;
+        console.log("[Interview] Next question speech generated");
+      } catch (piperErr) {
+        console.error("[Piper] Error generating next question speech:", piperErr.message);
+      }
+    }
 
     return res.status(200).json({
       success: true,
       message: "Answer submitted successfully.",
       data: {
         interviewId: updated._id,
-        nextQuestion: isLastQuestion ? null : updated.questions[updated.currentQuestionIndex].question,
-        currentQuestionIndex: updated.currentQuestionIndex,
-        totalQuestions: QUESTIONS_PER_INTERVIEW,
-        isLastQuestion,
         status: updated.status,
+        nextQuestion,
+        nextQuestionNumber,
+        audioUrl,
+        report,
       },
     });
   } catch (err) {
@@ -221,13 +246,17 @@ const transcribeAudio = async (req, res) => {
       return res.status(400).json({ success: false, message: "Audio file is required." });
     }
 
-    const text = await groqService.transcribeAudio(req.file.path);
+    console.log("[Whisper] Audio uploaded");
+
+    const transcript = await whisperService.transcribeAudio(req.file.path);
 
     fs.unlink(req.file.path, (err) => {
       if (err) console.error("[transcribeAudio] Failed to delete temp file:", err.message);
     });
 
-    return res.status(200).json({ success: true, text });
+    console.log("[Whisper] Transcript received");
+
+    return res.status(200).json({ success: true, transcript });
   } catch (err) {
     console.error("[transcribeAudio]", err);
     return res.status(500).json({ success: false, message: "Unable to transcribe audio." });

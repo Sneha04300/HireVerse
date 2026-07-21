@@ -5,7 +5,14 @@ const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
 
 const uploadsDir = path.join(__dirname, "..", "uploads");
-const upload = multer({ dest: uploadsDir });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname) || ".webm";
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
+  },
+});
+const upload = multer({ storage });
 
 const {
   startInterview,

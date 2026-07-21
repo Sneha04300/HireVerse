@@ -34,13 +34,15 @@ const app = express();
 connectDB();
 
 // ── Middleware ────────────────────────────────────────────────────────────────
-app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173", credentials: true }));
+const corsOrigin = process.env.CLIENT_URL || "http://localhost:5173";
+const allowedOrigins = corsOrigin.split(",").map(o => o.trim());
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ── Serve uploaded files statically ──────────────────────────────────────────
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/audio", express.static(path.join(__dirname, "audio")));
+app.use("/audio", express.static(path.join(__dirname, "public", "audio")));
 
 // ── API Routes ────────────────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
