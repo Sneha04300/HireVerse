@@ -10,7 +10,7 @@ import ResumeSectionAnalysis from "../components/resume/ResumeSectionAnalysis";
 import ResumeReadiness from "../components/resume/ResumeReadiness";
 import ResumeInsightsPanel from "../components/resume/ResumeInsightsPanel";
 import ResumeQuickActions from "../components/resume/ResumeQuickActions";
-import { LoadingState, EmptyState } from "../components/resume/ResumeStates";
+import { LoadingState, EmptyState, GeneratingState } from "../components/resume/ResumeStates";
 import api from "../services/api";
 
 export default function ResumeAnalyzerPage() {
@@ -19,6 +19,11 @@ export default function ResumeAnalyzerPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzed, setAnalyzed] = useState(false);
   const [data, setData] = useState(null);
+  const [resumeId, setResumeId] = useState(null);
+  const [generating, setGenerating] = useState(false);
+  const [generatedPreview, setGeneratedPreview] = useState(null);
+  const [docxUrl, setDocxUrl] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
 
   const handleAnalyze = async () => {
 
@@ -47,6 +52,8 @@ export default function ResumeAnalyzerPage() {
     );
 
     const result = response.data.data;
+
+    setResumeId(result.resumeId);
 
     const sectionEntries = Object.entries(result.sectionScores || {});
 
@@ -108,6 +115,32 @@ export default function ResumeAnalyzerPage() {
 
 };
 
+  const handleGenerate = async () => {
+    if (!resumeId) {
+      alert("Please analyze a resume first.");
+      return;
+    }
+
+    try {
+      setGenerating(true);
+      setGeneratedPreview(null);
+      setDocxUrl("");
+      setPdfUrl("");
+
+      const response = await api.post("/resume/rewrite", { resumeId });
+      const result = response.data.data;
+
+      setGeneratedPreview(result.preview);
+      setDocxUrl(result.docxUrl);
+      setPdfUrl(result.pdfUrl);
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Resume rewrite failed.");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   const handleFileChange = (f) => {
     setFile(f);
     setAnalyzed(false);
@@ -164,6 +197,10 @@ export default function ResumeAnalyzerPage() {
               {/* Quick Actions */}
               <ResumeQuickActions onAction={(id) => {
                 if (id === "reanalyze") handleAnalyze();
+                if (id === "generate") handleGenerate();
+                if (id === "download" && generatedPreview) {
+                  window.open(docxUrl || pdfUrl, "_blank");
+                }
               }} />
 
               {/* 2-col grid: main content + insights panel */}
@@ -201,8 +238,52 @@ export default function ResumeAnalyzerPage() {
                   {/* AI Suggestions */}
                   <SuggestionsCard
                     suggestions={data.suggestions}
-                    onGenerate={() => alert("Generating improved resume…")}
+                    onGenerate={handleGenerate}
                   />
+
+                  {/* Generate loading state */}
+                  {generating && <GeneratingState />}
+
+                  {/* Generated resume download buttons */}
+                  {generatedPreview && !generating && (
+                    <div className="rounded-2xl p-6 flex flex-col gap-4" style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(6,182,212,0.12)", border: "0.5px solid rgba(6,182,212,0.3)" }}>
+                          <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-white font-bold text-base leading-snug">Improved Resume Ready</h3>
+                          <p className="text-gray-500 text-xs">Download your AI-optimized resume</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <a
+                          href={docxUrl}
+                          download
+                          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
+                          style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Download DOCX
+                        </a>
+                        <a
+                          href={pdfUrl}
+                          download
+                          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
+                          style={{ background: "#0f1628", border: "0.5px solid #1e2535", color: "#e5e7eb" }}
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                          </svg>
+                          Download PDF
+                        </a>
+                      </div>
+                    </div>
+                  )}
 
                 </div>
 

@@ -42,6 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ── Serve uploaded files statically ──────────────────────────────────────────
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/generated-resumes", express.static(path.join(__dirname, "generated-resumes")));
 app.use("/audio", express.static(path.join(__dirname, "public", "audio")));
 
 // ── API Routes ────────────────────────────────────────────────────────────────

@@ -98,12 +98,12 @@ const analyzeResume = async (req, res) => {
       });
     }
 
-    // ── Run analysis ─────────────────────────────────────────────────────────
-    const result = await resumeService.analyzeResume(tempFilePath);
+    // ── Run AI-powered analysis ──────────────────────────────────────────────
+    const result = await resumeService.analyzeResumeWithAI(tempFilePath);
 
-    // ── Persist results ───────────────────────────────────────────────────────
+    // ── Persist results (store raw numbers in DB, return enriched format) ─────
     resumeDoc.atsScore        = result.atsScore;
-    resumeDoc.sectionScores   = result.sectionScores;
+    resumeDoc.sectionScores   = result.sectionScoresRaw;
     resumeDoc.strengths       = result.strengths;
     resumeDoc.weaknesses      = result.weaknesses;
     resumeDoc.suggestions     = result.suggestions;
@@ -125,6 +125,8 @@ const analyzeResume = async (req, res) => {
         suggestions:     result.suggestions,
         missingKeywords: result.missingKeywords,
         extractedData:   result.extractedData,
+        resumeRank:      result.resumeRank,
+        topPercentile:   result.topPercentile,
         analyzedAt:      resumeDoc.updatedAt,
       },
     });

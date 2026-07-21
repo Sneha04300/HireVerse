@@ -52,6 +52,36 @@ export function LoadingState() {
   );
 }
 
+export function GeneratingState() {
+  return (
+    <div className="flex flex-col items-center justify-center py-24 gap-10">
+      <div className="relative w-28 h-28">
+        <svg className="w-28 h-28 animate-spin" style={{ animationDuration: "2s" }} viewBox="0 0 112 112">
+          <defs>
+            <linearGradient id="genGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#7C3AED" />
+              <stop offset="100%" stopColor="#06B6D4" />
+            </linearGradient>
+          </defs>
+          <circle cx="56" cy="56" r="46" fill="none" stroke="#1e2535" strokeWidth="10" />
+          <circle cx="56" cy="56" r="46" fill="none" stroke="url(#genGrad)" strokeWidth="10"
+            strokeDasharray="289" strokeDashoffset="217" strokeLinecap="round" />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <svg className="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        </div>
+      </div>
+
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h3 className="text-white text-xl font-bold">Generating improved resume…</h3>
+        <p className="text-gray-500 text-sm max-w-xs">HireVerse AI is rewriting your resume with improved structure and wording.</p>
+      </div>
+    </div>
+  );
+}
+
 export function EmptyState({ onUploadClick }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">

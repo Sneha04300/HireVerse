@@ -18,6 +18,7 @@ const {
   getLatestResume,
   deleteResume,
 } = require("../controllers/resumeController");
+const { rewriteResume } = require("../controllers/resumeRewriteController");
 
 // ── Multer error handler wrapper ─────────────────────────────────────────────
 const multerUpload = (field) => (req, res, next) => {
@@ -42,6 +43,9 @@ router.get("/history/:userId", protect, getResumeHistory);
 
 // GET  /api/resume/latest/:userId  — single latest analyzed resume
 router.get("/latest/:userId", protect, getLatestResume);
+
+// POST /api/resume/rewrite — generate improved DOCX + PDF from analyzed resume
+router.post("/rewrite", protect, rewriteResume);
 
 // DELETE /api/resume/:id — delete analysis + file
 router.delete("/:id", protect, deleteResume);
