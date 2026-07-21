@@ -2,21 +2,9 @@
 
 > A placement preparation platform with Resume ATS Analysis, DSA Tracking, AI Mock Interviews, and a Career Copilot.
 
----
 
-## Table of Contents
-1. [Project Structure](#1-project-structure)
-2. [Auth Flow (Login & Signup)](#2-auth-flow-login--signup)
-3. [Dashboard Flow](#3-dashboard-flow)
-4. [Resume Analyzer Flow](#4-resume-analyzer-flow)
-5. [DSA Tracker Flow](#5-dsa-tracker-flow)
-6. [AI Mock Interview Flow](#6-ai-mock-interview-flow)
-7. [Career Copilot Flow](#7-career-copilot-flow)
-8. [API Endpoint Summary](#8-api-endpoint-summary)
 
----
-
-## 1. Project Structure
+## Project Structure
 
 ### Root
 ```
@@ -195,433 +183,70 @@ HireVerse/
 
 ---
 
-## 2. Auth Flow (Login & Signup)
+### Modules
 
-### 2.1 Signup Flow
+Authentication
+Dashboard
+Resume Analyzer
+ATS Score Checker
+DSA Tracker
+AI Mock Interview
+Career Copilot
+Career Roadmap
 
-**Frontend → Backend → Database**
+### AI Mock Interview Workflow
+User selects interview type and difficulty.
+Groq Llama generates interview questions.
+Piper converts questions into natural speech.
+User records their answer.
+Groq Whisper converts speech to text.
+User reviews or edits the transcript.
+AI evaluates the response.
+Final interview report is generated.
 
-```
-SignupPage (Signup.jsx)
-  └─ AuthLayout (two-panel hero + form)
-      └─ SignupForm.jsx
-          1. User fills: fullName, college, gradYear, email, password, agree checkbox
-          2. On submit: API.post("/auth/register", { name, email, password })
-              └─ Axios instance (api.js) → http://localhost:3001/api/auth/register
-                  │
-                  ▼
-Backend → authRoutes.js → POST /register → registerUser (authController.js)
-          1. Destructure { name, email, password } from req.body
-          2. Check if user exists: User.findOne({ email })
-             → If yes: return 400 "User already exists"
-          3. Generate salt: bcrypt.genSalt(10)
-          4. Hash password: bcrypt.hash(password, salt)
-          5. Create user: User.create({ name, email, password: hashedPassword })
-             → Mongoose saves to MongoDB `users` collection
-          6. Generate JWT: generateToken(user._id)
-             → jwt.sign({ id }, JWT_SECRET, { expiresIn: "7d" })
-          7. Return 201: { message, token, user: { id, name, email, xp, level } }
-                  │
-                  ▼
-Frontend receives response:
-          - Logs response.data (contains token + user)
-          - Shows alert("Registration Successful!")
-          - navigate("/login") → user is redirected to login page
+### Installation
+git clone https://github.com/Sneha04300/HireVerse.git
+cd HireVerse
+Backend
+cd backend
+npm install
+npm run dev
+Frontend
+cd frontend
+npm install
+npm run dev
 
-NOTES:
-- The token is NOT stored in localStorage/sessionStorage yet (feature gap)
-- college and gradYear are collected in the UI but NOT sent to backend
-- No email verification step
-```
+### Environment Variables
 
-### 2.2 Login Flow
+Create a .env file inside the backend folder.
 
-**Frontend → Backend → Database**
+PORT=3001
 
-```
-LoginPage (Login.jsx)
-  └─ AuthLayout
-      └─ SigninForm.jsx
-          1. User fills: email, password
-          2. On submit: API.post("/auth/login", { email, password })
-              └─ http://localhost:3001/api/auth/login
-                  │
-                  ▼
-Backend → authRoutes.js → POST /login → loginUser (authController.js)
-          1. Destructure { email, password } from req.body
-          2. Find user: User.findOne({ email })
-             → If not found: return 400 "User not found"
-          3. Compare password: bcrypt.compare(password, user.password)
-             → If no match: return 400 "Invalid password"
-          4. Generate JWT: generateToken(user._id)
-             → jwt.sign({ id }, JWT_SECRET, { expiresIn: "7d" })
-          5. Return 200: { message, token, user: { id, name, email, xp, level } }
-                  │
-                  ▼
-Frontend receives response:
-          - Logs response.data
-          - navigate("/dashboard")
-          - NO token stored → on page refresh, user loses auth state
+MONGO_URI=your_mongodb_uri
 
-NOTES:
-- JWT is issued but never persisted (localStorage/sessionStorage not implemented)
-- Auth middleware (authMiddleware.js) expects: Authorization: Bearer <token> OR cookie
-- Google/GitHub OAuth buttons are visual-only (no OAuth backend)
-- Protected routes on backend verify token via authMiddleware, attach user to req.user
-```
+JWT_SECRET=your_secret
 
-### 2.3 Protected Route Flow
+GROQ_API_KEY=your_groq_api_key
 
-```
-Frontend sends request → attaches no auth header (gap)
-                │
-Backend receives request → authMiddleware.protect
-          1. Check req.headers.authorization?.startsWith("Bearer ")
-             OR req.cookies?.token
-          2. If no token → 401 "Not authenticated"
-          3. jwt.verify(token, JWT_SECRET) → decoded { id }
-          4. User.findById(decoded.id).select("-password") → req.user
-          5. next() → controller executes
+PIPER_PATH=your_piper_executable
 
-NOTE: Currently no frontend page actually sends the token because there's
-no auth context/store. All pages use static dummy data.
-```
+PIPER_MODEL=your_voice_model
 
----
+### Current Progress
+✅ Authentication
+✅ Resume Analyzer
+✅ ATS Score Checker
+✅ DSA Tracker
+✅ AI Mock Interview (Voice + Speech-to-Text)
+🚧 Career Copilot
+🚧 Career Roadmap
+🚧 Placement Dashboard Improvements
 
-## 3. Dashboard Flow
 
-```
-DashboardPage.jsx (static, no API calls)
-  │
-  ├── Navbar (sidebar toggle, search, user avatar)
-  ├── Sidebar (navigation links)
-  └── Main Content (all hardcoded dummy data)
-      │
-      ├── HeroCard
-      │   └── ReadinessRing (72% — hardcoded)
-      │   └── Static score pills
-      │
-      ├── UpcomingGoals
-      │   └── Hardcoded list: "Solve 5 DP Problems" (due), "Improve Resume Summary" (due), "Mock Interview" (scheduled)
-      │
-      ├── StatCards
-      │   └── 4-grid: Resume Score (84), LeetCode Solved (340), GitHub Score (78), Interview Score (65)
-      │
-      ├── SkillBreakdown
-      │   └── Vertical bars: Resume, DSA, Projects, GitHub, Communication
-      │
-      └── QuickActions
-          └── 2x3 grid: Scan Resume, ATS Check, Mock Interview, LeetCode, GitHub, DSA
+### License
+This project is developed for educational purposes.
 
-DATA FLOW (if integrated):
-  Dashboard should call:
-    - GET /api/copilot/dashboard → career readiness stats
-    - GET /api/dsa/dashboard → DSA stats
-    - GET /api/resume/latest/:userId → latest resume score
-  Currently: 100% static dummy data
-```
-
----
-
-## 4. Resume Analyzer Flow
-
-### Current State (Static Dummy Data)
-```
-ResumeAnalyzerPage.jsx
-  │
-  ├── ResumeUpload → drag-and-drop file (simulated, no actual upload)
-  │   └── handleAnalyze(): sets analyzing=true, after 3s sets analyzed=true
-  │
-  ├── LoadingState (spinner + step list during 3s delay)
-  ├── EmptyState (when no file uploaded)
-  └── Results (when analyzed=true, data from DUMMY_RESUME)
-      │
-      ├── ResumeQuickActions → Reanalyze, Download, etc.
-      ├── ResumeReadiness → ATS score 84%, +12pts impact, Top 18%
-      ├── ATSScoreCard → score ring + 5 categories (Formatting 90, Keywords 72, etc.)
-      ├── StrengthsCard → 4 strengths vs 3 weaknesses
-      ├── KeywordAnalysis → 10 missing keywords as red chips
-      ├── ResumeSectionAnalysis → accordion: Education, Skills, Projects, Experience, Certifications
-      ├── SuggestionsCard → 5 numbered AI suggestions
-      └── ResumeInsightsPanel → trend sparkline, benchmark bar, rank meter, missing skills
-```
-
-### Backend Implementation (if connected)
-
-```
-Frontend: POST /api/resume/analyze (multipart/form-data with resume file)
-  │
-  ▼
-Backend → resumeRoutes.js → protect middleware → multerUpload("resume")
-  │
-  ▼
-resumeController.js → analyzeResume()
-  1. Accepts file upload OR resumeId (for re-analysis)
-  2. If file: saves to uploads/ with unique timestamp name, creates ResumeAnalysis doc (status: "pending")
-  3. If resumeId: finds existing doc, resolves file path
-  4. Calls resumeService.analyzeResume(filePath)
-  │
-  ▼
-resumeService.js — Core analysis engine:
-  │
-  ├── extractTextFromPDF(filePath)
-  │   └── fs.readFileSync + pdf-parse → raw text
-  │
-  ├── extractDataFromText(rawText)
-  │   ├── extractName() → first non-email/URL/phone line in first 6 lines
-  │   ├── extractEmail() → regex for email pattern
-  │   ├── extractPhone() → regex for phone number
-  │   ├── extractLinkedIn() → regex for linkedin.com/in/...
-  │   ├── extractGitHub() → regex for github.com/...
-  │   ├── extractSkills() → match against 60+ ATS keyword bank
-  │   ├── extractEducation() → section finder + year/CGPA regex
-  │   ├── extractExperience() → date-matching lines + bullet points
-  │   ├── extractProjects() → tech stack + link detection
-  │   └── extractCertifications() → section text lines
-  │
-  ├── scoreResume(extractedData, rawText)
-  │   ├── Skills (25pts): skillCount/15 * 25
-  │   ├── Projects (20pts): projCount/4 * 20
-  │   ├── Experience (20pts): expCount/3 * 20
-  │   ├── Education (10pts): has education ? 10 : 4
-  │   ├── Keywords (15pts): hits/20 * 15
-  │   └── Formatting (10pts): 2pts each for email, phone, linkedin, github, name
-  │
-  ├── analyzeStrengthsWeaknesses()
-  │   ├── Strengths: 3+ projects, 10+ skills, has experience, linkedin, github, certifications, metrics, clean formatting
-  │   └── Weaknesses: <6 skills, no experience, <2 projects, no github/linkedin, no certs, no metrics, no summary
-  │
-  ├── findMissingKeywords()
-  │   └── SDE must-haves: docker, aws, system design, rest api, typescript, kubernetes, ci/cd
-  │
-  ├── generateSuggestions()
-  │   └── Based on weaknesses → max 8 actionable suggestions
-  │
-  └── Returns: atsScore, sectionScores, strengths, weaknesses, suggestions, missingKeywords, extractedData
-  │
-  ▼
-Controller persists results → ResumeAnalysis doc status="analyzed"
-  Returns: { success, data { atsScore, sectionScores, strengths, weaknesses, suggestions, missingKeywords, extractedData } }
-```
-
----
-
-## 5. DSA Tracker Flow
-
-### Current State (Static Dummy Data)
-```
-DSATrackerPage.jsx (page state toggle: "loading" | "empty" | "data")
-  │
-  ├── StatsCards → 320 solved, 28d streak, 3.4 avg, 1650 rating
-  ├── DSAReadiness → 78% score, strengths: Arrays/Strings/Greedy, gaps: DP/Backtracking/Graphs
-  ├── TopicProgress → 13 topics with progress bars
-  ├── ActivityHeatmap → 90-day grid, 5 intensity levels
-  ├── TopicBreakdown → table with solved/total/accuracy
-  ├── StruggleAnalysis → most failed: DP, avg attempts: 3.2
-  ├── ContestPerformance → 18 participated, best rank 142
-  ├── SuggestedProblems → 7 LeetCode problems
-  ├── AIInsights → weakest: DP, strongest: Arrays
-  ├── LeetCodeCard → sneha_g26, 120/165/35 solved
-  └── GoalsCard → 2/5 weekly goals done
-```
-
-### Backend Implementation
-
-```
-POST /api/dsa/update-progress { topicName, difficulty, count }
-  │
-  ▼
-dsaService.js → recordProblemSolved(userId, { topicName, difficulty, count })
-  │
-  ├── getOrCreateProgress(userId)
-  │   └── Find or create DSAProgress doc
-  │
-  ├── applyStreakLogic(doc)
-  │   ├── No lastSolvedDate → streak = 1
-  │   ├── Same day (diff=0) → no change
-  │   ├── Consecutive day (diff=1) → streak += 1
-  │   └── Gap (diff>1) → reset streak = 1
-  │
-  ├── incrementHeatmapDay(doc, count, date)
-  │   ├── Find or create entry for date
-  │   ├── Add count
-  │   └── Prune to last 90 days
-  │
-  ├── recalculateDailyAverage(doc)
-  │   └── Last 30 days: total solves / active days
-  │
-  ├── updateTopicProgress(doc, topicName, count)
-  │   └── Increment solvedCount, recalculate percentage
-  │
-  ├── recalculateTopicStrengths(doc)
-  │   ├── Sort topics by progressPercentage
-  │   ├── weakTopics = bottom 3
-  │   └── strongTopics = top 3
-  │
-  └── regenerateSuggestedProblems(doc)
-      └── From weakTopics → TOPIC_PROBLEM_BANK → max 8 suggestions
-
-GET /api/dsa/dashboard
-  └── buildDashboardResponse(doc) → stats, topics, heatmap, aiInsights, suggestedProblems, contestStats
-
-GET /api/dsa/heatmap → 90-day activityHeatmap
-GET /api/dsa/topics → topicProgress breakdown
-GET /api/dsa/suggestions → suggestedProblems (refreshes based on weakest topics)
-```
-
----
-
-## 6. AI Mock Interview Flow
-
-### Interview Lifecycle
-```
-FRONTEND                          BACKEND
-─────────                        ────────
-InterviewSetup                   
-  └─ Select type (Tech/HR/Mixed)  
-  └─ Select difficulty (E/M/H)    
-  └─ Click "Start Interview"      
-      │                            
-      POST /api/mock/start  ──────→ mockInterviewController.startInterview()
-      { type: "Technical",          └─ mockInterviewService.startInterview()
-        difficulty: "Medium" }          1. generateQuestions(type, difficulty)
-                                          └─ "Tell me about yourself" always first
-                                          └─ Shuffle rest, pick 5 more
-                                          └─ Return 6 question objects
-                                       2. Create MockInterview doc (status: "started")
-                                       3. Add first AI transcript line
-                                       4. status → "in_progress"
-                                       5. Return interview doc
-                    ←───────── interviewId, questions[0], status
-
-InterviewPanel
-  └─ Shows current question
-  └─ User types answer
-  └─ Clicks submit
-  
-      POST /api/mock/:id/answer  ──→ mockInterviewController.submitAnswer()
-      { answer: "..." }              └─ mockInterviewService.submitAnswer(doc, text)
-                                       1. Score answer: scoreAnswer(text)
-                                          ├─ Baseline: 50
-                                          ├─ Word count: 40-180 → +20, 20-40 → +10, <10 → -15
-                                          ├─ Has numbers → +10
-                                          ├─ Has STAR words → +10
-                                          └─ Filler words → -3 each
-                                       2. Store score on current question
-                                       3. Add "User" transcript line
-                                       4. If not last question: increment index, add next AI question
-                                       5. Save doc
-                    ←───────── { isLastQuestion, nextQuestion? }
-
-  (repeat until last question answered)
-  
-  └─ Click "End Interview"
-
-      POST /api/mock/:id/end  ────→ mockInterviewController.endInterview()
-                                      └─ mockInterviewService.endInterview(doc)
-                                         1. status = "completed"
-                                         2. Set endedAt, calculate duration
-                                         3. buildReport(doc)
-                                            ├─ calculateAggregateScores()
-                                            │   └─ Average of answered question scores
-                                            │   └─ Add deterministic variance per metric (±0-6)
-                                            │   └─ Returns { communication, confidence, technical, problemSolving }
-                                            ├─ overallScore = average of 4 metrics
-                                            ├─ verdict = calculateVerdict(overallScore)
-                                            │   ├─ >=85 → "Strong Hire"
-                                            │   ├─ >=70 → "Likely Shortlist"
-                                            │   ├─ >=55 → "Average Candidate"
-                                            │   └─ <55 → "Needs Improvement"
-                                            └─ generateFeedback(doc, scores)
-                                                └─ Based on threshold checks + feedback bank
-                                         4. Save doc with report
-                    ←───────── { report: { overallScore, communication, confidence, technical, problemSolving, feedback, verdict } }
-
-InterviewReport sidebar displays:
-  - Animated score ring (overallScore)
-  - 4 skill breakdown bars
-  - AI feedback bullets
-  - Decision badge (color-coded verdict)
-```
-
-### Question Banks
-```
-QUESTION_BANK = {
-  Technical: { Easy: [8 Qs], Medium: [9 Qs], Hard: [8 Qs] },
-  HR: { Easy: [6 Qs], Medium: [7 Qs], Hard: [6 Qs] },
-  Mixed: { Easy: [6 Qs], Medium: [7 Qs], Hard: [6 Qs] }
-}
-→ 6 questions per interview, "Tell me about yourself" always leads
-```
-
----
-
-## 7. Career Copilot Flow
-
-### Chat Flow
-```
-CareerCopilotPage.jsx
-  │
-  ├── SuggestedPrompts (clickable: "Build me a 30-day Amazon prep plan", etc.)
-  ├── CopilotChat
-  │   └── User types message → handleSend(text)
-  │       │
-  │       POST /api/copilot/chat  ──→ copilotController.postChatMessage()
-  │       { message: "..." }          └─ copilotService.handleChatMessage(userId, message)
-  │                                       1. getOrCreateProfile(userId)
-  │                                          └─ Find or create CareerCopilot doc with defaults
-  │                                             (focusAreas, weeklyGoals, insights, readiness, plan)
-  │                                       2. Push user message to chatHistory
-  │                                       3. generateAIResponse(doc, message)
-  │                                          └─ Keyword-based pattern matcher (NOT an LLM):
-  │                                             │
-  │                                             ├─ "crack <company>" / "X in months" → readiness score + focus areas
-  │                                             ├─ "next week" / "what should I learn" → weakest area advice
-  │                                             ├─ "review my profile" → strongest vs weakest comparison
-  │                                             ├─ "mock interview" → improvement advice
-  │                                             ├─ "compare" / "vs" → company bar comparison
-  │                                             ├─ "30-day plan" → structured study plan
-  │                                             ├─ "github" → activity tips
-  │                                             └─ Fallback → overview of readiness + strongest/weakest
-  │                                       4. Push AI response to chatHistory
-  │                                       5. Save doc
-  │                    ←───────── updated chatHistory
-  │
-  ├── ReadinessRingCard → 78% placement readiness
-  ├── FocusAreas → 5 progress bars (DSA 70%, Projects 88%, Resume 84%, Communication 60%, System Design 45%)
-  ├── WeeklyChecklistCard → 4 goals (3 done, 1 pending)
-  └── QuickInsights → 3 insights (2 positive, 1 warning)
-```
-
-### Plan Generation
-```
-POST /api/copilot/generate-plan { company: "Amazon" }
-  └─ copilotService.generatePlan(userId, company)
-     ├── getOrCreateProfile(userId)
-     ├── Set readiness.companyTarget = company
-     ├── buildPlanFromTemplate(company)
-     │   ├── Amazon: Week1=Arrays+Strings, Week2=Hashing, Week3=DP, Week4=Mock+Revision
-     │   ├── Google: Week1=Graphs+Trees, Week2=System Design, Week3=Advanced DP, Week4=Mock+Behavioral
-     │   └── Default: Week1=Core DS, Week2=Hashing+Searching, Week3=DP+Graphs, Week4=Mock+Resume
-     └── Each week gets status: "done" / "current" / "upcoming" based on currentWeek=3
-```
-
-### Readiness Calculation
-```
-GET /api/copilot/readiness
-  └─ splitStrongWeakAreas(doc)
-     ├── Sort focusAreas by progress
-     ├── strongAreas = areas with progress >= 75
-     └── weakAreas = areas with progress < 65
-  └─ generateReadinessRecommendation(doc)
-     └── Based on weak areas + target company
-  └─ Returns: overallScore, strongAreas, weakAreas, recommendation, companyTarget, estimatedMonths
-```
-
----
-
-## 8. API Endpoint Summary
+### API Endpoint Summary
 
 ### Authentication (`/api/auth`)
 | Method | Endpoint | Auth | Description |
@@ -722,3 +347,12 @@ GET /api/copilot/readiness
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | GET | /api/health | No | Health check (status, timestamp) |
+
+### Author
+
+Sneha Gupta
+
+B.Tech Computer Science Engineering
+BML Munjal University
+
+GitHub: https://github.com/Sneha04300
