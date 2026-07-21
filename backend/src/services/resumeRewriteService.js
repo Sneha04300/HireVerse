@@ -20,13 +20,13 @@ function safeParseJSON(text) {
   return JSON.parse(cleaned);
 }
 
-async function rewriteResume(filePath) {
+async function rewriteResume(filePath, jobDescription = "") {
   const rawText = await extractText(filePath);
   if (!rawText || rawText.trim().length < 20) {
     throw new Error("Could not extract text from the resume file.");
   }
 
-  const { system, user } = buildResumeRewritePrompt(rawText);
+  const { system, user } = buildResumeRewritePrompt(rawText, jobDescription);
   const llmResponse = await generateResponse(system, user, {
     maxTokens: 3000,
     temperature: 0.3,

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import DashboardPage from "./pages/DashboardPage";
@@ -11,6 +12,7 @@ import CareerCopilotPage from "./pages/CareerCopilotPage";
 export default function App() {
   return (
     <BrowserRouter>
+      <ThemeProvider>
       <AuthProvider>
         <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -23,6 +25,7 @@ export default function App() {
         <Route path="/copilot" element={<CareerCopilotPage />} />
         </Routes>
       </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

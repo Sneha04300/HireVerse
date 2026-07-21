@@ -24,6 +24,9 @@ export default function ResumeAnalyzerPage() {
   const [generatedPreview, setGeneratedPreview] = useState(null);
   const [docxUrl, setDocxUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
+  const [jdMatchData, setJdMatchData] = useState(null);
+  const [jdMatching, setJdMatching] = useState(false);
 
   const handleAnalyze = async () => {
 
@@ -98,6 +101,10 @@ export default function ResumeAnalyzerPage() {
 
     setAnalyzed(true);
 
+    if (jobDescription.trim().length >= 10) {
+      handleJobMatch(result.resumeId);
+    }
+
   } catch (error) {
 
     console.error(error);
@@ -127,7 +134,9 @@ export default function ResumeAnalyzerPage() {
       setDocxUrl("");
       setPdfUrl("");
 
-      const response = await api.post("/resume/rewrite", { resumeId });
+      const body = { resumeId };
+      if (jobDescription.trim().length >= 10) body.jobDescription = jobDescription.trim();
+      const response = await api.post("/resume/rewrite", body);
       const result = response.data.data;
 
       setGeneratedPreview(result.preview);
@@ -138,6 +147,24 @@ export default function ResumeAnalyzerPage() {
       alert(error.response?.data?.message || "Resume rewrite failed.");
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const handleJobMatch = async (id) => {
+    const jd = jobDescription.trim();
+    if (!jd || jd.length < 10 || !id) return;
+
+    try {
+      setJdMatching(true);
+      const response = await api.post("/resume/job-match", {
+        resumeId: id,
+        jobDescription: jd,
+      });
+      setJdMatchData(response.data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setJdMatching(false);
     }
   };
 
@@ -162,18 +189,43 @@ export default function ResumeAnalyzerPage() {
             <p className="text-[11px] font-bold uppercase tracking-widest text-cyan-400 mb-2">Analyze</p>
             <h1 className="text-3xl font-extrabold text-white">Resume Analyzer</h1>
             <p className="text-gray-500 text-sm mt-2 max-w-xl">
-              Upload your resume and receive ATS insights, keyword analysis and improvement recommendations.
+              Upload your resume and receive ATS insights, keyword analysis, job description matching, and improvement recommendations.
             </p>
           </div>
 
           {/* ── Upload Card (always visible) ── */}
-          <div className="mb-6">
+          <div className="mb-4">
             <ResumeUpload
               file={file}
               onFileChange={handleFileChange}
               onAnalyze={handleAnalyze}
               analyzing={analyzing}
             />
+          </div>
+
+          {/* ── Optional Job Description ── */}
+          <div className="mb-6 rounded-2xl p-5" style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}>
+            <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3 block">
+              Paste Job Description <span className="text-gray-600 normal-case tracking-normal text-[10px]">(Optional)</span>
+            </label>
+            <textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="Paste a job description here to check your resume's fit and get tailored suggestions…"
+              rows={4}
+              className="w-full rounded-xl px-4 py-3 text-sm text-gray-300 placeholder-gray-600 resize-none outline-none transition-all"
+              style={{ background: "#0a0d18", border: "0.5px solid #1e2535" }}
+            />
+            {jobDescription.trim().length >= 10 && analyzed && (
+              <button
+                onClick={() => handleJobMatch(resumeId)}
+                disabled={jdMatching}
+                className="mt-3 px-5 py-2 rounded-xl text-white font-bold text-xs tracking-wide transition-opacity hover:opacity-90 disabled:opacity-60 flex items-center gap-2"
+                style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+              >
+                {jdMatching ? "Analyzing…" : "Check Match"}
+              </button>
+            )}
           </div>
 
           {/* ── Loading State ── */}
@@ -202,6 +254,76 @@ export default function ResumeAnalyzerPage() {
                   window.open(docxUrl || pdfUrl, "_blank");
                 }
               }} />
+
+              {/* ── JD Match Results ── */}
+              {jdMatchData && (
+                <div className="rounded-2xl p-6 flex flex-col gap-5" style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(124,58,237,0.12)", border: "0.5px solid rgba(124,58,237,0.3)" }}>
+                      <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-white font-bold text-base leading-snug">Job Description Match</h3>
+                      <p className="text-gray-500 text-xs">Resume fit score for the pasted job</p>
+                    </div>
+                    <div className="ml-auto flex items-center gap-2">
+                      <span className="text-2xl font-extrabold" style={{ color: jdMatchData.matchScore >= 70 ? "#06B6D4" : jdMatchData.matchScore >= 50 ? "#eab308" : "#ef4444" }}>
+                        {jdMatchData.matchScore}%
+                      </span>
+                      <span className="text-gray-500 text-xs">Match</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Matched Keywords</p>
+                      <div className="flex flex-wrap gap-2">
+                        {jdMatchData.matchedKeywords.length > 0 ? jdMatchData.matchedKeywords.map((k, i) => (
+                          <span key={i} className="px-2.5 py-1 rounded-lg text-xs font-medium" style={{ background: "rgba(6,182,212,0.12)", border: "0.5px solid rgba(6,182,212,0.3)", color: "#06B6D4" }}>{k}</span>
+                        )) : <span className="text-gray-600 text-xs">No matches found</span>}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Missing Keywords</p>
+                      <div className="flex flex-wrap gap-2">
+                        {jdMatchData.missingKeywords.length > 0 ? jdMatchData.missingKeywords.map((k, i) => (
+                          <span key={i} className="px-2.5 py-1 rounded-lg text-xs font-medium" style={{ background: "rgba(239,68,68,0.1)", border: "0.5px solid rgba(239,68,68,0.25)", color: "#ef4444" }}>{k}</span>
+                        )) : <span className="text-gray-600 text-xs">No gaps found</span>}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Matched Skills</p>
+                      <div className="flex flex-wrap gap-2">
+                        {jdMatchData.matchedSkills.length > 0 ? jdMatchData.matchedSkills.map((s, i) => (
+                          <span key={i} className="px-2.5 py-1 rounded-lg text-xs font-medium" style={{ background: "rgba(6,182,212,0.12)", border: "0.5px solid rgba(6,182,212,0.3)", color: "#06B6D4" }}>{s}</span>
+                        )) : <span className="text-gray-600 text-xs">No matches found</span>}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Missing Skills</p>
+                      <div className="flex flex-wrap gap-2">
+                        {jdMatchData.missingSkills.length > 0 ? jdMatchData.missingSkills.map((s, i) => (
+                          <span key={i} className="px-2.5 py-1 rounded-lg text-xs font-medium" style={{ background: "rgba(239,68,68,0.1)", border: "0.5px solid rgba(239,68,68,0.25)", color: "#ef4444" }}>{s}</span>
+                        )) : <span className="text-gray-600 text-xs">No gaps found</span>}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Suggestions</p>
+                    <div className="flex flex-col gap-2">
+                      {jdMatchData.suggestions.length > 0 ? jdMatchData.suggestions.map((s, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <span className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0 mt-0.5" style={{ background: "rgba(124,58,237,0.2)", border: "0.5px solid rgba(124,58,237,0.4)", color: "#a78bfa" }}>{i + 1}</span>
+                          <p className="text-gray-300 text-sm leading-relaxed">{s}</p>
+                        </div>
+                      )) : <span className="text-gray-600 text-xs">No suggestions</span>}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* 2-col grid: main content + insights panel */}
               <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-6">

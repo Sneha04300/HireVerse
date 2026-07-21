@@ -1,4 +1,6 @@
-function buildResumeRewritePrompt(resumeText) {
+function buildResumeRewritePrompt(resumeText, jobDescription = "") {
+  const hasJD = jobDescription && jobDescription.trim().length > 10;
+
   const system = `You are a professional resume writer and ATS optimization expert.
 
 Your job is to rewrite and improve resumes while preserving ALL factual information.
@@ -12,6 +14,11 @@ CRITICAL RULES:
 - Write a compelling professional summary (3-4 sentences) based on the actual content.
 - Do NOT add new experience entries, projects, or skills not present in the original.
 - If a section is empty in the original, omit it from the output.
+${hasJD ? `- TAILOR the resume for the specific job description provided below.
+- Reorder skills to put the most relevant ones first for this job.
+- In the summary, emphasize experience and skills that align with the job.
+- Highlight projects and experience most relevant to this role.
+- Do NOT fabricate any qualifications or experience to match the job.` : ""}
 - Return ONLY valid JSON. No markdown, no code fences, no explanations.`;
 
   const user = `Return ONLY valid JSON. No markdown, no code fences, no explanations.
@@ -61,6 +68,7 @@ Return EXACTLY this JSON structure:
 
 Original resume text:
 ${resumeText}
+${hasJD ? `\nJob Description to tailor for:\n${jobDescription}` : ""}
 
 ONLY valid JSON. No other text.`;
 

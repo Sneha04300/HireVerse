@@ -35,7 +35,7 @@ const rewriteResumeHandler = async (req, res) => {
       return res.status(404).json({ success: false, message: "Resume file not found on disk." });
     }
 
-    const result = await rewriteResume(tempFilePath);
+    const result = await rewriteResume(tempFilePath, req.body.jobDescription || "");
 
     return res.status(200).json({
       success: true,
