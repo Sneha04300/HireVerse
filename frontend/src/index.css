@@ -251,4 +251,17 @@
     background: var(--bg-hover);
     border-color: var(--border-focus);
   }
+
+  .dark .mock-interview-page .text-brand {
+    color: #22D3EE;
+  }
+  .dark .mock-interview-page .bg-gradient-brand {
+    background: linear-gradient(90deg, #9333EA 0%, #06B6D4 100%);
+  }
+  .dark .mock-interview-page .bg-gradient-brand-subtle {
+    background: linear-gradient(135deg, #9333EA 0%, #06B6D4 100%);
+  }
+  .dark .mock-interview-page .shadow-lg-custom {
+    box-shadow: 0 10px 15px -3px rgba(147,51,234,0.3), 0 4px 6px -4px rgba(147,51,234,0.2);
+  }
 }

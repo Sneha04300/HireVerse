@@ -166,7 +166,7 @@ export default function MockInterviewPage() {
   const displayError = error || recorder.error;
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--bg-base)" }}>
+    <div className="min-h-screen mock-interview-page" style={{ background: "var(--bg-base)" }}>
       <Navbar onSidebarToggle={() => setSidebarOpen((v) => !v)} />
       <Sidebar open={sidebarOpen} />
 

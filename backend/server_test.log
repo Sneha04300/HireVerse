@@ -6,3 +6,65 @@
 [DIAG] Dashboard computed OK — totalSolved: 1
 [DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
 [DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[GroQ] Question Generated
+[Interview] Interview Started
+[Interview] Question Generated
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784720265129.wav
+[Interview] Speech Generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[GroQ] Question Generated
+[Interview] Interview Started
+[Interview] Question Generated
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784720712007.wav
+[Interview] Speech Generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[GroQ] Question Generated
+[Interview] Interview Started
+[Interview] Question Generated
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784725067325.wav
+[Interview] Speech Generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
