@@ -44,7 +44,7 @@ const STAT_CONFIG = [
     label: "Contest Rating",
     valueKey: "contestRating",
     sub: (d) => `Peak: ${d.maxRating}`,
-    subColor: "#a78bfa",
+    subColor: "var(--brand-secondary)",
     gradient: "var(--bg-gradient-card)",
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -65,7 +65,7 @@ export default function StatsCards({ stats }) {
         >
           <div className="flex items-center justify-between mb-1">
             <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">{cfg.label}</p>
-            <span className="text-cyan-400">{cfg.icon}</span>
+            <span style={{ color: "var(--brand-secondary)" }}>{cfg.icon}</span>
           </div>
           <p className="text-[var(--text-primary)] text-4xl font-extrabold leading-tight">
             {stats[cfg.valueKey]}{cfg.suffix || ""}

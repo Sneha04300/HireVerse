@@ -25,7 +25,7 @@ export default function TopicProgress({ topics }) {
     >
       <div className="flex items-center justify-between mb-5">
         <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Topic Progress</p>
-        <button className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors">
+        <button className="text-sm font-medium transition-colors" style={{ color: "var(--brand-secondary)" }}>
           View all →
         </button>
       </div>

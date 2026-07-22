@@ -1,6 +1,6 @@
 function scoreColor(score) {
   if (score >= 90) return "#22c55e";
-  if (score >= 70) return "#06B6D4";
+  if (score >= 70) return "var(--brand-accent)";
   if (score >= 50) return "#eab308";
   return "#ef4444";
 }

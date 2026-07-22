@@ -28,7 +28,7 @@ export function WeeklyChecklistCard({ checklist }) {
         <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">This Week</p>
         <span
           className="text-xs font-bold px-2.5 py-1 rounded-full"
-          style={{ background: "rgba(124,58,237,0.12)", border: "0.5px solid rgba(124,58,237,0.3)", color: "#a78bfa" }}
+          style={{ background: "var(--badge-purple-bg)", border: "0.5px solid var(--badge-purple-border)", color: "var(--badge-purple-text)" }}
         >
           {done}/{checklist.length}
         </span>
@@ -40,7 +40,7 @@ export function WeeklyChecklistCard({ checklist }) {
             <span
               className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
               style={{
-                background: item.done ? "linear-gradient(135deg,#7C3AED,#06B6D4)" : "transparent",
+                background: item.done ? "var(--gradient-brand-subtle)" : "transparent",
                 border: item.done ? "none" : "1.5px solid var(--border-focus)",
               }}
             >

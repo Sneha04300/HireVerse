@@ -22,7 +22,7 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
         <div className="flex items-center justify-center gap-4">
           <button
             onClick={onRetake}
-            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-semibold text-sm shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:opacity-90 transition-all duration-200"
+            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-brand text-white font-semibold text-sm shadow-lg-custom hover:opacity-90 transition-all duration-200"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -58,7 +58,7 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
                 onClick={() => setSelectedType(type)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   selectedType === type
-                    ? "bg-gradient-to-r from-purple-600 to-cyan-500 text-white shadow-lg shadow-purple-500/30"
+                    ? "bg-gradient-brand text-white shadow-lg-custom"
                     : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-hover)] hover:bg-[var(--bg-elevated)] border border-[var(--border)]"
                 }`}
               >
@@ -80,7 +80,7 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
                 onClick={() => setSelectedDifficulty(diff)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   selectedDifficulty === diff
-                    ? "bg-gradient-to-r from-purple-600 to-cyan-500 text-white shadow-lg shadow-purple-500/30"
+                    ? "bg-gradient-brand text-white shadow-lg-custom"
                     : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-hover)] hover:bg-[var(--bg-elevated)] border border-[var(--border)]"
                 }`}
               >
@@ -94,7 +94,7 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
       <div className="mt-6 flex justify-end">
         <button
           onClick={handleStartInterview}
-          className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-semibold text-sm shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:opacity-90 transition-all duration-200"
+          className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-brand text-white font-semibold text-sm shadow-lg-custom hover:opacity-90 transition-all duration-200"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z" />

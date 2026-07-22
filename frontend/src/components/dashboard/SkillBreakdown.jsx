@@ -2,7 +2,7 @@ const SKILLS = [
   { label: "Resume", score: 84, color: "#22c55e" },
   { label: "DSA", score: 70, color: "#eab308" },
   { label: "Projects", score: 88, color: "#22c55e" },
-  { label: "GitHub", score: 76, color: "#06B6D4" },
+  { label: "GitHub", score: 76, color: "var(--brand-secondary)" },
   { label: "Communication", score: 60, color: "#eab308" },
 ];
 
@@ -31,7 +31,7 @@ export default function SkillBreakdown() {
     >
       <div className="flex items-center justify-between">
         <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Skill Breakdown</p>
-        <button className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors">
+        <button className="text-sm font-medium transition-colors" style={{ color: "var(--brand-secondary)" }}>
           View details →
         </button>
       </div>

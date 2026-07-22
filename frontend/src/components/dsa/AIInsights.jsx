@@ -18,7 +18,7 @@ export default function AIInsights({ data }) {
       >
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(6,182,212,0.12)", border: "0.5px solid rgba(6,182,212,0.3)" }}>
-            <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l1.5 4.5L11 9l-4.5 1.5L5 15l-1.5-4.5L-1 9l4.5-1.5L5 3zM19 9l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z" />
             </svg>
           </div>
@@ -38,7 +38,7 @@ export default function AIInsights({ data }) {
       >
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(6,182,212,0.12)", border: "0.5px solid rgba(6,182,212,0.3)" }}>
-            <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l1.5 4.5L11 9l-4.5 1.5L5 15l-1.5-4.5L-1 9l4.5-1.5L5 3zM19 9l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z" />
             </svg>
           </div>
@@ -113,7 +113,7 @@ export default function AIInsights({ data }) {
 
             {/* Recommendations */}
             {r.length > 0 && (
-              <Section title="Recommendations" color="text-cyan-400">
+              <Section title="Recommendations" color="text-brand">
                 <div className="flex flex-col gap-2">
                   {r.map((rec, i) => {
                     const c = PRIORITY_COLORS[rec.priority] || PRIORITY_COLORS.Medium;
@@ -138,7 +138,7 @@ export default function AIInsights({ data }) {
                 <div className="flex flex-col gap-1">
                   {data.weeklyPlan.map((d, i) => (
                     <div key={i} className="flex items-start gap-2 text-xs">
-                      <span className="text-cyan-400 font-semibold w-14 flex-shrink-0">{d.day}</span>
+                      <span className="text-brand font-semibold w-14 flex-shrink-0">{d.day}</span>
                       <span className="text-[var(--text-secondary)]">{d.task}</span>
                     </div>
                   ))}
@@ -151,7 +151,7 @@ export default function AIInsights({ data }) {
               <Section title="Interview Prediction" color="text-purple-400">
                 <p className="text-[var(--text-secondary)] text-sm">{data.interviewPrediction}</p>
                 {data.estimatedReadinessIncrease && (
-                  <p className="text-cyan-400 font-bold text-sm mt-1">{data.estimatedReadinessIncrease}</p>
+                  <p className="text-brand font-bold text-sm mt-1">{data.estimatedReadinessIncrease}</p>
                 )}
               </Section>
             )}

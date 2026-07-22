@@ -84,7 +84,7 @@ function SectionCard({ section }) {
             <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-tertiary)]">Suggestions</p>
             {section.suggestions.map((sug, i) => (
               <div key={i} className="flex items-start gap-2.5">
-                <svg className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <svg className="w-3.5 h-3.5 text-brand flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5-5 5M6 7l5 5-5 5" />
                 </svg>
                 <p className="text-[var(--text-tertiary)] text-sm">{sug}</p>

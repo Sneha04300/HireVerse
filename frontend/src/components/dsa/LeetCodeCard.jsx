@@ -31,8 +31,7 @@ export default function LeetCodeCard({ data, onConnect, connecting }) {
           <button
             onClick={() => onConnect?.(username)}
             disabled={connecting || !username.trim()}
-            className="px-3 py-2 rounded-xl text-white font-bold text-xs tracking-wide transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+            className="px-3 py-2 rounded-xl text-white font-bold text-xs tracking-wide transition-opacity hover:opacity-90 disabled:opacity-50 btn-gradient"
           >
             {connecting ? "..." : "Connect"}
           </button>
@@ -63,7 +62,7 @@ export default function LeetCodeCard({ data, onConnect, connecting }) {
           <p className="text-[var(--text-primary)] font-bold text-sm truncate">@{data.username}</p>
           <p className="text-[var(--text-muted)] text-[10px]">{data.problemsSolved} / {totalQ} solved</p>
         </div>
-        <span className="text-[10px] font-bold px-2 py-1 rounded-full flex-shrink-0" style={{ background: "rgba(34,197,94,0.12)", border: "0.5px solid rgba(34,197,94,0.3)", color: "#22c55e" }}>
+        <span className="text-[10px] font-bold px-2 py-1 rounded-full flex-shrink-0" style={{ background: "var(--badge-green-bg)", border: "0.5px solid var(--badge-green-border)", color: "var(--badge-green-text)" }}>
           Connected
         </span>
       </div>
@@ -77,9 +76,9 @@ export default function LeetCodeCard({ data, onConnect, connecting }) {
 
       {/* Stats grid */}
       <div className="grid grid-cols-3 gap-2">
-        <MiniStat label="Rating" value={data.contestRating ? data.contestRating.toString() : "—"} color="text-cyan-400" />
-        <MiniStat label="Acceptance" value={data.acceptanceRate ? `${data.acceptanceRate}%` : "—"} color="text-green-400" />
-        <MiniStat label="Contests" value={data.attendedContestsCount ? data.attendedContestsCount.toString() : "—"} color="text-purple-400" />
+        <MiniStat label="Rating" value={data.contestRating ? data.contestRating.toString() : "—"} color="var(--brand-secondary)" />
+        <MiniStat label="Acceptance" value={data.acceptanceRate ? `${data.acceptanceRate}%` : "—"} color="#22c55e" />
+        <MiniStat label="Contests" value={data.attendedContestsCount ? data.attendedContestsCount.toString() : "—"} color="var(--brand-secondary)" />
       </div>
 
       {/* Badges */}
@@ -132,7 +131,7 @@ function DiffBar({ label, solved, total, color }) {
 function MiniStat({ label, value, color }) {
   return (
     <div className="rounded-xl p-2.5 text-center" style={{ background: "var(--bg-elevated)", border: "0.5px solid var(--border)" }}>
-      <p className={`text-sm font-extrabold ${color}`}>{value}</p>
+      <p className="text-sm font-extrabold" style={{ color }}>{value}</p>
       <p className="text-[9px] uppercase tracking-widest text-[var(--text-muted)]">{label}</p>
     </div>
   );

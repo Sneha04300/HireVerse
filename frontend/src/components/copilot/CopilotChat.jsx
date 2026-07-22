@@ -56,7 +56,7 @@ export default function CopilotChat({ messages, readinessData, planData, inputVa
           type="submit"
           disabled={!inputValue.trim()}
           className="w-11 h-11 rounded-xl flex items-center justify-center text-white flex-shrink-0 transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-          style={{ background: "linear-gradient(135deg,#7C3AED,#06B6D4)" }}
+          className="bg-gradient-brand-subtle"
         >
           <IconSend />
         </button>

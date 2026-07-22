@@ -96,8 +96,9 @@ export default function QuickActions() {
           <button
             key={a.id}
             onClick={() => handleClick(a)}
-            className="flex flex-col items-center gap-2.5 p-4 rounded-xl text-cyan-400 hover:bg-[var(--bg-hover)] hover:text-cyan-300 transition-all cursor-pointer group"
+            className="flex flex-col items-center gap-2.5 p-4 rounded-xl hover:bg-[var(--bg-hover)] transition-all cursor-pointer group"
             style={{
+              color: "var(--brand-secondary)",
               border: "0.5px solid var(--border)",
             }}
           >

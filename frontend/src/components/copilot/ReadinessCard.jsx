@@ -1,15 +1,15 @@
 import { AIAvatar } from "./ChatMessage";
 
 const CHIP_COLORS = {
-  amber:  { bg: "rgba(234,179,8,0.15)",  border: "rgba(234,179,8,0.35)",  text: "#eab308" },
-  cyan:   { bg: "rgba(6,182,212,0.15)",  border: "rgba(6,182,212,0.35)",  text: "#06B6D4" },
-  pink:   { bg: "rgba(239,68,68,0.12)", border: "rgba(239,68,68,0.3)", text: "#ef4444" },
-  violet: { bg: "rgba(167,139,250,0.15)",border: "rgba(167,139,250,0.35)",text: "#a78bfa" },
+  amber:  { bg: "var(--badge-yellow-bg)",  border: "var(--badge-yellow-border)",  text: "var(--badge-yellow-text)" },
+  cyan:   { bg: "var(--badge-cyan-bg)",  border: "var(--badge-cyan-border)",  text: "var(--badge-cyan-text)" },
+  pink:   { bg: "var(--badge-red-bg)", border: "var(--badge-red-border)", text: "var(--badge-red-text)" },
+  violet: { bg: "var(--badge-purple-bg)",border: "var(--badge-purple-border)",text: "var(--badge-purple-text)" },
 };
 
 function scoreColor(score) {
   if (score >= 85) return "#22c55e";
-  if (score >= 70) return "#06B6D4";
+  if (score >= 70) return "var(--brand-accent)";
   if (score >= 50) return "#eab308";
   return "#ef4444";
 }
@@ -76,8 +76,7 @@ export default function ReadinessCard({ data }) {
 
         <div className="h-2 rounded-full mb-5" style={{ background: "var(--border)" }}>
           <div
-            className="h-2 rounded-full transition-all duration-1000"
-            style={{ width: `${data.score}%`, background: `linear-gradient(90deg,#7C3AED,${color})` }}
+            className="h-2 rounded-full transition-all duration-1000" style={{ width: `${data.score}%`, background: `linear-gradient(90deg,var(--brand-secondary),${color})` }}
           />
         </div>
 

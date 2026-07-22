@@ -13,8 +13,7 @@ const IconUser = () => (
 export function AIAvatar() {
   return (
     <div
-      className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-      style={{ background: "linear-gradient(135deg,#7C3AED,#06B6D4)" }}
+      className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-brand-subtle"
     >
       <IconSparkle />
     </div>
@@ -26,8 +25,7 @@ export default function ChatMessage({ message }) {
     return (
       <div className="flex items-start justify-end gap-3 animate-fade-in">
         <div
-          className="max-w-[75%] rounded-2xl rounded-tr-sm px-5 py-3.5 text-white text-sm font-medium shadow-lg"
-          style={{ background: "linear-gradient(135deg,#7C3AED,#06B6D4)" }}
+          className="max-w-[75%] rounded-2xl rounded-tr-sm px-5 py-3.5 text-white text-sm font-medium shadow-lg-custom bg-gradient-brand-subtle"
         >
           {message.text}
         </div>

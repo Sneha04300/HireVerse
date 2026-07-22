@@ -170,7 +170,7 @@ export default function LiveTranscript({
               <button
                 onClick={handleSubmit}
                 disabled={loading || !answer.trim()}
-                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-sm font-semibold shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:opacity-90 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-brand text-white text-sm font-semibold shadow-lg-custom hover:opacity-90 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">

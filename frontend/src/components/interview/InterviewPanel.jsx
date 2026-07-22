@@ -6,11 +6,11 @@ export default function InterviewPanel({ question, pageState, isListening, isAiS
       <div className="flex items-center gap-5">
         <div className="relative flex-shrink-0">
           <div
-            className={`w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-700 to-purple-500 shadow-lg shadow-purple-500/40 ${
+            className={`w-20 h-20 rounded-full flex items-center justify-center bg-gradient-brand-subtle shadow-lg-custom ${
               isActive ? "animate-pulse" : ""
             }`}
           >
-            <div className="absolute inset-0 rounded-full border-2 border-purple-400/40" />
+            <div className="absolute inset-0 rounded-full border-2" style={{ borderColor: "var(--brand-secondary)" }} />
             <svg
               className="w-8 h-8 text-white"
               fill="none"

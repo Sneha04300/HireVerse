@@ -186,7 +186,7 @@ export default function ResumeAnalyzerPage() {
 
           {/* ── Hero Header ── */}
           <div className="mb-8">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-cyan-400 mb-2">Analyze</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-brand mb-2">Analyze</p>
             <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">Resume Analyzer</h1>
             <p className="text-[var(--text-muted)] text-sm mt-2 max-w-xl">
               Upload your resume and receive ATS insights, keyword analysis, job description matching, and improvement recommendations.
@@ -220,8 +220,7 @@ export default function ResumeAnalyzerPage() {
               <button
                 onClick={() => handleJobMatch(resumeId)}
                 disabled={jdMatching}
-                className="mt-3 px-5 py-2 rounded-xl text-white font-bold text-xs tracking-wide transition-opacity hover:opacity-90 disabled:opacity-60 flex items-center gap-2"
-                style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+                className="mt-3 px-5 py-2 rounded-xl text-white font-bold text-xs tracking-wide transition-opacity hover:opacity-90 disabled:opacity-60 flex items-center gap-2 btn-gradient"
               >
                 {jdMatching ? "Analyzing…" : "Check Match"}
               </button>
@@ -371,7 +370,7 @@ export default function ResumeAnalyzerPage() {
                     <div className="rounded-2xl p-6 flex flex-col gap-5" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
                       <div className="flex items-center gap-2.5">
                         <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(6,182,212,0.12)", border: "0.5px solid rgba(6,182,212,0.3)" }}>
-                          <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                          <svg className="w-5 h-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                           </svg>
                         </div>
@@ -384,8 +383,7 @@ export default function ResumeAnalyzerPage() {
                         <a
                           href={docxUrl}
                           download
-                          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
-                          style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+                          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 btn-gradient"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

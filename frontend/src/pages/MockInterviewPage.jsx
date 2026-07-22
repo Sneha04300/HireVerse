@@ -177,7 +177,7 @@ export default function MockInterviewPage() {
         <div className="px-6 py-8 max-w-[1400px]">
 
           <div className="mb-6">
-            <p className="text-xs font-semibold tracking-widest text-cyan-500 mb-1">PRACTICE</p>
+            <p className="text-xs font-semibold tracking-widest text-brand mb-1">PRACTICE</p>
             <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-1">AI Mock Interview</h1>
             <p className="text-[var(--text-tertiary)] text-sm">
               Real recruiter-style interviews with live transcript and post-call report.

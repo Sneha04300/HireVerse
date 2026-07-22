@@ -25,7 +25,7 @@ const SORT_OPTIONS = ["Newest", "Oldest", "Difficulty"];
 
 function SortIcon({ active, dir }) {
   return (
-    <svg className={`w-3.5 h-3.5 ${active ? "text-cyan-400" : "text-[var(--text-muted)]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg className={`w-3.5 h-3.5 ${active ? "text-brand" : "text-[var(--text-muted)]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       {dir === "asc" ? (
         <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
       ) : (
@@ -159,7 +159,7 @@ export default function ProblemsTable({ problems, onEdit, onDelete, onBookmark, 
                   <td className="px-4 py-3 text-center">
                     <button onClick={() => onBookmark(p._id)} className="transition-colors">
                       {p.bookmarked ? (
-                        <svg className="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-brand" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                         </svg>
                       ) : (
@@ -174,7 +174,7 @@ export default function ProblemsTable({ problems, onEdit, onDelete, onBookmark, 
                       <span className="text-xs text-[var(--text-secondary)]">{p.revisionCount || 0}</span>
                       <button
                         onClick={() => onRevision(p._id)}
-                        className="text-[var(--text-muted)] hover:text-cyan-400 transition-colors"
+                        className="text-[var(--text-muted)] hover:text-brand transition-colors"
                         title="Increment revision"
                       >
                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -185,7 +185,7 @@ export default function ProblemsTable({ problems, onEdit, onDelete, onBookmark, 
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1.5">
-                      <ActionBtn onClick={() => onEdit(p)} title="Edit" color="text-cyan-400">
+                      <ActionBtn onClick={() => onEdit(p)} title="Edit" color="text-brand">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>

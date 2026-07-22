@@ -42,7 +42,7 @@ export default function StatCards() {
           className="rounded-2xl p-5 flex flex-col gap-1"
           style={{ background: "var(--bg-gradient-card)", border: "0.5px solid var(--border)" }}
         >
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">{s.label}</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>{s.label}</p>
           <p className="text-[var(--text-primary)] text-4xl font-extrabold leading-tight mt-1">{s.value}</p>
           <p className="text-xs mt-1" style={{ color: s.subColor }}>{s.sub}</p>
         </div>

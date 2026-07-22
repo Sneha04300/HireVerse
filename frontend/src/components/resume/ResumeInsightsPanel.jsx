@@ -20,7 +20,7 @@ function MiniSparkline({ values }) {
       {values.map((v, i) => {
         const x = (i / (values.length - 1)) * w;
         const y = h - ((v - min) / (max - min || 1)) * (h - 8) - 4;
-        return <circle key={i} cx={x} cy={y} r="3" fill={i === values.length - 1 ? "#06B6D4" : "var(--border)"} stroke="#06B6D4" strokeWidth="1.5" />;
+        return <circle key={i} cx={x} cy={y} r="3" fill={i === values.length - 1 ? "var(--brand-accent)" : "var(--border)"} stroke="var(--brand-accent)" strokeWidth="1.5" />;
       })}
     </svg>
   );
@@ -35,8 +35,8 @@ function BenchmarkBar({ score, benchmark }) {
       </div>
       <div className="relative h-2.5 rounded-full bg-[var(--border)]">
         <div className="absolute h-2.5 rounded-full" style={{ width: `${benchmark}%`, background: "var(--border)", border: "1px solid var(--text-muted)" }} />
-        <div className="absolute h-2.5 rounded-full transition-all duration-700" style={{ width: `${score}%`, background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }} />
-        <div className="absolute top-1/2 -translate-y-1/2 w-0.5 h-4 bg-yellow-400" style={{ left: `${benchmark}%` }} />
+        <div className="absolute h-2.5 rounded-full transition-all duration-700 bg-gradient-brand" style={{ width: `${score}%` }} />
+        <div className="absolute top-1/2 -translate-y-1/2 w-0.5 h-4" style={{ background: "var(--badge-yellow-text)" }} style={{ left: `${benchmark}%` }} />
       </div>
       <p className="text-[10px] text-[var(--text-tertiary)]">Yellow line = industry average</p>
     </div>
@@ -59,7 +59,7 @@ export default function ResumeInsightsPanel({ data = {} }) {
           ))}
         </div>
         <p className="text-[var(--text-tertiary)] text-xs mt-2">
-          Score improved by <span className="text-green-400 font-bold">+{atsTrend[atsTrend.length - 1] - atsTrend[0]}</span> pts over 5 scans
+          Score improved by <span className="font-bold" style={{ color: "var(--badge-green-text)" }}>+{atsTrend[atsTrend.length - 1] - atsTrend[0]}</span> pts over 5 scans
         </p>
       </div>
 
@@ -67,7 +67,7 @@ export default function ResumeInsightsPanel({ data = {} }) {
       <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
         <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-3">Industry Benchmark</p>
         <BenchmarkBar score={atsScore} benchmark={industryBenchmark} />
-        <p className="text-xs text-cyan-400 mt-2 font-medium">
+        <p className="text-xs text-brand mt-2 font-medium">
           You're {atsScore - industryBenchmark} pts above average ✓
         </p>
       </div>
@@ -81,8 +81,7 @@ export default function ResumeInsightsPanel({ data = {} }) {
         </div>
         <div className="mt-3 h-1.5 rounded-full bg-[var(--border)]">
           <div
-            className="h-1.5 rounded-full"
-            style={{ width: `${((totalResumes - resumeRank) / totalResumes) * 100}%`, background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+              className="h-1.5 rounded-full bg-gradient-brand" style={{ width: `${((totalResumes - resumeRank) / totalResumes) * 100}%` }}
           />
         </div>
         <p className="text-[var(--text-muted)] text-xs mt-2">

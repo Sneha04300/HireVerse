@@ -47,14 +47,13 @@ export default function ResumeUpload({ file, onFileChange, onAnalyze, analyzing 
         onClick={() => !file && inputRef.current.click()}
         className="w-full flex flex-col items-center gap-4 py-10 rounded-xl transition-all cursor-pointer"
         style={{
-          border: `1.5px dashed ${dragging ? "#06B6D4" : file ? "#7C3AED" : "var(--border)"}`,
-          background: dragging ? "rgba(6,182,212,0.05)" : file ? "rgba(124,58,237,0.05)" : "transparent",
+          border: `1.5px dashed ${dragging ? "var(--brand-accent)" : file ? "var(--brand-secondary)" : "var(--border)"}`,
+          background: dragging ? "var(--bg-active)" : file ? "var(--bg-active)" : "transparent",
         }}
       >
         {/* Icon */}
         <div
-          className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
-          style={{ background: "linear-gradient(135deg,#7C3AED,#06B6D4)" }}
+          className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg-custom bg-gradient-brand-subtle"
         >
           <IconUpload />
         </div>
@@ -79,8 +78,7 @@ export default function ResumeUpload({ file, onFileChange, onAnalyze, analyzing 
         {!file ? (
           <button
             onClick={() => inputRef.current.click()}
-            className="w-full py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
-            style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+            className="w-full py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 btn-gradient"
           >
             Choose File
           </button>
@@ -89,8 +87,7 @@ export default function ResumeUpload({ file, onFileChange, onAnalyze, analyzing 
             <button
               onClick={onAnalyze}
               disabled={analyzing}
-              className="w-full py-3 rounded-xl text-white font-bold text-sm tracking-wide flex items-center justify-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-60"
-              style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+              className="w-full py-3 rounded-xl text-white font-bold text-sm tracking-wide flex items-center justify-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-60 btn-gradient"
             >
               {analyzing ? (
                 <>

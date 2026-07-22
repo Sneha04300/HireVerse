@@ -96,7 +96,7 @@ export default function Sidebar({ open }) {
           >
             {({ isActive }) => (
               <>
-                <span className={isActive ? "text-cyan-400" : ""}>{item.icon}</span>
+                <span className={isActive ? "text-[var(--brand-secondary)]" : ""}>{item.icon}</span>
                 {item.label}
               </>
             )}

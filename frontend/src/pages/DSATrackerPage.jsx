@@ -238,7 +238,7 @@ export default function DSATrackerPage() {
           {/* ── Hero ── */}
           <div className="mb-8 flex items-start justify-between">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-cyan-400 mb-2">Practice</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-brand mb-2">Practice</p>
               <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">DSA Tracker</h1>
               <p className="text-[var(--text-muted)] text-sm mt-2 max-w-xl">
                 Track your coding progress, streaks, topic mastery and placement readiness.
@@ -247,8 +247,7 @@ export default function DSATrackerPage() {
             {showTable && (
               <button
                 onClick={openAddModal}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
-                style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 btn-gradient"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

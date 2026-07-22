@@ -2,13 +2,13 @@ import { AIAvatar } from "./ChatMessage";
 
 const STATUS_STYLES = {
   done:     { dot: "#22c55e", line: "#22c55e", text: "text-[var(--text-tertiary)] line-through", badge: "Done" },
-  current:  { dot: "#06B6D4", line: "var(--border)", text: "text-[var(--text-primary)] font-semibold",   badge: "In Progress" },
+  current:  { dot: "var(--brand-accent)", line: "var(--border)", text: "text-[var(--text-primary)] font-semibold",   badge: "In Progress" },
   upcoming: { dot: "var(--border-focus)", line: "var(--border)", text: "text-[var(--text-muted)]",              badge: "Upcoming" },
 };
 
 const BADGE_COLORS = {
-  done:     { bg: "rgba(34,197,94,0.12)", border: "rgba(34,197,94,0.3)", color: "#22c55e" },
-  current:  { bg: "rgba(6,182,212,0.12)", border: "rgba(6,182,212,0.3)", color: "#06B6D4" },
+  done:     { bg: "var(--badge-green-bg)", border: "var(--badge-green-border)", color: "var(--badge-green-text)" },
+  current:  { bg: "var(--badge-cyan-bg)", border: "var(--badge-cyan-border)", color: "var(--badge-cyan-text)" },
   upcoming: { bg: "var(--bg-elevated)",   border: "0.5px solid var(--border)",  color: "var(--text-secondary)" },
 };
 

@@ -72,7 +72,7 @@ export default function CareerCopilotPage() {
 
           {/* ── Hero ── */}
           <div className="mb-8">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-cyan-400 mb-2">AI</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-brand mb-2">AI</p>
             <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">Career Copilot</h1>
             <p className="text-[var(--text-muted)] text-sm mt-2 max-w-xl">
               Ask anything about your placement journey. Trained on your profile and goals.

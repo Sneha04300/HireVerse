@@ -24,7 +24,7 @@ export default function HeroCard() {
         {/* Badge */}
         <span
           className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full w-fit"
-          style={{ background: "rgba(6,182,212,0.15)", border: "0.5px solid rgba(6,182,212,0.4)", color: "#06B6D4" }}
+          style={{ background: "var(--badge-cyan-bg)", border: "0.5px solid var(--badge-cyan-border)", color: "var(--badge-cyan-text)" }}
         >
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />

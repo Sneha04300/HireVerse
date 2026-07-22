@@ -17,7 +17,7 @@ export default function GoalsCard({ goals: initialGoals }) {
         <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Weekly Goals</p>
         <span
           className="text-xs font-bold px-3 py-1 rounded-full"
-          style={{ background: "rgba(124,58,237,0.12)", border: "0.5px solid rgba(124,58,237,0.3)", color: "#a78bfa" }}
+          style={{ background: "var(--badge-purple-bg)", border: "0.5px solid var(--badge-purple-border)", color: "var(--badge-purple-text)" }}
         >
           {completed}/{goals.length} done
         </span>
@@ -26,7 +26,7 @@ export default function GoalsCard({ goals: initialGoals }) {
       <div className="h-1.5 rounded-full" style={{ background: "var(--border)" }}>
         <div
           className="h-1.5 rounded-full transition-all duration-500"
-          style={{ width: `${(completed / goals.length) * 100}%`, background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+          className="h-1.5 rounded-full transition-all duration-500 bg-gradient-brand" style={{ width: `${(completed / goals.length) * 100}%` }}
         />
       </div>
 
@@ -41,7 +41,7 @@ export default function GoalsCard({ goals: initialGoals }) {
               onClick={() => toggle(g.id)}
               className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-colors"
               style={{
-                background: g.done ? "linear-gradient(135deg,#7C3AED,#06B6D4)" : "transparent",
+                background: g.done ? "var(--gradient-brand-subtle)" : "transparent",
                 border: g.done ? "none" : "1.5px solid var(--border-focus)",
               }}
             >

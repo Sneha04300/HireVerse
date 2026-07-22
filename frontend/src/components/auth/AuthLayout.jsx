@@ -18,7 +18,7 @@ export default function AuthLayout({ children }) {
         />
         <div
           className="absolute bottom-[-80px] right-[-80px] w-[400px] h-[400px] rounded-full opacity-10 pointer-events-none"
-          style={{ background: "radial-gradient(circle, #06B6D4 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, var(--brand-secondary) 0%, transparent 70%)" }}
         />
 
         <Logo />
@@ -28,7 +28,7 @@ export default function AuthLayout({ children }) {
             One Destination for{" "}
             <span
               className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "linear-gradient(90deg, #A78BFA, #06B6D4)" }}
+              style={{ backgroundImage: "linear-gradient(90deg, var(--brand-secondary), var(--brand-primary))" }}
             >
               Every
               <br />

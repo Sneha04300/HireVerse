@@ -107,7 +107,7 @@ export default function SigninForm() {
         />
 
         <div className="flex justify-end">
-          <a href="#" className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors">
+          <a href="#" className="text-xs transition-colors" style={{ color: "var(--brand-secondary)" }}>
             Forgot password?
           </a>
         </div>
@@ -115,7 +115,7 @@ export default function SigninForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full btn-gradient rounded-lg py-3.5 text-white font-semibold text-sm tracking-wide transition-all hover:opacity-90 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-900/30"
+          className="w-full btn-gradient rounded-lg py-3.5 text-white font-semibold text-sm tracking-wide transition-all hover:opacity-90 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg-custom"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
@@ -133,7 +133,7 @@ export default function SigninForm() {
 
       <p className="text-center text-sm text-[var(--text-muted)] mt-5">
         Don't have an account?{" "}
-        <Link to="/signup" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+        <Link to="/signup" className="font-medium transition-colors" style={{ color: "var(--brand-secondary)" }}>
           Create one
         </Link>
       </p>

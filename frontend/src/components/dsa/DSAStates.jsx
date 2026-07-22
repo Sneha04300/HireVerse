@@ -54,7 +54,7 @@ export function DSAEmptyState({ onAddFirst }) {
         className="w-20 h-20 rounded-2xl flex items-center justify-center"
         style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.15))", border: "0.5px solid var(--border)" }}
       >
-        <svg className="w-9 h-9 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <svg className="w-9 h-9 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
       </div>
@@ -66,8 +66,7 @@ export function DSAEmptyState({ onAddFirst }) {
       </div>
       <button
         onClick={onAddFirst}
-        className="px-6 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
-        style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+        className="px-6 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 btn-gradient"
       >
         Add First Problem
       </button>
@@ -86,7 +85,7 @@ export function DSACoachLoadingState() {
           className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: "rgba(6,182,212,0.12)", border: "0.5px solid rgba(6,182,212,0.3)" }}
         >
-          <svg className="w-5 h-5 text-cyan-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <svg className="w-5 h-5 text-brand animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l1.5 4.5L11 9l-4.5 1.5L5 15l-1.5-4.5L-1 9l4.5-1.5L5 3zM19 9l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z" />
           </svg>
         </div>
@@ -123,8 +122,7 @@ export function DSAErrorState({ onRetry }) {
       </div>
       <button
         onClick={onRetry}
-        className="px-6 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
-        style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+        className="px-6 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 btn-gradient"
       >
         Retry
       </button>

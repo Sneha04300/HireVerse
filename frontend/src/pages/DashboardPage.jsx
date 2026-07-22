@@ -28,7 +28,7 @@ export default function DashboardPage() {
           {/* ── Header ── */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-widest text-cyan-400 mb-2">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-brand mb-2">
                 Dashboard
               </p>
               <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">
@@ -46,8 +46,7 @@ export default function DashboardPage() {
                 Share Profile
               </button>
               <button
-                className="px-5 py-2.5 rounded-xl text-white text-sm font-semibold flex items-center gap-2 transition-opacity hover:opacity-90"
-                style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+                className="px-5 py-2.5 rounded-xl text-white text-sm font-semibold flex items-center gap-2 transition-opacity hover:opacity-90 btn-gradient"
               >
                 Plan My Week
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

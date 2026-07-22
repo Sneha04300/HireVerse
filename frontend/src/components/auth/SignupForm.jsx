@@ -214,11 +214,11 @@ export default function SignupForm() {
           />
           <label htmlFor="agree" className="text-sm text-[var(--text-tertiary)] cursor-pointer leading-relaxed">
             I agree to the{" "}
-            <a href="#" className="text-purple-400 hover:text-purple-300 transition-colors">
-              Terms
-            </a>{" "}
-            and{" "}
-            <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+              <a href="#" className="transition-colors" style={{ color: "var(--brand-secondary)" }}>
+                Terms
+              </a>{" "}
+              and{" "}
+              <a href="#" className="transition-colors" style={{ color: "var(--brand-secondary)" }}>
               Privacy Policy
             </a>
             .
@@ -229,7 +229,7 @@ export default function SignupForm() {
         <button
           type="submit"
           disabled={loading || !form.agree}
-          className="w-full btn-gradient rounded-lg py-3.5 text-white font-semibold text-sm tracking-wide transition-all hover:opacity-90 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-lg shadow-purple-900/30"
+          className="w-full btn-gradient rounded-lg py-3.5 text-white font-semibold text-sm tracking-wide transition-all hover:opacity-90 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-lg-custom"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
@@ -247,7 +247,7 @@ export default function SignupForm() {
 
       <p className="text-center text-sm text-[var(--text-muted)] mt-5">
         Already have an account?{" "}
-        <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+        <Link to="/login" className="font-medium transition-colors" style={{ color: "var(--brand-secondary)" }}>
           Sign in
         </Link>
       </p>

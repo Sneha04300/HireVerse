@@ -279,8 +279,7 @@ export default function ProblemModal({ open, onClose, onSave, problem }) {
             <button
               type="submit"
               disabled={saving || !form.title.trim()}
-              className="px-5 py-2 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 disabled:opacity-50"
-              style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+              className="px-5 py-2 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 disabled:opacity-50 btn-gradient"
             >
               {saving ? "Saving..." : isEdit ? "Update Problem" : "Add Problem"}
             </button>

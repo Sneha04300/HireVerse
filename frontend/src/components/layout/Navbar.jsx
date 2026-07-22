@@ -104,8 +104,7 @@ export default function Navbar({ onSidebarToggle }) {
             </button>
             <div className="flex items-center gap-2 cursor-pointer" onClick={handleLogout} title="Logout">
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                style={{ background: "linear-gradient(135deg,#7C3AED,#06B6D4)" }}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 bg-gradient-brand-subtle"
               >
                 {initials}
               </div>
@@ -121,8 +120,7 @@ export default function Navbar({ onSidebarToggle }) {
             </Link>
             <Link
               to="/signup"
-              className="text-sm font-semibold px-4 py-1.5 rounded-lg text-white"
-              style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+              className="text-sm font-semibold px-4 py-1.5 rounded-lg text-white btn-gradient"
             >
               Sign up
             </Link>

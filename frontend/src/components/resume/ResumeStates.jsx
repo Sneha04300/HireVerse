@@ -22,7 +22,7 @@ export function LoadingState() {
             strokeDasharray="289" strokeDashoffset="217" strokeLinecap="round" />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <svg className="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <svg className="w-8 h-8 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         </div>
@@ -40,7 +40,7 @@ export function LoadingState() {
               className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ background: "rgba(6,182,212,0.15)", border: "0.5px solid rgba(6,182,212,0.4)" }}
             >
-              <svg className="w-2.5 h-2.5 text-cyan-400 animate-pulse" fill="currentColor" viewBox="0 0 8 8">
+              <svg className="w-2.5 h-2.5 text-brand animate-pulse" fill="currentColor" viewBox="0 0 8 8">
                 <circle cx="4" cy="4" r="4" />
               </svg>
             </div>
@@ -68,7 +68,7 @@ export function GeneratingState() {
             strokeDasharray="289" strokeDashoffset="217" strokeLinecap="round" />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <svg className="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <svg className="w-8 h-8 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
         </div>
@@ -89,7 +89,7 @@ export function EmptyState({ onUploadClick }) {
         className="w-20 h-20 rounded-2xl flex items-center justify-center"
         style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.15))", border: "0.5px solid var(--border)" }}
       >
-        <svg className="w-9 h-9 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <svg className="w-9 h-9 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
       </div>
