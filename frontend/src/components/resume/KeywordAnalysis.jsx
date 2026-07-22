@@ -1,13 +1,13 @@
-export default function KeywordAnalysis({ missingKeywords }) {
+export default function KeywordAnalysis({ missingKeywords = [] }) {
   return (
-    <div className="rounded-2xl p-6 flex flex-col gap-4" style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-1">Missing Keywords</p>
-          <h3 className="text-white font-bold text-base">Add these to boost your ATS score</h3>
+    <div className="rounded-2xl p-6 flex flex-col gap-4" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--text-muted)] mb-1">Missing Keywords</p>
+          <h3 className="text-[var(--text-primary)] font-bold text-base truncate">Add these to boost your ATS score</h3>
         </div>
         <span
-          className="text-xs font-bold px-3 py-1 rounded-full"
+          className="text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0"
           style={{ background: "rgba(239,68,68,0.12)", border: "0.5px solid rgba(239,68,68,0.3)", color: "#ef4444" }}
         >
           {missingKeywords.length} missing
@@ -29,7 +29,7 @@ export default function KeywordAnalysis({ missingKeywords }) {
         ))}
       </div>
 
-      <p className="text-gray-600 text-xs">
+      <p className="text-[var(--text-tertiary)] text-xs">
         Tip: Naturally weave these into your Skills, Experience, and Project descriptions.
       </p>
     </div>

@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 const INTENSITY_COLORS = [
-  "#1a1f2e",                 // 0 - none
-  "rgba(124,58,237,0.35)",   // 1 - light
-  "rgba(124,58,237,0.6)",    // 2 - medium
-  "rgba(167,139,250,0.85)",  // 3 - strong
-  "#a78bfa",                 // 4 - intense
+  "var(--heatmap-0)",                 // 0 - none
+  "var(--heatmap-1)",   // 1 - light
+  "var(--heatmap-2)",    // 2 - medium
+  "var(--heatmap-3)",  // 3 - strong
+  "var(--heatmap-4)",                 // 4 - intense
 ];
 
 export default function ActivityHeatmap({ data }) {
@@ -20,16 +20,16 @@ export default function ActivityHeatmap({ data }) {
   return (
     <div
       className="rounded-2xl p-6 relative"
-      style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
       <div className="flex items-center justify-between mb-5">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-500">Activity</p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Activity</p>
         <div className="flex items-center gap-1.5">
-          <span className="text-gray-600 text-xs mr-1">Less</span>
+          <span className="text-[var(--text-muted)] text-xs mr-1">Less</span>
           {INTENSITY_COLORS.map((c, i) => (
             <span key={i} className="w-2.5 h-2.5 rounded-sm" style={{ background: c }} />
           ))}
-          <span className="text-gray-600 text-xs ml-1">More</span>
+          <span className="text-[var(--text-muted)] text-xs ml-1">More</span>
         </div>
       </div>
 
@@ -54,18 +54,18 @@ export default function ActivityHeatmap({ data }) {
         <div
           className="absolute z-10 px-3 py-2 rounded-lg text-xs pointer-events-none shadow-xl"
           style={{
-            background: "#1a1f2e",
-            border: "0.5px solid #2a3550",
+            background: "var(--bg-tooltip)",
+            border: "0.5px solid var(--border-focus)",
             top: "70px",
             left: `${24 + hovered.wi * 16}px`,
           }}
         >
-          <p className="text-white font-semibold">{hovered.count} problems solved</p>
-          <p className="text-gray-500">{new Date(hovered.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
+          <p className="text-[var(--text-primary)] font-semibold">{hovered.count} problems solved</p>
+          <p className="text-[var(--text-muted)]">{new Date(hovered.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
         </div>
       )}
 
-      <p className="text-gray-600 text-xs mt-4">Last 90 days of submissions</p>
+      <p className="text-[var(--text-muted)] text-xs mt-4">Last 90 days of submissions</p>
     </div>
   );
 }

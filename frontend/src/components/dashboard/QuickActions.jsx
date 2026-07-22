@@ -83,11 +83,11 @@ export default function QuickActions() {
     <div
       className="rounded-2xl p-5 h-full"
       style={{
-        background: "#0d1117",
-        border: "0.5px solid #1e2535",
+        background: "var(--bg-card)",
+        border: "0.5px solid var(--border)",
       }}
     >
-      <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-500 mb-4">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-4">
         Quick Actions
       </p>
 
@@ -96,16 +96,16 @@ export default function QuickActions() {
           <button
             key={a.id}
             onClick={() => handleClick(a)}
-            className="flex flex-col items-center gap-2.5 p-4 rounded-xl text-cyan-400 hover:bg-[#131826] hover:text-cyan-300 transition-all cursor-pointer group"
+            className="flex flex-col items-center gap-2.5 p-4 rounded-xl text-cyan-400 hover:bg-[var(--bg-hover)] hover:text-cyan-300 transition-all cursor-pointer group"
             style={{
-              border: "0.5px solid #1e2535",
+              border: "0.5px solid var(--border)",
             }}
           >
             <span className="group-hover:scale-110 transition-transform">
               {a.icon}
             </span>
 
-            <span className="text-gray-300 text-xs font-medium group-hover:text-white transition-colors">
+            <span className="text-[var(--text-secondary)] text-xs font-medium group-hover:text-[var(--text-primary)] transition-colors">
               {a.label}
             </span>
           </button>

@@ -92,8 +92,8 @@ export default function SignupForm() {
 
   return (
     <div className="animate-fade-in">
-      <h1 className="text-2xl font-bold text-white mb-1">Create your account</h1>
-      <p className="text-gray-400 text-sm mb-6">Start your journey to your dream offer in minutes.</p>
+      <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Create your account</h1>
+      <p className="text-[var(--text-tertiary)] text-sm mb-6">Start your journey to your dream offer in minutes.</p>
 
       {/* Social Auth */}
       <div className="grid grid-cols-2 gap-3 mb-6">
@@ -109,10 +109,10 @@ export default function SignupForm() {
 
       <div className="relative mb-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-[#252d3d]" />
+          <div className="w-full border-t border-[var(--border-light)]" />
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-[#111827] px-3 text-[11px] tracking-widest uppercase text-gray-500 font-medium">
+          <span className="bg-[var(--bg-elevated)] px-3 text-[11px] tracking-widest uppercase text-[var(--text-muted)] font-medium">
             or sign up with email
           </span>
         </div>
@@ -135,11 +135,11 @@ export default function SignupForm() {
         {/* College + Grad Year */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="college" className="block text-sm font-medium text-gray-200 mb-1.5">
+            <label htmlFor="college" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
               College
             </label>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none">
                 <IconMortarboard />
               </div>
               <input
@@ -155,7 +155,7 @@ export default function SignupForm() {
             </div>
           </div>
           <div>
-            <label htmlFor="gradYear" className="block text-sm font-medium text-gray-200 mb-1.5">
+            <label htmlFor="gradYear" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
               Grad year
             </label>
             <select
@@ -167,7 +167,7 @@ export default function SignupForm() {
               style={{ paddingLeft: "1rem" }}
             >
               {GRAD_YEARS.map((y) => (
-                <option key={y} value={y} className="bg-[#1a1f2e]">
+                <option key={y} value={y} className="bg-[var(--bg-elevated)]">
                   {y}
                 </option>
               ))}
@@ -210,9 +210,9 @@ export default function SignupForm() {
             checked={form.agree}
             onChange={handleChange}
             required
-            className="mt-0.5 w-4 h-4 rounded border-[#252d3d] bg-[#1a1f2e] text-purple-600 cursor-pointer accent-purple-600"
+            className="mt-0.5 w-4 h-4 rounded border-[var(--border-light)] bg-[var(--bg-elevated)] text-purple-600 cursor-pointer accent-purple-600"
           />
-          <label htmlFor="agree" className="text-sm text-gray-400 cursor-pointer leading-relaxed">
+          <label htmlFor="agree" className="text-sm text-[var(--text-tertiary)] cursor-pointer leading-relaxed">
             I agree to the{" "}
             <a href="#" className="text-purple-400 hover:text-purple-300 transition-colors">
               Terms
@@ -245,7 +245,7 @@ export default function SignupForm() {
         </button>
       </form>
 
-      <p className="text-center text-sm text-gray-500 mt-5">
+      <p className="text-center text-sm text-[var(--text-muted)] mt-5">
         Already have an account?{" "}
         <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
           Sign in

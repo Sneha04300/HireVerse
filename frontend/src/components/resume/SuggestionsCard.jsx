@@ -4,9 +4,9 @@ const IconSparkle = () => (
   </svg>
 );
 
-export default function SuggestionsCard({ suggestions, onGenerate }) {
+export default function SuggestionsCard({ suggestions = [], onGenerate }) {
   return (
-    <div className="rounded-2xl p-6 flex flex-col gap-5" style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}>
+    <div className="rounded-2xl p-6 flex flex-col gap-5" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
       {/* Header */}
       <div className="flex items-center gap-2.5">
         <div
@@ -15,9 +15,9 @@ export default function SuggestionsCard({ suggestions, onGenerate }) {
         >
           <IconSparkle />
         </div>
-        <div>
-          <h3 className="text-white font-bold text-base leading-snug">AI Suggestions</h3>
-          <p className="text-gray-500 text-xs">Powered by HireVerse AI</p>
+        <div className="min-w-0">
+          <h3 className="text-[var(--text-primary)] font-bold text-base leading-snug">AI Suggestions</h3>
+          <p className="text-[var(--text-muted)] text-xs">Powered by HireVerse AI</p>
         </div>
       </div>
 
@@ -31,7 +31,7 @@ export default function SuggestionsCard({ suggestions, onGenerate }) {
             >
               {i + 1}
             </span>
-            <p className="text-gray-300 text-sm leading-relaxed">{s}</p>
+            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{s}</p>
           </div>
         ))}
       </div>

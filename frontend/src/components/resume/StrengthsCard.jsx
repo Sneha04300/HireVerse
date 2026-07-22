@@ -10,13 +10,13 @@ const IconX = () => (
   </svg>
 );
 
-export default function StrengthsCard({ strengths, weaknesses }) {
+export default function StrengthsCard({ strengths = [], weaknesses = [] }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {/* Strengths */}
-      <div className="rounded-2xl p-5 flex flex-col gap-4" style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}>
+      <div className="rounded-2xl p-5 flex flex-col gap-4 h-full" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
         <div className="flex items-center justify-between">
-          <h3 className="text-white font-bold text-base">Strengths</h3>
+          <h3 className="text-[var(--text-primary)] font-bold text-base">Strengths</h3>
           <span
             className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
             style={{ background: "rgba(34,197,94,0.15)", border: "0.5px solid rgba(34,197,94,0.35)", color: "#22c55e" }}
@@ -28,16 +28,16 @@ export default function StrengthsCard({ strengths, weaknesses }) {
           {strengths.map((s) => (
             <div key={s} className="flex items-start gap-2.5">
               <IconCheck />
-              <span className="text-gray-300 text-sm leading-snug">{s}</span>
+              <span className="text-[var(--text-secondary)] text-sm leading-snug">{s}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Weaknesses */}
-      <div className="rounded-2xl p-5 flex flex-col gap-4" style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}>
+      <div className="rounded-2xl p-5 flex flex-col gap-4 h-full" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
         <div className="flex items-center justify-between">
-          <h3 className="text-white font-bold text-base">Weaknesses</h3>
+          <h3 className="text-[var(--text-primary)] font-bold text-base">Weaknesses</h3>
           <span
             className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
             style={{ background: "rgba(239,68,68,0.15)", border: "0.5px solid rgba(239,68,68,0.35)", color: "#ef4444" }}
@@ -49,7 +49,7 @@ export default function StrengthsCard({ strengths, weaknesses }) {
           {weaknesses.map((w) => (
             <div key={w} className="flex items-start gap-2.5">
               <IconX />
-              <span className="text-gray-300 text-sm leading-snug">{w}</span>
+              <span className="text-[var(--text-secondary)] text-sm leading-snug">{w}</span>
             </div>
           ))}
         </div>

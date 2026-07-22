@@ -18,7 +18,7 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
 
   if (pageState === "completed") {
     return (
-      <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-6 shadow-xl">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm p-6 shadow-xl">
         <div className="flex items-center justify-center gap-4">
           <button
             onClick={onRetake}
@@ -31,7 +31,7 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
           </button>
           <button
             onClick={() => navigate("/dashboard")}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-gray-200 text-sm font-medium transition-all duration-200"
+            className="flex items-center gap-2 px-6 py-3 rounded-xl border border-[var(--border-light)] bg-[var(--bg-hover)] hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm font-medium transition-all duration-200"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -44,10 +44,10 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-6 shadow-xl">
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm p-6 shadow-xl">
       <div className="flex flex-wrap gap-10">
         <div>
-          <p className="text-xs font-semibold tracking-widest text-gray-400 mb-3">
+          <p className="text-xs font-semibold tracking-widest text-[var(--text-tertiary)] mb-3">
             INTERVIEW TYPE
           </p>
 
@@ -59,7 +59,7 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   selectedType === type
                     ? "bg-gradient-to-r from-purple-600 to-cyan-500 text-white shadow-lg shadow-purple-500/30"
-                    : "text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-hover)] hover:bg-[var(--bg-elevated)] border border-[var(--border)]"
                 }`}
               >
                 {type}
@@ -69,7 +69,7 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
         </div>
 
         <div>
-          <p className="text-xs font-semibold tracking-widest text-gray-400 mb-3">
+          <p className="text-xs font-semibold tracking-widest text-[var(--text-tertiary)] mb-3">
             DIFFICULTY
           </p>
 
@@ -81,7 +81,7 @@ export default function InterviewSetup({ onStart, pageState, onRetake }) {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   selectedDifficulty === diff
                     ? "bg-gradient-to-r from-purple-600 to-cyan-500 text-white shadow-lg shadow-purple-500/30"
-                    : "text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-hover)] hover:bg-[var(--bg-elevated)] border border-[var(--border)]"
                 }`}
               >
                 {diff}

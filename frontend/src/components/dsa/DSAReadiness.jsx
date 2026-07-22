@@ -9,11 +9,11 @@ function ReadinessRing({ score, size = 180 }) {
       <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
         <defs>
           <linearGradient id="dsaRingGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#7C3AED" />
-            <stop offset="100%" stopColor="#06B6D4" />
+            <stop offset="0%" stopColor="var(--ring-gradient-from)" />
+            <stop offset="100%" stopColor="var(--ring-gradient-to)" />
           </linearGradient>
         </defs>
-        <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="#1e2535" strokeWidth={stroke} />
+        <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="var(--ring-track)" strokeWidth={stroke} />
         <circle
           cx={size/2} cy={size/2} r={radius} fill="none"
           stroke="url(#dsaRingGrad)" strokeWidth={stroke}
@@ -23,8 +23,8 @@ function ReadinessRing({ score, size = 180 }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-white text-4xl font-extrabold leading-none">{score}%</span>
-        <span className="text-gray-500 text-[10px] tracking-widest uppercase mt-1">DSA Readiness</span>
+        <span className="text-[var(--text-primary)] text-4xl font-extrabold leading-none">{score}%</span>
+        <span className="text-[var(--text-muted)] text-[10px] tracking-widest uppercase mt-1">DSA Readiness</span>
       </div>
     </div>
   );
@@ -34,21 +34,21 @@ export default function DSAReadiness({ data }) {
   return (
     <div
       className="rounded-2xl p-8 flex flex-col sm:flex-row items-center gap-8"
-      style={{ background: "linear-gradient(135deg,#0f1628 0%,#0a1a2a 100%)", border: "0.5px solid #1e2a40" }}
+      style={{ background: "var(--bg-gradient-hero)", border: "0.5px solid var(--border)" }}
     >
       <ReadinessRing score={data.score} />
 
       <div className="flex flex-col gap-4 flex-1">
         <div>
-          <h3 className="text-white text-xl font-extrabold leading-tight">DSA Readiness Score</h3>
-          <p className="text-gray-400 text-sm mt-1.5">
+          <h3 className="text-[var(--text-primary)] text-xl font-extrabold leading-tight">DSA Readiness Score</h3>
+          <p className="text-[var(--text-tertiary)] text-sm mt-1.5">
             You're solving consistently. Close the gap in Dynamic Programming and Backtracking to break 85%.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2">Strengths</p>
+            <p className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-2">Strengths</p>
             <div className="flex flex-wrap gap-1.5">
               {data.strengths.map((s) => (
                 <span
@@ -62,7 +62,7 @@ export default function DSAReadiness({ data }) {
             </div>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2">Gaps</p>
+            <p className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-2">Gaps</p>
             <div className="flex flex-wrap gap-1.5">
               {data.gaps.map((g) => (
                 <span

@@ -166,7 +166,7 @@ export default function MockInterviewPage() {
   const displayError = error || recorder.error;
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(160deg,#0a0d18 0%,#080f1a 50%,#050d14 100%)" }}>
+    <div className="min-h-screen" style={{ background: "var(--bg-base)" }}>
       <Navbar onSidebarToggle={() => setSidebarOpen((v) => !v)} />
       <Sidebar open={sidebarOpen} />
 
@@ -178,8 +178,8 @@ export default function MockInterviewPage() {
 
           <div className="mb-6">
             <p className="text-xs font-semibold tracking-widest text-cyan-500 mb-1">PRACTICE</p>
-            <h1 className="text-4xl font-bold text-white mb-1">AI Mock Interview</h1>
-            <p className="text-gray-400 text-sm">
+            <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-1">AI Mock Interview</h1>
+            <p className="text-[var(--text-tertiary)] text-sm">
               Real recruiter-style interviews with live transcript and post-call report.
             </p>
           </div>
@@ -233,20 +233,20 @@ export default function MockInterviewPage() {
 
             <div className="xl:sticky xl:top-20 xl:self-start">
               {state === STATES.COMPLETED && report ? (
-                <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-5 shadow-xl">
-                  <p className="text-xs font-semibold tracking-widest text-gray-400 mb-4">
+                <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm p-5 shadow-xl">
+                  <p className="text-xs font-semibold tracking-widest text-[var(--text-tertiary)] mb-4">
                     INTERVIEW SUMMARY
                   </p>
-                  <p className="text-sm text-gray-300 leading-relaxed">
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                     {report.summary}
                   </p>
                   <div className="mt-4 flex items-center gap-2">
-                    <span className="text-xs text-gray-500">Duration:</span>
-                    <span className="text-sm font-semibold text-gray-200">{formatTime(elapsed)}</span>
+                    <span className="text-xs text-[var(--text-muted)]">Duration:</span>
+                    <span className="text-sm font-semibold text-[var(--text-primary)]">{formatTime(elapsed)}</span>
                   </div>
                   <div className="mt-1 flex items-center gap-2">
-                    <span className="text-xs text-gray-500">Difficulty:</span>
-                    <span className="text-sm font-semibold text-gray-200">{report.difficultyLevel}</span>
+                    <span className="text-xs text-[var(--text-muted)]">Difficulty:</span>
+                    <span className="text-sm font-semibold text-[var(--text-primary)]">{report.difficultyLevel}</span>
                   </div>
                 </div>
               ) : (

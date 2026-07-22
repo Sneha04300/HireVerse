@@ -8,10 +8,10 @@ export default function SuggestedProblems({ problems }) {
   return (
     <div
       className="rounded-2xl p-6 flex flex-col gap-4"
-      style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
       <div className="flex items-center justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-500">Suggested Problems</p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Suggested Problems</p>
         <span
           className="text-xs font-bold px-3 py-1 rounded-full"
           style={{ background: "rgba(167,139,250,0.12)", border: "0.5px solid rgba(167,139,250,0.3)", color: "#a78bfa" }}
@@ -26,8 +26,8 @@ export default function SuggestedProblems({ problems }) {
           return (
             <div
               key={p.id}
-              className="flex items-center justify-between gap-3 p-3 rounded-xl cursor-pointer hover:bg-[#131826] transition-colors"
-              style={{ border: "0.5px solid #1e2535" }}
+              className="flex items-center justify-between gap-3 p-3 rounded-xl cursor-pointer hover:bg-[var(--bg-hover)] transition-colors"
+              style={{ border: "0.5px solid var(--border)" }}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <span
@@ -36,10 +36,10 @@ export default function SuggestedProblems({ problems }) {
                 >
                   {p.topic}
                 </span>
-                <span className="text-white text-sm font-medium truncate">{p.name}</span>
+                <span className="text-[var(--text-primary)] text-sm font-medium truncate">{p.name}</span>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-gray-500 text-xs hidden sm:inline">{p.platform}</span>
+                <span className="text-[var(--text-muted)] text-xs hidden sm:inline">{p.platform}</span>
                 <span
                   className="text-xs font-bold px-2.5 py-1 rounded-full"
                   style={{ background: diff.bg, border: `0.5px solid ${diff.border}`, color: diff.color }}

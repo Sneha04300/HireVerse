@@ -16,13 +16,13 @@ export default function TopicBreakdown({ topics }) {
   return (
     <div
       className="rounded-2xl p-6 overflow-x-auto"
-      style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
-      <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-500 mb-4">Topic Breakdown</p>
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-4">Topic Breakdown</p>
 
       <table className="w-full min-w-[480px] text-sm">
         <thead>
-          <tr className="text-left text-gray-600 text-xs uppercase tracking-widest">
+          <tr className="text-left text-[var(--text-muted)] text-xs uppercase tracking-widest">
             <th className="pb-3 font-semibold">Topic</th>
             <th className="pb-3 font-semibold text-center">Solved</th>
             <th className="pb-3 font-semibold text-center">Remaining</th>
@@ -34,10 +34,10 @@ export default function TopicBreakdown({ topics }) {
             const acc = ACCURACY_MAP[t.id] ?? 75;
             const color = accuracyColor(acc);
             return (
-              <tr key={t.id} className="border-t border-[#1e2535]">
-                <td className="py-3 text-gray-200 font-medium">{t.label}</td>
-                <td className="py-3 text-center text-white font-semibold">{t.solved}</td>
-                <td className="py-3 text-center text-gray-500">{t.total - t.solved}</td>
+              <tr key={t.id} className="border-t border-[var(--border)]">
+                <td className="py-3 text-[var(--text-primary)] font-medium">{t.label}</td>
+                <td className="py-3 text-center text-[var(--text-primary)] font-semibold">{t.solved}</td>
+                <td className="py-3 text-center text-[var(--text-muted)]">{t.total - t.solved}</td>
                 <td className="py-3 text-right">
                   <span
                     className="text-xs font-bold px-2.5 py-1 rounded-full"

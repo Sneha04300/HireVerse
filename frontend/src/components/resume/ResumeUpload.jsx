@@ -37,7 +37,7 @@ export default function ResumeUpload({ file, onFileChange, onAnalyze, analyzing 
   return (
     <div
       className="rounded-2xl p-8 flex flex-col items-center gap-5"
-      style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
       {/* Drop zone */}
       <div
@@ -47,7 +47,7 @@ export default function ResumeUpload({ file, onFileChange, onAnalyze, analyzing 
         onClick={() => !file && inputRef.current.click()}
         className="w-full flex flex-col items-center gap-4 py-10 rounded-xl transition-all cursor-pointer"
         style={{
-          border: `1.5px dashed ${dragging ? "#06B6D4" : file ? "#7C3AED" : "#1e2535"}`,
+          border: `1.5px dashed ${dragging ? "#06B6D4" : file ? "#7C3AED" : "var(--border)"}`,
           background: dragging ? "rgba(6,182,212,0.05)" : file ? "rgba(124,58,237,0.05)" : "transparent",
         }}
       >
@@ -61,13 +61,13 @@ export default function ResumeUpload({ file, onFileChange, onAnalyze, analyzing 
 
         {file ? (
           <div className="flex flex-col items-center gap-2">
-            <p className="text-white font-semibold text-base">{file.name}</p>
-            <p className="text-gray-500 text-sm">{(file.size / 1024).toFixed(0)} KB • Ready to analyze</p>
+            <p className="text-[var(--text-primary)] font-semibold text-base">{file.name}</p>
+            <p className="text-[var(--text-muted)] text-sm">{(file.size / 1024).toFixed(0)} KB • Ready to analyze</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-1.5 text-center">
-            <p className="text-white font-bold text-lg">Drop your resume here</p>
-            <p className="text-gray-500 text-sm">PDF, DOCX up to 5MB</p>
+            <p className="text-[var(--text-primary)] font-bold text-lg">Drop your resume here</p>
+            <p className="text-[var(--text-muted)] text-sm">PDF, DOCX up to 5MB</p>
           </div>
         )}
       </div>
@@ -104,7 +104,7 @@ export default function ResumeUpload({ file, onFileChange, onAnalyze, analyzing 
             </button>
             <button
               onClick={() => onFileChange(null)}
-              className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-400 transition-colors"
+              className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-red-400 transition-colors"
             >
               <IconX /> Remove file
             </button>
@@ -114,8 +114,8 @@ export default function ResumeUpload({ file, onFileChange, onAnalyze, analyzing 
 
       {/* Currently analyzed */}
       {file && !analyzing && (
-        <p className="text-gray-600 text-xs text-center">
-          Currently analyzed: <span className="text-gray-300 font-semibold">{file.name}</span>
+        <p className="text-[var(--text-tertiary)] text-xs text-center">
+          Currently analyzed: <span className="text-[var(--text-secondary)] font-semibold">{file.name}</span>
         </p>
       )}
     </div>

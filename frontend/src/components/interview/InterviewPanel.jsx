@@ -2,7 +2,7 @@ export default function InterviewPanel({ question, pageState, isListening, isAiS
   const isActive = pageState === "interview";
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#0d0f1a]/80 backdrop-blur-sm p-5 shadow-xl">
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-sm p-5 shadow-xl">
       <div className="flex items-center gap-5">
         <div className="relative flex-shrink-0">
           <div
@@ -28,10 +28,10 @@ export default function InterviewPanel({ question, pageState, isListening, isAiS
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold tracking-widest text-gray-400 mb-1">
+          <p className="text-xs font-semibold tracking-widest text-[var(--text-tertiary)] mb-1">
             AI RECRUITER
           </p>
-          <p className="text-xl font-semibold text-white leading-snug">
+          <p className="text-xl font-semibold text-[var(--text-primary)] leading-snug">
             {question || '"Tell me about yourself."'}
           </p>
         </div>

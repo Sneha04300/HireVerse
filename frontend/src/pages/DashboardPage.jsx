@@ -13,7 +13,7 @@ export default function DashboardPage() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: "linear-gradient(160deg,#0a0d18 0%,#080f1a 50%,#050d14 100%)" }}
+      style={{ background: "var(--bg-gradient-card)" }}
     >
       <Navbar onSidebarToggle={() => setSidebarOpen((v) => !v)} />
       <Sidebar open={sidebarOpen} />
@@ -31,17 +31,17 @@ export default function DashboardPage() {
               <p className="text-[11px] font-semibold uppercase tracking-widest text-cyan-400 mb-2">
                 Dashboard
               </p>
-              <h1 className="text-3xl font-extrabold text-white">
+              <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">
                 Welcome back, Sneha 👋
               </h1>
-              <p className="text-gray-500 text-sm mt-1.5">
+              <p className="text-[var(--text-muted)] text-sm mt-1.5">
                 Here's where you stand today, and the next moves that matter most.
               </p>
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">
               <button
-                className="px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-colors"
-                style={{ background: "#0f1628", border: "0.5px solid #1e2535" }}
+                className="px-5 py-2.5 rounded-xl text-[var(--text-primary)] text-sm font-semibold transition-colors"
+                style={{ background: "var(--bg-card-alt)", border: "0.5px solid var(--border)" }}
               >
                 Share Profile
               </button>

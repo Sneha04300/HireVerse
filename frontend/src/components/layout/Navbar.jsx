@@ -54,22 +54,22 @@ export default function Navbar({ onSidebarToggle }) {
     <header
       className="fixed top-0 left-0 right-0 z-50 flex items-center gap-4 px-4 h-14"
       style={{
-        background: isDark ? "rgba(10,13,24,0.92)" : "rgba(255,255,255,0.92)",
+        background: "var(--bg-navbar)",
         backdropFilter: "blur(12px)",
-        borderBottom: isDark ? "0.5px solid #1e2535" : "0.5px solid #e2e8f0",
+        borderBottom: "0.5px solid var(--border)",
       }}
     >
       {/* Sidebar Toggle */}
       <button
         onClick={onSidebarToggle}
-        className={`transition-colors flex-shrink-0 ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}
+        className="transition-colors flex-shrink-0 text-secondary hover:text-primary-custom"
       >
         <IconMenu />
       </button>
 
       {/* Search */}
       <div className="relative flex-1 max-w-xl">
-        <div className={`absolute left-3 top-1/2 -translate-y-1/2 ${isDark ? "text-gray-500" : "text-gray-400"}`}>
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">
           <IconSearch />
         </div>
         <input
@@ -77,11 +77,12 @@ export default function Navbar({ onSidebarToggle }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search features, roadmap, companies..."
-          className={`w-full rounded-lg pl-9 pr-4 py-2 text-sm placeholder-gray-600 focus:outline-none transition-colors ${
-            isDark
-              ? "bg-[#0f1420] border border-[#1e2535] text-white focus:border-[#2a3550]"
-              : "bg-white border border-[#e2e8f0] text-gray-900 focus:border-[#94a3b8]"
-          }`}
+          style={{
+            background: "var(--bg-input)",
+            border: "1px solid var(--border)",
+            color: "var(--text-primary)",
+          }}
+          className="w-full rounded-lg pl-9 pr-4 py-2 text-sm placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-focus)] transition-colors"
         />
       </div>
 
@@ -90,7 +91,7 @@ export default function Navbar({ onSidebarToggle }) {
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className={`transition-colors ${isDark ? "text-gray-400 hover:text-yellow-400" : "text-gray-500 hover:text-yellow-500"}`}
+          className="text-muted hover:text-yellow-400 transition-colors"
           title={`Switch to ${isDark ? "light" : "dark"} mode`}
         >
           {isDark ? <IconSun /> : <IconMoon />}
@@ -98,7 +99,7 @@ export default function Navbar({ onSidebarToggle }) {
 
         {isAuthenticated ? (
           <>
-            <button className={`transition-colors ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}>
+            <button className="text-muted hover:text-primary-custom transition-colors">
               <IconBell />
             </button>
             <div className="flex items-center gap-2 cursor-pointer" onClick={handleLogout} title="Logout">
@@ -109,13 +110,13 @@ export default function Navbar({ onSidebarToggle }) {
                 {initials}
               </div>
               <div className="hidden md:block leading-tight">
-                <div className={`text-sm font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{user?.name}</div>
+                <div className="text-sm font-semibold text-primary-custom">{user?.name}</div>
               </div>
             </div>
           </>
         ) : (
           <>
-            <Link to="/login" className={`text-sm font-medium transition-colors hidden sm:block ${isDark ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}>
+            <Link to="/login" className="text-sm font-medium transition-colors hidden sm:block text-secondary hover:text-primary-custom">
               Sign in
             </Link>
             <Link

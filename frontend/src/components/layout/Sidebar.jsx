@@ -76,12 +76,12 @@ export default function Sidebar({ open }) {
       className="fixed top-14 left-0 bottom-0 z-40 flex flex-col pt-4 pb-6 transition-all duration-300 overflow-hidden"
       style={{
         width: open ? "220px" : "0px",
-        background: isDark ? "rgba(10,13,24,0.97)" : "rgba(255,255,255,0.97)",
-        borderRight: isDark ? "0.5px solid #1e2535" : "0.5px solid #e2e8f0",
+        background: "var(--bg-sidebar)",
+        borderRight: "0.5px solid var(--border)",
       }}
     >
       <nav className="flex flex-col gap-0.5 px-3 flex-1 min-w-[220px]">
-        <p className={`text-[10px] tracking-widest uppercase font-semibold px-3 mb-2 ${isDark ? "text-gray-600" : "text-gray-400"}`}>Menu</p>
+        <p className="text-[10px] tracking-widest uppercase font-semibold px-3 mb-2 text-muted">Menu</p>
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.path}
@@ -89,16 +89,14 @@ export default function Sidebar({ open }) {
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 isActive
-                  ? isDark ? "bg-[#1a1f35] text-white" : "bg-[#eef2ff] text-indigo-700"
-                  : isDark
-                    ? "text-gray-400 hover:text-white hover:bg-[#131826]"
-                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                  ? "bg-active text-primary-custom"
+                  : "text-secondary hover:text-primary-custom hover:bg-[var(--bg-hover)]"
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <span className={isActive ? (isDark ? "text-cyan-400" : "text-indigo-600") : ""}>{item.icon}</span>
+                <span className={isActive ? "text-cyan-400" : ""}>{item.icon}</span>
                 {item.label}
               </>
             )}
@@ -106,9 +104,9 @@ export default function Sidebar({ open }) {
         ))}
       </nav>
       <div className="px-6 min-w-[220px]">
-        <div className={`border-t pt-4 ${isDark ? "border-[#1e2535]" : "border-gray-200"}`}>
-          <p className={`text-[10px] uppercase tracking-widest mb-1 ${isDark ? "text-gray-600" : "text-gray-400"}`}>HireVerse</p>
-          <p className={`text-[11px] ${isDark ? "text-gray-600" : "text-gray-400"}`}>Placement OS v1.0</p>
+        <div className="border-t border-default pt-4">
+          <p className="text-[10px] uppercase tracking-widest mb-1 text-muted">HireVerse</p>
+          <p className="text-[11px] text-muted">Placement OS v1.0</p>
         </div>
       </div>
     </aside>

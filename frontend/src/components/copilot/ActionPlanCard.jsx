@@ -1,15 +1,15 @@
 import { AIAvatar } from "./ChatMessage";
 
 const STATUS_STYLES = {
-  done:     { dot: "#22c55e", line: "#22c55e", text: "text-gray-400 line-through", badge: "Done" },
-  current:  { dot: "#06B6D4", line: "#1e2535", text: "text-white font-semibold",   badge: "In Progress" },
-  upcoming: { dot: "#2a3550", line: "#1e2535", text: "text-gray-500",              badge: "Upcoming" },
+  done:     { dot: "#22c55e", line: "#22c55e", text: "text-[var(--text-tertiary)] line-through", badge: "Done" },
+  current:  { dot: "#06B6D4", line: "var(--border)", text: "text-[var(--text-primary)] font-semibold",   badge: "In Progress" },
+  upcoming: { dot: "var(--border-focus)", line: "var(--border)", text: "text-[var(--text-muted)]",              badge: "Upcoming" },
 };
 
 const BADGE_COLORS = {
   done:     { bg: "rgba(34,197,94,0.12)", border: "rgba(34,197,94,0.3)", color: "#22c55e" },
   current:  { bg: "rgba(6,182,212,0.12)", border: "rgba(6,182,212,0.3)", color: "#06B6D4" },
-  upcoming: { bg: "rgba(75,85,99,0.2)",   border: "rgba(75,85,99,0.4)",  color: "#9ca3af" },
+  upcoming: { bg: "var(--bg-elevated)",   border: "0.5px solid var(--border)",  color: "var(--text-secondary)" },
 };
 
 export default function ActionPlanCard({ plan }) {
@@ -18,9 +18,9 @@ export default function ActionPlanCard({ plan }) {
       <AIAvatar />
       <div
         className="max-w-[85%] w-full rounded-2xl rounded-tl-sm p-6 transition-transform hover:scale-[1.01]"
-        style={{ background: "#111827", border: "0.5px solid #1e2535" }}
+        style={{ background: "var(--bg-elevated)", border: "0.5px solid var(--border)" }}
       >
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-4">30-Day Plan</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-4">30-Day Plan</p>
 
         <div className="flex flex-col">
           {plan.map((item, i) => {
@@ -42,7 +42,7 @@ export default function ActionPlanCard({ plan }) {
                 {/* Content */}
                 <div className={`pb-5 ${isLast ? "pb-0" : ""}`}>
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-gray-500 text-xs font-semibold uppercase tracking-widest">{item.week}</span>
+                    <span className="text-[var(--text-muted)] text-xs font-semibold uppercase tracking-widest">{item.week}</span>
                     <span
                       className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                       style={{ background: badge.bg, border: `0.5px solid ${badge.border}`, color: badge.color }}

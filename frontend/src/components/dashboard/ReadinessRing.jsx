@@ -14,14 +14,14 @@ export default function ReadinessRing({ percent = 72 }) {
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#1e2535"
+          stroke="var(--ring-track)"
           strokeWidth={strokeWidth}
         />
-        {/* Progress — gradient via linearGradient */}
+        {/* Progress — gradient via CSS vars */}
         <defs>
           <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#7C3AED" />
-            <stop offset="100%" stopColor="#06B6D4" />
+            <stop offset="0%" stopColor="var(--ring-gradient-from)" />
+            <stop offset="100%" stopColor="var(--ring-gradient-to)" />
           </linearGradient>
         </defs>
         <circle
@@ -39,8 +39,8 @@ export default function ReadinessRing({ percent = 72 }) {
       </svg>
       {/* Center label */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-white text-3xl font-extrabold leading-none">{percent}%</span>
-        <span className="text-gray-500 text-[10px] tracking-widest uppercase mt-1 font-medium">Readiness</span>
+        <span className="text-[var(--text-primary)] text-3xl font-extrabold leading-none">{percent}%</span>
+        <span className="text-[var(--text-muted)] text-[10px] tracking-widest uppercase mt-1 font-medium">Readiness</span>
       </div>
     </div>
   );

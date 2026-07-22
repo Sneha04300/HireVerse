@@ -12,8 +12,8 @@ export default function HeroCard() {
     <div
       className="rounded-2xl p-6 flex flex-col sm:flex-row gap-6 items-start"
       style={{
-        background: "linear-gradient(135deg, #0f1628 0%, #0a1a2a 100%)",
-        border: "0.5px solid #1e2a40",
+        background: "var(--bg-gradient-hero)",
+        border: "0.5px solid var(--border)",
       }}
     >
       {/* Ring */}
@@ -33,10 +33,10 @@ export default function HeroCard() {
         </span>
 
         <div>
-          <h2 className="text-white text-xl font-bold leading-tight">
+          <h2 className="text-[var(--text-primary)] text-xl font-bold leading-tight">
             You're on track for Amazon SDE
           </h2>
-          <p className="text-gray-400 text-sm mt-1.5 leading-relaxed max-w-md">
+          <p className="text-[var(--text-secondary)] text-sm mt-1.5 leading-relaxed max-w-md">
             Close your biggest gap — <span className="text-red-400 font-medium">Communication</span> — with 2 mock interviews this week.
           </p>
         </div>

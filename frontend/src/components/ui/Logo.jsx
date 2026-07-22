@@ -11,10 +11,10 @@ export default function Logo() {
         </svg>
       </div>
       <div>
-        <div className="text-white font-bold text-lg leading-none tracking-tight">
+        <div className="text-[var(--text-primary)] font-bold text-lg leading-none tracking-tight">
           HireVerse
         </div>
-        <div className="text-gray-400 text-[10px] tracking-widest uppercase font-medium mt-0.5">
+        <div className="text-[var(--text-tertiary)] text-[10px] tracking-widest uppercase font-medium mt-0.5">
           Placement OS
         </div>
       </div>

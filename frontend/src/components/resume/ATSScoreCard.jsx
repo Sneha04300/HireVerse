@@ -16,11 +16,11 @@ function ScoreRing({ score, size = 180, stroke = 16, label = "ATS Score" }) {
       <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
         <defs>
           <linearGradient id="atsGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#7C3AED" />
-            <stop offset="100%" stopColor="#06B6D4" />
+            <stop offset="0%" stopColor="var(--ring-gradient-from)" />
+            <stop offset="100%" stopColor="var(--ring-gradient-to)" />
           </linearGradient>
         </defs>
-        <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="#1e2535" strokeWidth={stroke} />
+        <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="var(--border)" strokeWidth={stroke} />
         <circle
           cx={size/2} cy={size/2} r={radius} fill="none"
           stroke={score >= 70 ? "url(#atsGrad)" : color}
@@ -32,8 +32,8 @@ function ScoreRing({ score, size = 180, stroke = 16, label = "ATS Score" }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-white text-4xl font-extrabold leading-none">{score}%</span>
-        <span className="text-gray-500 text-[10px] tracking-widest uppercase mt-1">{label}</span>
+        <span className="text-[var(--text-primary)] text-4xl font-extrabold leading-none">{score}%</span>
+        <span className="text-[var(--text-muted)] text-[10px] tracking-widest uppercase mt-1">{label}</span>
       </div>
     </div>
   );
@@ -42,36 +42,36 @@ function ScoreRing({ score, size = 180, stroke = 16, label = "ATS Score" }) {
 function BreakdownCard({ label, score, status }) {
   const color = scoreColor(score);
   return (
-    <div className="rounded-xl p-4 flex flex-col gap-2" style={{ background: "#111827", border: "0.5px solid #1e2535" }}>
-      <div className="flex items-center justify-between">
-        <span className="text-gray-400 text-xs font-semibold uppercase tracking-widest">{label}</span>
-        <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{
+    <div className="rounded-xl p-4 flex flex-col gap-2 h-full" style={{ background: "var(--bg-elevated)", border: "0.5px solid var(--border)" }}>
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[var(--text-tertiary)] text-xs font-semibold uppercase tracking-widest truncate">{label}</span>
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0" style={{
           background: `${color}20`, border: `0.5px solid ${color}60`, color
         }}>{status}</span>
       </div>
-      <span className="text-white text-3xl font-extrabold leading-none">{score}</span>
-      <div className="h-1.5 rounded-full" style={{ background: "#1e2535" }}>
+      <span className="text-[var(--text-primary)] text-3xl font-extrabold leading-none">{score}<span className="text-[var(--text-tertiary)] text-sm font-medium ml-0.5">/100</span></span>
+      <div className="h-1.5 rounded-full mt-auto" style={{ background: "var(--border)" }}>
         <div className="h-1.5 rounded-full transition-all duration-700" style={{ width: `${score}%`, background: color }} />
       </div>
     </div>
   );
 }
 
-export default function ATSScoreCard({ atsScore, batchRank, breakdown }) {
+export default function ATSScoreCard({ atsScore, batchRank, breakdown = [] }) {
   return (
     <div className="flex flex-col gap-5">
       {/* Score ring */}
       <div
         className="rounded-2xl p-8 flex flex-col items-center gap-4"
-        style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+        style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
       >
-        <p className="text-[10px] font-bold tracking-widest uppercase text-gray-500">Resume Score</p>
+        <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--text-muted)]">Resume Score</p>
         <ScoreRing score={atsScore} />
-        <p className="text-gray-400 text-sm">{batchRank} of your batch</p>
+        <p className="text-[var(--text-tertiary)] text-sm">{batchRank} of your batch</p>
       </div>
 
       {/* Breakdown grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 items-stretch">
         {breakdown.map((b) => (
           <BreakdownCard key={b.label} {...b} />
         ))}

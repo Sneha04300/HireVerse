@@ -11,10 +11,10 @@ export default function GoalsCard({ goals: initialGoals }) {
   return (
     <div
       className="rounded-2xl p-6 flex flex-col gap-4"
-      style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
       <div className="flex items-center justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-500">Weekly Goals</p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Weekly Goals</p>
         <span
           className="text-xs font-bold px-3 py-1 rounded-full"
           style={{ background: "rgba(124,58,237,0.12)", border: "0.5px solid rgba(124,58,237,0.3)", color: "#a78bfa" }}
@@ -23,7 +23,7 @@ export default function GoalsCard({ goals: initialGoals }) {
         </span>
       </div>
 
-      <div className="h-1.5 rounded-full" style={{ background: "#1e2535" }}>
+      <div className="h-1.5 rounded-full" style={{ background: "var(--border)" }}>
         <div
           className="h-1.5 rounded-full transition-all duration-500"
           style={{ width: `${(completed / goals.length) * 100}%`, background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
@@ -34,7 +34,7 @@ export default function GoalsCard({ goals: initialGoals }) {
         {goals.map((g) => (
           <label
             key={g.id}
-            className="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer hover:bg-[#131826] transition-colors"
+            className="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer hover:bg-[var(--bg-hover)] transition-colors"
           >
             <button
               type="button"
@@ -42,7 +42,7 @@ export default function GoalsCard({ goals: initialGoals }) {
               className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-colors"
               style={{
                 background: g.done ? "linear-gradient(135deg,#7C3AED,#06B6D4)" : "transparent",
-                border: g.done ? "none" : "1.5px solid #2a3550",
+                border: g.done ? "none" : "1.5px solid var(--border-focus)",
               }}
             >
               {g.done && (
@@ -51,7 +51,7 @@ export default function GoalsCard({ goals: initialGoals }) {
                 </svg>
               )}
             </button>
-            <span className={`text-sm ${g.done ? "text-gray-500 line-through" : "text-gray-200"}`}>
+            <span className={`text-sm ${g.done ? "text-[var(--text-muted)] line-through" : "text-[var(--text-primary)]"}`}>
               {g.label}
             </span>
           </label>

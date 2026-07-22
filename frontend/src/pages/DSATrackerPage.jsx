@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
-import StatsCards from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/StatsCards";
-import TopicProgress from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/TopicProgress";
-import ActivityHeatmap from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/ActivityHeatmap";
-import AIInsights from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/AIInsights";
-import SuggestedProblems from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/SuggestedProblems";
-import TopicBreakdown from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/TopicBreakdown";
-import StruggleAnalysis from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/StruggleAnalysis";
-import ContestPerformance from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/ContestPerformance";
-import LeetCodeCard from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/LeetCodeCard";
-import GoalsCard from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/GoalsCard";
-import DSAReadiness from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/DSAReadiness";
-import { DSALoadingState, DSAEmptyState } from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/components/dsa/DSAStates";
+import StatsCards from "../components/dsa/StatsCards";
+import TopicProgress from "../components/dsa/TopicProgress";
+import ActivityHeatmap from "../components/dsa/ActivityHeatmap";
+import AIInsights from "../components/dsa/AIInsights";
+import SuggestedProblems from "../components/dsa/SuggestedProblems";
+import TopicBreakdown from "../components/dsa/TopicBreakdown";
+import StruggleAnalysis from "../components/dsa/StruggleAnalysis";
+import ContestPerformance from "../components/dsa/ContestPerformance";
+import LeetCodeCard from "../components/dsa/LeetCodeCard";
+import GoalsCard from "../components/dsa/GoalsCard";
+import DSAReadiness from "../components/dsa/DSAReadiness";
+import { DSALoadingState, DSAEmptyState } from "../components/dsa/DSAStates";
 import {
   DSA_STATS,
   TOPICS,
@@ -24,7 +24,7 @@ import {
   LEETCODE,
   WEEKLY_GOALS,
   DSA_READINESS,
-} from "../../../../../../Downloads/hireverse-dsa-tracker/hireverse/src/data/dsaDummyData";
+} from "../data/dsaDummyData";
 
 // Toggle this to preview states quickly: "loading" | "empty" | "data"
 const PAGE_STATE = "data";
@@ -41,7 +41,7 @@ export default function DSATrackerPage() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(160deg,#0a0d18 0%,#080f1a 50%,#050d14 100%)" }}>
+    <div className="min-h-screen" style={{ background: "var(--bg-gradient-hero)" }}>
       <Navbar onSidebarToggle={() => setSidebarOpen((v) => !v)} />
       <Sidebar open={sidebarOpen} />
 
@@ -54,8 +54,8 @@ export default function DSATrackerPage() {
           {/* ── Hero ── */}
           <div className="mb-8">
             <p className="text-[11px] font-bold uppercase tracking-widest text-cyan-400 mb-2">Practice</p>
-            <h1 className="text-3xl font-extrabold text-white">DSA Tracker</h1>
-            <p className="text-gray-500 text-sm mt-2 max-w-xl">
+            <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">DSA Tracker</h1>
+            <p className="text-[var(--text-muted)] text-sm mt-2 max-w-xl">
               Track your coding progress, streaks, topic mastery and placement readiness.
             </p>
           </div>
@@ -64,7 +64,7 @@ export default function DSATrackerPage() {
           {loading && <DSALoadingState />}
 
           {!loading && isEmpty && (
-            <div className="rounded-2xl" style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}>
+            <div className="rounded-2xl" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
               <DSAEmptyState />
             </div>
           )}

@@ -10,10 +10,10 @@ function SkillBar({ label, score, color }) {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-gray-300 text-sm">{label}</span>
-        <span className="text-white text-sm font-bold">{score}</span>
+        <span className="text-[var(--text-secondary)] text-sm">{label}</span>
+        <span className="text-[var(--text-primary)] text-sm font-bold">{score}</span>
       </div>
-      <div className="h-2 rounded-full" style={{ background: "#1e2535" }}>
+      <div className="h-2 rounded-full" style={{ background: "var(--ring-track)" }}>
         <div
           className="h-2 rounded-full transition-all duration-700"
           style={{ width: `${score}%`, background: color }}
@@ -27,10 +27,10 @@ export default function SkillBreakdown() {
   return (
     <div
       className="rounded-2xl p-6 flex flex-col gap-5 h-full"
-      style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
       <div className="flex items-center justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-500">Skill Breakdown</p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Skill Breakdown</p>
         <button className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors">
           View details →
         </button>

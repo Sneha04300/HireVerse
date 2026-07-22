@@ -6,7 +6,7 @@ export default function AuthLayout({ children }) {
     <div
       className="min-h-screen flex"
       style={{
-        background: "linear-gradient(135deg, #1a1040 0%, #0f172a 40%, #0a2a2a 100%)",
+        background: "var(--bg-gradient-hero)",
       }}
     >
       {/* Left Panel - Hero */}
@@ -35,14 +35,14 @@ export default function AuthLayout({ children }) {
               Career Decision.
             </span>
           </h2>
-          <p className="mt-4 text-gray-400 text-base leading-relaxed max-w-xs">
+          <p className="mt-4 text-[var(--text-tertiary)] text-base leading-relaxed max-w-xs">
             Resume scoring, ATS checks, DSA tracking, mock interviews and a
             personalised roadmap — all wired into one placement co-pilot.
           </p>
           <FeaturePills />
         </div>
 
-        <p className="text-gray-600 text-sm relative z-10">
+        <p className="text-[var(--text-muted)] text-sm relative z-10">
           Trusted by 12,000+ students across 80+ campuses.
         </p>
       </div>
@@ -57,9 +57,9 @@ export default function AuthLayout({ children }) {
         <div
           className="w-full max-w-md mx-auto rounded-2xl p-7 sm:p-8"
           style={{
-            background: "rgba(17, 24, 39, 0.85)",
+            background: "var(--bg-elevated)",
             backdropFilter: "blur(16px)",
-            border: "1px solid #252d3d",
+            border: "1px solid var(--border-light)",
           }}
         >
           {children}

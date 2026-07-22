@@ -11,12 +11,12 @@ export default function InputField({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-200 mb-1.5">
+      <label htmlFor={id} className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
         {label}
       </label>
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none">
             {icon}
           </div>
         )}

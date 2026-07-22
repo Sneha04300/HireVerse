@@ -38,15 +38,15 @@ const WEIGHTS = {
 };
 
 const SECTION_MAX = {
-  formatting: 98,
-  keywords:   97,
-  skills:     97,
-  projects:   97,
-  experience: 97,
-  education:  97,
+  formatting: 95,
+  keywords:   94,
+  skills:     95,
+  projects:   93,
+  experience: 92,
+  education:  95,
 };
 
-const ATS_MAX = 98;
+const ATS_MAX = 96;
 
 const cap = (score, max) => Math.min(score, max);
 
@@ -69,8 +69,9 @@ function scoreFormatting(extractedData) {
   const present = checks.filter((c) => extractedData[c.key]);
   const missing = checks.filter((c) => !extractedData[c.key]);
 
-  const count = present.length + (hasContent ? 1 : 0);
-  const score = cap(Math.round((count / 5) * 100), SECTION_MAX.formatting);
+  const contactScore = Math.round((present.length / 4) * 75);
+  const contentScore = hasContent ? 20 : 0;
+  const score = cap(contactScore + contentScore, SECTION_MAX.formatting);
 
   const parts = [];
   if (present.length > 0) {
@@ -94,7 +95,7 @@ function scoreKeywords(extractedData, rawText) {
 
   const lower = rawText.toLowerCase();
   const matches = ATS_KEYWORD_BANK.filter((kw) => lower.includes(kw));
-  const score = cap(Math.min(100, Math.round((matches.length / 20) * 100)), SECTION_MAX.keywords);
+  const score = cap(Math.min(100, Math.round((matches.length / 30) * 100)), SECTION_MAX.keywords);
 
   const categoryHits = Object.entries(KEYWORD_CATEGORIES).map(([cat, kws]) => {
     const hit = kws.filter((kw) => matches.includes(kw));
@@ -121,7 +122,7 @@ function scoreKeywords(extractedData, rawText) {
 // ─────────────────────────────────────────────────────────────────────────────
 function scoreSkills(extractedData) {
   const skills = Array.isArray(extractedData.skills) ? extractedData.skills : [];
-  const score = cap(Math.min(100, Math.round((skills.length / 15) * 100)), SECTION_MAX.skills);
+  const score = cap(Math.min(100, Math.round((skills.length / 20) * 100)), SECTION_MAX.skills);
 
   if (skills.length === 0) {
     return { score: 0, reason: "No skills detected. Add a dedicated skills section." };
@@ -159,13 +160,13 @@ function scoreProjects(extractedData) {
     return { score: 0, reason: "No projects found. Add 2–4 projects with tech stack and impact." };
   }
 
-  const countScore = Math.min(40, projects.length * 10);
+  const countScore = Math.min(30, projects.length * 7);
   const hasDesc = projects.filter((p) => p.description && p.description.length > 5).length;
-  const descScore = Math.min(20, Math.round((hasDesc / projects.length) * 20));
+  const descScore = Math.min(25, Math.round((hasDesc / projects.length) * 25));
   const hasTech = projects.filter((p) => Array.isArray(p.tech) && p.tech.length > 0).length;
-  const techScore = Math.min(20, Math.round((hasTech / projects.length) * 20));
+  const techScore = Math.min(25, Math.round((hasTech / projects.length) * 25));
   const hasLink = projects.filter((p) => p.link).length;
-  const linkScore = Math.min(20, Math.round((hasLink / projects.length) * 20));
+  const linkScore = Math.min(15, Math.round((hasLink / projects.length) * 15));
 
   const raw = countScore + descScore + techScore + linkScore;
   const score = cap(raw, SECTION_MAX.projects);
@@ -202,11 +203,11 @@ function scoreExperience(extractedData) {
     return { score: 0, reason: "No work or internship experience found. Add internships, freelance, or open-source contributions." };
   }
 
-  const countScore = Math.min(40, experience.length * 15);
+  const countScore = Math.min(30, experience.length * 10);
   const hasDesc = experience.filter((e) => Array.isArray(e.description) && e.description.length > 0).length;
   const descScore = Math.min(30, Math.round((hasDesc / experience.length) * 30));
   const hasCompany = experience.filter((e) => e.company && e.company.length > 0).length;
-  const companyScore = Math.min(30, Math.round((hasCompany / experience.length) * 30));
+  const companyScore = Math.min(20, Math.round((hasCompany / experience.length) * 20));
 
   const raw = countScore + descScore + companyScore;
   const score = cap(raw, SECTION_MAX.experience);

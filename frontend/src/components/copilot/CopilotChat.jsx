@@ -24,7 +24,7 @@ export default function CopilotChat({ messages, readinessData, planData, inputVa
   return (
     <div
       className="rounded-2xl flex flex-col overflow-hidden"
-      style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
       {/* Messages */}
       <div ref={scrollRef} className="flex flex-col gap-5 p-6 max-h-[600px] overflow-y-auto">
@@ -43,14 +43,14 @@ export default function CopilotChat({ messages, readinessData, planData, inputVa
       <form
         onSubmit={handleSubmit}
         className="flex items-center gap-3 p-4 border-t"
-        style={{ borderColor: "#1e2535", background: "#0a0d16" }}
+        style={{ borderColor: "var(--border)", background: "var(--bg-base)" }}
       >
         <input
           type="text"
           value={inputValue}
           onChange={(e) => onInputChange(e.target.value)}
           placeholder="Ask anything..."
-          className="flex-1 bg-[#1a1f2e] border border-[#252d3d] rounded-xl px-4 py-3 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-[#4B5563] transition-colors"
+          className="flex-1 bg-[var(--bg-elevated)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-[var(--text-primary)] text-sm placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--text-muted)] transition-colors"
         />
         <button
           type="submit"

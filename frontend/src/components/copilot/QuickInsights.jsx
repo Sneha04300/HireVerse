@@ -22,10 +22,10 @@ export function WeeklyChecklistCard({ checklist }) {
   return (
     <div
       className="rounded-2xl p-6 flex flex-col gap-4 transition-transform hover:scale-[1.01]"
-      style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
       <div className="flex items-center justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-500">This Week</p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">This Week</p>
         <span
           className="text-xs font-bold px-2.5 py-1 rounded-full"
           style={{ background: "rgba(124,58,237,0.12)", border: "0.5px solid rgba(124,58,237,0.3)", color: "#a78bfa" }}
@@ -41,12 +41,12 @@ export function WeeklyChecklistCard({ checklist }) {
               className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
               style={{
                 background: item.done ? "linear-gradient(135deg,#7C3AED,#06B6D4)" : "transparent",
-                border: item.done ? "none" : "1.5px solid #2a3550",
+                border: item.done ? "none" : "1.5px solid var(--border-focus)",
               }}
             >
               {item.done && <IconCheck />}
             </span>
-            <span className={`text-sm ${item.done ? "text-gray-500 line-through" : "text-gray-200"}`}>
+            <span className={`text-sm ${item.done ? "text-[var(--text-muted)] line-through" : "text-[var(--text-primary)]"}`}>
               {item.label}
             </span>
           </div>
@@ -60,9 +60,9 @@ export default function QuickInsights({ insights }) {
   return (
     <div
       className="rounded-2xl p-6 flex flex-col gap-4 transition-transform hover:scale-[1.01]"
-      style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
-      <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-500">AI Insights</p>
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">AI Insights</p>
 
       <div className="flex flex-col gap-3">
         {insights.map((insight) => (
@@ -70,7 +70,7 @@ export default function QuickInsights({ insights }) {
             <span className="mt-0.5 flex-shrink-0">
               {insight.type === "positive" ? <IconTrendUp /> : <IconAlert />}
             </span>
-            <p className="text-gray-300 text-sm leading-relaxed">{insight.text}</p>
+            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{insight.text}</p>
           </div>
         ))}
       </div>

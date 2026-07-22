@@ -60,7 +60,7 @@ export default function CareerCopilotPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(160deg,#0a0d18 0%,#080f1a 50%,#050d14 100%)" }}>
+    <div className="min-h-screen" style={{ background: "var(--bg-base)" }}>
       <Navbar onSidebarToggle={() => setSidebarOpen((v) => !v)} />
       <Sidebar open={sidebarOpen} />
 
@@ -73,8 +73,8 @@ export default function CareerCopilotPage() {
           {/* ── Hero ── */}
           <div className="mb-8">
             <p className="text-[11px] font-bold uppercase tracking-widest text-cyan-400 mb-2">AI</p>
-            <h1 className="text-3xl font-extrabold text-white">Career Copilot</h1>
-            <p className="text-gray-500 text-sm mt-2 max-w-xl">
+            <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">Career Copilot</h1>
+            <p className="text-[var(--text-muted)] text-sm mt-2 max-w-xl">
               Ask anything about your placement journey. Trained on your profile and goals.
             </p>
           </div>
@@ -83,7 +83,7 @@ export default function CareerCopilotPage() {
           {pageState === "loading" && <CopilotLoadingState />}
 
           {pageState === "empty" && (
-            <div className="rounded-2xl" style={{ background: "#0d1117", border: "0.5px solid #1e2535" }}>
+            <div className="rounded-2xl" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
               <CopilotEmptyState onPromptClick={handleSend} />
             </div>
           )}

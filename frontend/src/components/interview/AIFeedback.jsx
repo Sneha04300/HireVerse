@@ -2,13 +2,13 @@ export default function AIFeedback({ feedback, decision }) {
   return (
     <div className="mt-4 space-y-3">
       {/* Feedback card */}
-      <div className="rounded-xl border border-white/10 bg-[#0a0c18]/80 p-4">
-        <p className="text-xs font-semibold tracking-widest text-gray-400 mb-3">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-base)]/80 p-4">
+        <p className="text-xs font-semibold tracking-widest text-[var(--text-tertiary)] mb-3">
           AI FEEDBACK
         </p>
         <ul className="space-y-1.5">
           {feedback.map((item, i) => (
-            <li key={i} className="text-sm text-gray-300 leading-relaxed">
+            <li key={i} className="text-sm text-[var(--text-secondary)] leading-relaxed">
               {item}
             </li>
           ))}
