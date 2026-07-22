@@ -1,242 +1,216 @@
-/**
- * dsaController.js
- * Handles HTTP layer for DSA Tracker — validates input, delegates to service,
- * returns frontend-ready responses.
- */
+const dsaService = require("../services/dsaService");
+const dsaAnalyticsService = require("../services/dsaAnalyticsService");
+const { generateDSAInsights } = require("../services/dsaCoachService");
+const leetcodeService = require("../services/leetcodeService");
 
-const DSAProgress = require("../models/DSAProgress");
-const dsaService   = require("../services/dsaService");
-
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/dsa/update-progress
-// Body: { topicName, count?, difficulty? }
-// Records that the user solved `count` problems in `topicName` today.
-// Updates: totalProblemsSolved, streak, heatmap, topic %, weak/strong topics.
-// ─────────────────────────────────────────────────────────────────────────────
-const updateProgress = async (req, res) => {
+const createProblem = async (req, res) => {
   try {
-    const { topicName, count = 1, difficulty = "Medium" } = req.body;
+    const data = req.body;
 
-    if (!topicName) {
-      return res.status(400).json({ success: false, message: "topicName is required." });
+    if (!data.title || !data.difficulty) {
+      return res.status(400).json({ success: false, message: "title and difficulty are required." });
     }
 
-    if (!DSAProgress.SUPPORTED_TOPICS.includes(topicName)) {
-      return res.status(400).json({
-        success: false,
-        message: `Invalid topicName. Must be one of: ${DSAProgress.SUPPORTED_TOPICS.join(", ")}`,
-      });
+    if (!["Easy", "Medium", "Hard"].includes(data.difficulty)) {
+      return res.status(400).json({ success: false, message: "difficulty must be Easy, Medium, or Hard." });
     }
 
-    const doc = await dsaService.recordProblemSolved(req.user._id, { topicName, count, difficulty });
+    const problem = await dsaService.createProblem(req.user._id, data);
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
-      message: "Progress updated successfully.",
-      data: dsaService.buildDashboardResponse(doc),
+      message: "Problem created successfully.",
+      data: problem,
     });
   } catch (err) {
-    console.error("[updateProgress]", err);
-    return res.status(500).json({ success: false, message: "Failed to update progress.", error: err.message });
+    console.error("[dsaController.createProblem]", err);
+    return res.status(500).json({ success: false, message: "Failed to create problem.", error: err.message });
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/dsa/dashboard
-// Returns the full dashboard payload — stats, topics, heatmap, AI insights,
-// suggested problems, contest stats. Matches the frontend page 1:1.
-// ─────────────────────────────────────────────────────────────────────────────
-const getDashboard = async (req, res) => {
+const getAllProblems = async (req, res) => {
   try {
-    let doc = await dsaService.getOrCreateProgress(req.user._id);
+    const filters = {};
 
-    // Passive streak check — breaks streak if user missed a day, even if
-    // they haven't solved anything yet today.
-    doc = dsaService.checkAndBreakStreak(doc);
-    await doc.save();
+    if (req.query.status) filters.status = req.query.status;
+    if (req.query.difficulty) filters.difficulty = req.query.difficulty;
+    if (req.query.platform) filters.platform = req.query.platform;
+    if (req.query.topic) filters.topic = { $in: [req.query.topic] };
+    if (req.query.bookmarked === "true") filters.bookmarked = true;
+
+    const problems = await dsaService.getAllProblems(req.user._id, filters);
 
     return res.status(200).json({
       success: true,
-      data: dsaService.buildDashboardResponse(doc),
+      count: problems.length,
+      data: problems,
     });
   } catch (err) {
-    console.error("[getDashboard]", err);
+    console.error("[dsaController.getAllProblems]", err);
+    return res.status(500).json({ success: false, message: "Failed to fetch problems.", error: err.message });
+  }
+};
+
+const getProblem = async (req, res) => {
+  try {
+    const problem = await dsaService.getProblem(req.user._id, req.params.id);
+
+    if (!problem) {
+      return res.status(404).json({ success: false, message: "Problem not found." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: problem,
+    });
+  } catch (err) {
+    console.error("[dsaController.getProblem]", err);
+    return res.status(500).json({ success: false, message: "Failed to fetch problem.", error: err.message });
+  }
+};
+
+const updateProblem = async (req, res) => {
+  try {
+    const problem = await dsaService.updateProblem(req.user._id, req.params.id, req.body);
+
+    if (!problem) {
+      return res.status(404).json({ success: false, message: "Problem not found." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Problem updated successfully.",
+      data: problem,
+    });
+  } catch (err) {
+    console.error("[dsaController.updateProblem]", err);
+    return res.status(500).json({ success: false, message: "Failed to update problem.", error: err.message });
+  }
+};
+
+const deleteProblem = async (req, res) => {
+  try {
+    const problem = await dsaService.deleteProblem(req.user._id, req.params.id);
+
+    if (!problem) {
+      return res.status(404).json({ success: false, message: "Problem not found." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Problem deleted successfully.",
+    });
+  } catch (err) {
+    console.error("[dsaController.deleteProblem]", err);
+    return res.status(500).json({ success: false, message: "Failed to delete problem.", error: err.message });
+  }
+};
+
+const toggleBookmark = async (req, res) => {
+  try {
+    const problem = await dsaService.toggleBookmark(req.user._id, req.params.id);
+
+    if (!problem) {
+      return res.status(404).json({ success: false, message: "Problem not found." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: problem.bookmarked ? "Problem bookmarked." : "Bookmark removed.",
+      data: problem,
+    });
+  } catch (err) {
+    console.error("[dsaController.toggleBookmark]", err);
+    return res.status(500).json({ success: false, message: "Failed to toggle bookmark.", error: err.message });
+  }
+};
+
+const incrementRevision = async (req, res) => {
+  try {
+    const problem = await dsaService.incrementRevision(req.user._id, req.params.id);
+
+    if (!problem) {
+      return res.status(404).json({ success: false, message: "Problem not found." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Revision count incremented.",
+      data: problem,
+    });
+  } catch (err) {
+    console.error("[dsaController.incrementRevision]", err);
+    return res.status(500).json({ success: false, message: "Failed to increment revision.", error: err.message });
+  }
+};
+
+const getDashboard = async (req, res) => {
+  console.log("[DIAG] GET /api/dsa/dashboard — userId:", req.user?._id);
+  try {
+    const dashboard = await dsaAnalyticsService.calculateDashboard(req.user._id);
+    console.log("[DIAG] Dashboard computed OK — totalSolved:", dashboard.overview.totalSolved);
+    return res.status(200).json({
+      success: true,
+      data: dashboard,
+    });
+  } catch (err) {
+    console.error("[DIAG] getDashboard ERROR:", err);
+    console.error("[DIAG] Stack:", err.stack);
     return res.status(500).json({ success: false, message: "Failed to fetch dashboard.", error: err.message });
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/dsa/topics
-// Returns just the topic-progress breakdown (lighter payload than dashboard).
-// ─────────────────────────────────────────────────────────────────────────────
-const getTopics = async (req, res) => {
+const getCoach = async (req, res) => {
   try {
-    const doc = await dsaService.getOrCreateProgress(req.user._id);
-
-    const topics = doc.topicProgress.map((t) => ({
-      id:     t.topicName.toLowerCase().replace(/\s+/g, "-"),
-      label:  t.topicName,
-      solved: t.solvedCount,
-      total:  t.totalCount || Math.max(t.solvedCount, 1),
-      progressPercentage: t.progressPercentage,
-    }));
-
-    return res.status(200).json({ success: true, data: { topics } });
-  } catch (err) {
-    console.error("[getTopics]", err);
-    return res.status(500).json({ success: false, message: "Failed to fetch topics.", error: err.message });
-  }
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/dsa/heatmap
-// Returns the 90-day activity heatmap (GitHub contribution graph style).
-// Optional query: ?days=30 to limit range.
-// ─────────────────────────────────────────────────────────────────────────────
-const getHeatmap = async (req, res) => {
-  try {
-    const doc  = await dsaService.getOrCreateProgress(req.user._id);
-    const days = parseInt(req.query.days) || 90;
-    const cutoff = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);
-
-    const heatmap = doc.activityHeatmap.filter((d) => d.date >= cutoff);
+    const insights = await generateDSAInsights(req.user._id);
 
     return res.status(200).json({
       success: true,
-      data: {
-        heatmap,
-        totalActiveDays: heatmap.filter((d) => d.count > 0).length,
-        totalSubmissions: heatmap.reduce((sum, d) => sum + d.count, 0),
-      },
+      data: insights,
     });
   } catch (err) {
-    console.error("[getHeatmap]", err);
-    return res.status(500).json({ success: false, message: "Failed to fetch heatmap.", error: err.message });
+    console.error("[dsaController.getCoach]", err);
+    return res.status(500).json({ success: false, message: "Failed to generate coach insights.", error: err.message });
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/dsa/suggestions
-// Returns AI-picked suggested problems based on weakest topics.
-// ─────────────────────────────────────────────────────────────────────────────
-const getSuggestions = async (req, res) => {
+const getLeetCode = async (req, res) => {
   try {
-    let doc = await dsaService.getOrCreateProgress(req.user._id);
-
-    // Regenerate on-demand if empty (e.g. brand new user)
-    if (!doc.suggestedProblems.length) {
-      doc = dsaService.recalculateTopicStrengths(doc);
-      doc = dsaService.regenerateSuggestedProblems(doc);
-      await doc.save();
+    const profile = await leetcodeService.getLeetCodeProfile(req.user._id);
+    if (!profile) {
+      return res.status(200).json({ success: true, data: null });
     }
-
-    return res.status(200).json({
-      success: true,
-      data: {
-        suggestedProblems: doc.suggestedProblems,
-        basedOnWeakTopics: doc.weakTopics,
-      },
-    });
+    return res.status(200).json({ success: true, data: profile });
   } catch (err) {
-    console.error("[getSuggestions]", err);
-    return res.status(500).json({ success: false, message: "Failed to fetch suggestions.", error: err.message });
+    console.error("[dsaController.getLeetCode]", err);
+    return res.status(500).json({ success: false, message: "Failed to fetch LeetCode profile.", error: err.message });
   }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/dsa/add-problem
-// Body: { title, difficulty, topic, leetcodeUrl }
-// Manually adds a problem to the suggested-problems list (e.g. user bookmarks
-// a problem they want to revisit).
-// ─────────────────────────────────────────────────────────────────────────────
-const addProblem = async (req, res) => {
+const connectLeetCode = async (req, res) => {
   try {
-    const { title, difficulty, topic, leetcodeUrl = "" } = req.body;
-
-    if (!title || !difficulty || !topic) {
-      return res.status(400).json({ success: false, message: "title, difficulty, and topic are required." });
+    const { username } = req.body;
+    if (!username || !username.trim()) {
+      return res.status(400).json({ success: false, message: "Username is required." });
     }
-
-    if (!["Easy", "Medium", "Hard"].includes(difficulty)) {
-      return res.status(400).json({ success: false, message: "difficulty must be Easy, Medium, or Hard." });
-    }
-
-    if (!DSAProgress.SUPPORTED_TOPICS.includes(topic)) {
-      return res.status(400).json({
-        success: false,
-        message: `Invalid topic. Must be one of: ${DSAProgress.SUPPORTED_TOPICS.join(", ")}`,
-      });
-    }
-
-    const doc = await dsaService.getOrCreateProgress(req.user._id);
-
-    doc.suggestedProblems.unshift({
-      title,
-      difficulty,
-      topic,
-      leetcodeUrl,
-      platform: "LeetCode",
-      addedAt:  new Date(),
-    });
-
-    // Cap list size
-    doc.suggestedProblems = doc.suggestedProblems.slice(0, 20);
-
-    await doc.save();
-
-    return res.status(201).json({
-      success: true,
-      message: "Problem added successfully.",
-      data: { suggestedProblems: doc.suggestedProblems },
-    });
+    const profile = await leetcodeService.connectLeetCode(req.user._id, username.trim());
+    return res.status(200).json({ success: true, message: "LeetCode connected.", data: profile });
   } catch (err) {
-    console.error("[addProblem]", err);
-    return res.status(500).json({ success: false, message: "Failed to add problem.", error: err.message });
-  }
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/dsa/update-streak
-// Body: { action: "increment" | "reset" } (optional, defaults to "increment")
-// Manually triggers streak logic — useful for a "Mark today as solved" button
-// that isn't tied to a specific topic.
-// ─────────────────────────────────────────────────────────────────────────────
-const updateStreak = async (req, res) => {
-  try {
-    const { action = "increment" } = req.body;
-    let doc = await dsaService.getOrCreateProgress(req.user._id);
-
-    if (action === "reset") {
-      doc.currentStreak  = 0;
-      doc.lastSolvedDate = null;
-    } else {
-      doc = dsaService.applyStreakLogic(doc);
-      doc = dsaService.incrementHeatmapDay(doc, 0); // ensure today's cell exists even with 0 problems
-    }
-
-    await doc.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Streak updated successfully.",
-      data: {
-        currentStreak: doc.currentStreak,
-        longestStreak: doc.longestStreak,
-        lastSolvedDate: doc.lastSolvedDate,
-      },
-    });
-  } catch (err) {
-    console.error("[updateStreak]", err);
-    return res.status(500).json({ success: false, message: "Failed to update streak.", error: err.message });
+    console.error("[dsaController.connectLeetCode]", err);
+    return res.status(500).json({ success: false, message: "Failed to connect LeetCode.", error: err.message });
   }
 };
 
 module.exports = {
-  updateProgress,
+  createProblem,
+  getAllProblems,
+  getProblem,
+  updateProblem,
+  deleteProblem,
+  toggleBookmark,
+  incrementRevision,
   getDashboard,
-  getTopics,
-  getHeatmap,
-  getSuggestions,
-  addProblem,
-  updateStreak,
+  getCoach,
+  getLeetCode,
+  connectLeetCode,
 };

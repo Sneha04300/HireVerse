@@ -1,35 +1,67 @@
-import { useState } from "react";
+import { useMemo } from "react";
 
-const INTENSITY_COLORS = [
-  "var(--heatmap-0)",                 // 0 - none
-  "var(--heatmap-1)",   // 1 - light
-  "var(--heatmap-2)",    // 2 - medium
-  "var(--heatmap-3)",  // 3 - strong
-  "var(--heatmap-4)",                 // 4 - intense
+const LEVELS = [
+  { max: 0, className: "bg-[var(--heatmap-0)]" },
+  { max: 1, className: "bg-[var(--heatmap-1)]" },
+  { max: 3, className: "bg-[var(--heatmap-2)]" },
+  { max: 6, className: "bg-[var(--heatmap-3)]" },
+  { max: Infinity, className: "bg-[var(--heatmap-4)]" },
 ];
 
-export default function ActivityHeatmap({ data }) {
-  const [hovered, setHovered] = useState(null);
-
-  // Group into 13 weeks x 7 days
-  const weeks = [];
-  for (let i = 0; i < data.length; i += 7) {
-    weeks.push(data.slice(i, i + 7));
+function getLevel(count) {
+  for (const l of LEVELS) {
+    if (count <= l.max) return l.className;
   }
+  return LEVELS[0].className;
+}
+
+function getTooltip(day) {
+  if (!day) return "";
+  const d = new Date(day.date);
+  const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return `${day.count} problem${day.count !== 1 ? "s" : ""} solved on ${label}`;
+}
+
+export default function ActivityHeatmap({ data }) {
+  const weeks = useMemo(() => {
+    if (!data || data.length === 0) return [];
+    const groups = [];
+    for (let i = 0; i < data.length; i += 7) {
+      groups.push(data.slice(i, i + 7));
+    }
+    return groups;
+  }, [data]);
+
+  if (!data || data.length === 0) {
+    return (
+      <div
+        className="rounded-2xl p-6 flex flex-col gap-4"
+        style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
+      >
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Activity</p>
+        <p className="text-[var(--text-muted)] text-sm">No activity data yet.</p>
+      </div>
+    );
+  }
+
+  const totalActive = data.filter((d) => d.count > 0).length;
+  const maxCount = Math.max(...data.map((d) => d.count), 1);
 
   return (
     <div
-      className="rounded-2xl p-6 relative"
+      className="rounded-2xl p-5 flex flex-col gap-4"
       style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between">
         <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Activity</p>
         <div className="flex items-center gap-1.5">
-          <span className="text-[var(--text-muted)] text-xs mr-1">Less</span>
-          {INTENSITY_COLORS.map((c, i) => (
-            <span key={i} className="w-2.5 h-2.5 rounded-sm" style={{ background: c }} />
+          <span className="text-[10px] text-[var(--text-muted)]">Less</span>
+          {LEVELS.map((_, i) => (
+            <span key={i} className={`w-2.5 h-2.5 rounded-sm ${getLevel(i > 0 ? LEVELS[i - 1]?.max || 0 : 0)}`}
+              style={i === 0 ? { background: "var(--heatmap-0)" } : undefined}
+            />
           ))}
-          <span className="text-[var(--text-muted)] text-xs ml-1">More</span>
+          <span className="text-[10px] text-[var(--text-muted)]">More</span>
         </div>
       </div>
 
@@ -39,33 +71,17 @@ export default function ActivityHeatmap({ data }) {
             {week.map((day, di) => (
               <div
                 key={di}
-                onMouseEnter={() => setHovered({ ...day, wi, di })}
-                onMouseLeave={() => setHovered(null)}
-                className="w-3.5 h-3.5 rounded-[3px] cursor-pointer transition-transform hover:scale-125"
-                style={{ background: INTENSITY_COLORS[day.intensity] }}
+                title={getTooltip(day)}
+                className={`w-3 h-3 rounded-[3px] ${getLevel(day.count)} cursor-pointer transition-transform hover:scale-125`}
               />
             ))}
           </div>
         ))}
       </div>
 
-      {/* Tooltip */}
-      {hovered && (
-        <div
-          className="absolute z-10 px-3 py-2 rounded-lg text-xs pointer-events-none shadow-xl"
-          style={{
-            background: "var(--bg-tooltip)",
-            border: "0.5px solid var(--border-focus)",
-            top: "70px",
-            left: `${24 + hovered.wi * 16}px`,
-          }}
-        >
-          <p className="text-[var(--text-primary)] font-semibold">{hovered.count} problems solved</p>
-          <p className="text-[var(--text-muted)]">{new Date(hovered.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
-        </div>
-      )}
-
-      <p className="text-[var(--text-muted)] text-xs mt-4">Last 90 days of submissions</p>
+      <p className="text-[var(--text-muted)] text-[11px]">
+        {totalActive} active day{totalActive !== 1 ? "s" : ""} in the last 90 days &middot; max {maxCount} problem{maxCount !== 1 ? "s" : ""}
+      </p>
     </div>
   );
 }

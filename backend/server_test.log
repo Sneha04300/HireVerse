@@ -1,0 +1,8 @@
+🚀 HireVerse API running on port 3001
+ MongoDB connected: ac-6jlyac9-shard-00-00.wdrqfd5.mongodb.net
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1

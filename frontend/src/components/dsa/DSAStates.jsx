@@ -47,7 +47,7 @@ export function DSALoadingState() {
   );
 }
 
-export function DSAEmptyState() {
+export function DSAEmptyState({ onAddFirst }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
       <div
@@ -59,16 +59,74 @@ export function DSAEmptyState() {
         </svg>
       </div>
       <div>
-        <h3 className="text-[var(--text-primary)] text-xl font-bold mb-2">No DSA activity yet</h3>
+        <h3 className="text-[var(--text-primary)] text-xl font-bold mb-2">No DSA problems tracked yet</h3>
         <p className="text-[var(--text-muted)] text-sm max-w-sm leading-relaxed">
-          Connect your LeetCode profile or start solving problems to track topic mastery, streaks, and get AI-picked recommendations.
+          Start solving problems and log them to track topic mastery, streaks, and progress.
         </p>
       </div>
       <button
+        onClick={onAddFirst}
         className="px-6 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
         style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
       >
-        Connect LeetCode
+        Add First Problem
+      </button>
+    </div>
+  );
+}
+
+export function DSACoachLoadingState() {
+  return (
+    <div
+      className="rounded-2xl p-6 flex flex-col gap-5"
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
+    >
+      <div className="flex items-center gap-2.5">
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+          style={{ background: "rgba(6,182,212,0.12)", border: "0.5px solid rgba(6,182,212,0.3)" }}
+        >
+          <svg className="w-5 h-5 text-cyan-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l1.5 4.5L11 9l-4.5 1.5L5 15l-1.5-4.5L-1 9l4.5-1.5L5 3zM19 9l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z" />
+          </svg>
+        </div>
+        <h3 className="text-[var(--text-primary)] font-bold text-base">AI Coach</h3>
+      </div>
+      <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+        <div className="flex gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: "0ms" }} />
+          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: "150ms" }} />
+          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: "300ms" }} />
+        </div>
+        <p className="text-[var(--text-muted)] text-sm">Analyzing your coding journey...</p>
+      </div>
+    </div>
+  );
+}
+
+export function DSAErrorState({ onRetry }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
+      <div
+        className="w-20 h-20 rounded-2xl flex items-center justify-center"
+        style={{ background: "rgba(239,68,68,0.1)", border: "0.5px solid rgba(239,68,68,0.3)" }}
+      >
+        <svg className="w-9 h-9 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+      </div>
+      <div>
+        <h3 className="text-[var(--text-primary)] text-xl font-bold mb-2">Failed to load dashboard</h3>
+        <p className="text-[var(--text-muted)] text-sm max-w-sm leading-relaxed">
+          Something went wrong while fetching your DSA data.
+        </p>
+      </div>
+      <button
+        onClick={onRetry}
+        className="px-6 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
+        style={{ background: "linear-gradient(90deg,#7C3AED,#06B6D4)" }}
+      >
+        Retry
       </button>
     </div>
   );
