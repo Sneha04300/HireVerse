@@ -68,3 +68,201 @@
 [Whisper] Transcription started
 [Whisper] Transcription completed
 [Whisper] Transcript received
+[GroQ] Question Generated
+[Interview] Interview Started
+[Interview] Question Generated
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784725495095.wav
+[Interview] Speech Generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q1: overallScore=28
+[GroQ] Question Generated
+[Interview] Question 2 generated: "What approach would you take to implement a load balancer in a cloud-based appl
+[Interview] Answer saved for Q1. Next: Q2
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784725514343.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q2: overallScore=10
+[GroQ] Question Generated
+[Interview] Question 3 generated: "How do you handle memory leaks in a multithreaded Java application?"
+[Interview] Answer saved for Q2. Next: Q3
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784725544785.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q3: overallScore=0
+[GroQ] Question Generated
+[Interview] Question 4 generated: "What data structures would you use to implement a cache with a least recently u
+[Interview] Answer saved for Q3. Next: Q4
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784725560255.wav
+[Interview] Next question speech generated
+[GroQ] Question Generated
+[Interview] Interview Started
+[Interview] Question Generated
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784726487548.wav
+[Interview] Speech Generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q1: overallScore=20
+[GroQ] Question Generated
+[Interview] Question 2 generated: "What design patterns would you use to implement a scalable caching mechanism?"
+[Interview] Answer saved for Q1. Next: Q2
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784726559169.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q2: overallScore=10
+[GroQ] Question Generated
+[Interview] Question 3 generated: "How would you handle errors in a distributed microservices architecture?"
+[Interview] Answer saved for Q2. Next: Q3
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784726579417.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q3: overallScore=28
+[GroQ] Question Generated
+[Interview] Question 4 generated: "What approach would you take to implement secure authentication in a RESTful AP
+[Interview] Answer saved for Q3. Next: Q4
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784726594490.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q4: overallScore=28
+[GroQ] Question Generated
+[Interview] Question 5 generated: "How would you architect a real-time data processing pipeline using Apache Kafka
+[Interview] Answer saved for Q4. Next: Q5
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784726612117.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q5: overallScore=20
+[GroQ] Question Generated
+[Interview] Question 6 generated: "How would you implement a load balancer using HAProxy and NGINX?"
+[Interview] Answer saved for Q5. Next: Q6
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784726634957.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q6: overallScore=0
+[GroQ] Final Report Generated
+[Interview] Final report generated
+[Interview] Answer saved for Q6. Next: Qnone
+[GroQ] Question Generated
+[Interview] Interview Started
+[Interview] Question Generated
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784731714391.wav
+[Interview] Speech Generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q1: overallScore=40
+[GroQ] Question Generated
+[Interview] Question 2 generated: "How do you approach debugging a simple code issue?"
+[Interview] Answer saved for Q1. Next: Q2
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784731746893.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q2: overallScore=84
+[GroQ] Question Generated
+[Interview] Question 3 generated: "What data structures do you use for efficient data storage and retrieval?"
+[Interview] Answer saved for Q2. Next: Q3
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784731840175.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q3: overallScore=75
+[GroQ] Question Generated
+[Interview] Question 4 generated: "How do you handle errors and exceptions in your code?"
+[Interview] Answer saved for Q3. Next: Q4
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784731875545.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q4: overallScore=75
+[GroQ] Question Generated
+[Interview] Question 5 generated: "How do you stay current with emerging trends and technologies in software devel
+[Interview] Answer saved for Q4. Next: Q5
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784731907548.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q5: overallScore=81
+[GroQ] Question Generated
+[Interview] Question 6 generated: "What is your preferred development environment or toolset?"
+[Interview] Answer saved for Q5. Next: Q6
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784731942650.wav
+[Interview] Next question speech generated
+[Whisper] Audio uploaded
+[Whisper] Transcription started
+[Whisper] Transcription completed
+[Whisper] Transcript received
+[GroQ] Answer Evaluation Complete
+[Interview] Evaluation saved for Q6: overallScore=80
+[GroQ] Final Report Generated
+[Interview] Final report generated
+[Interview] Answer saved for Q6. Next: Qnone
+[GroQ] Question Generated
+[Interview] Interview Started
+[Interview] Question Generated
+[Piper] Speech Generated
+[Piper] Audio Path: /audio/question_1784734937188.wav
+[Interview] Speech Generated

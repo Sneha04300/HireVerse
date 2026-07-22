@@ -247,6 +247,12 @@ const transcribeAudio = async (req, res) => {
     }
 
     console.log("[Whisper] Audio uploaded");
+    console.log("[transcribeAudio] req.file:", {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      path: req.file.path,
+    });
 
     const transcript = await whisperService.transcribeAudio(req.file.path);
 
@@ -259,7 +265,10 @@ const transcribeAudio = async (req, res) => {
     return res.status(200).json({ success: true, transcript });
   } catch (err) {
     console.error("[transcribeAudio]", err);
-    return res.status(500).json({ success: false, message: "Unable to transcribe audio." });
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Unable to transcribe audio.",
+    });
   }
 };
 

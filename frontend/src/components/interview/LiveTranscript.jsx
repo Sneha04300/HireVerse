@@ -69,13 +69,14 @@ export default function LiveTranscript({
   isAiSpeaking,
   transcriptReady,
 }) {
-  console.log("[LiveTranscript] RENDER loading:", loading, "| isAiSpeaking:", isAiSpeaking, "| disabled (loading || isAiSpeaking):", loading || isAiSpeaking, "| recordingState:", recordingState, "| pageState:", pageState, "| onStartRecording type:", typeof onStartRecording);
   const [answer, setAnswer] = useState("");
+  console.log("[LiveTranscript] RENDER answer:", answer, "speechText:", JSON.stringify(speechText), "loading:", loading, "| recordingState:", recordingState, "| pageState:", pageState, "| transcriptReady:", transcriptReady);
   const textareaRef = useRef(null);
   const manuallyEditedRef = useRef(false);
   const isEmpty = pageState === "empty";
 
   useEffect(() => {
+    console.log("[LiveTranscript] Effect 1 (pageState/questionNum) fired — pageState:", pageState, "questionNum:", questionNum, "speechText:", JSON.stringify(speechText), "manuallyEditedRef.current:", manuallyEditedRef.current);
     if (pageState === "interview") {
       setAnswer(speechText || "");
       manuallyEditedRef.current = false;
@@ -86,7 +87,10 @@ export default function LiveTranscript({
   }, [pageState, questionNum]);
 
   useEffect(() => {
-    if (pageState === "interview" && !manuallyEditedRef.current && speechText) {
+    const shouldSet = pageState === "interview" && !manuallyEditedRef.current && speechText;
+    console.log("[LiveTranscript] Effect 2 (speechText/pageState) fired — speechText:", JSON.stringify(speechText), "pageState:", pageState, "manuallyEditedRef.current:", manuallyEditedRef.current, "shouldSetAnswer:", shouldSet);
+    if (shouldSet) {
+      console.log("[LiveTranscript] Effect 2 — calling setAnswer(speechText):", JSON.stringify(speechText));
       setAnswer(speechText);
     }
   }, [speechText, pageState]);

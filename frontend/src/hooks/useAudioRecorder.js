@@ -32,13 +32,15 @@ export default function useAudioRecorder() {
       console.log("[useAudioRecorder] MediaRecorder CREATED, state:", recorder.state);
 
       recorder.ondataavailable = (e) => {
+        console.log("[AudioRecorder] ondataavailable — size:", e.data.size, "type:", e.data.type);
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
 
       recorder.onstop = async () => {
-        console.log("[AudioRecorder] Recording stopped");
+        console.log("[AudioRecorder] Recording stopped, chunks length:", chunksRef.current.length);
 
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        console.log("[AudioRecorder] Blob created — size:", blob.size, "type:", blob.type);
 
         if (!blob.size) {
           console.error("[AudioRecorder] Empty recording");
@@ -54,8 +56,10 @@ export default function useAudioRecorder() {
 
         const formData = new FormData();
         formData.append("audio", blob, "recording.webm");
+        console.log("[AudioRecorder] FormData keys:", [...formData.keys()], "| audio filename:", "recording.webm", "| blob size:", blob.size);
 
         try {
+          console.log("[AudioRecorder] POST /mock/transcribe — sending");
           const response = await api.post("/mock/transcribe", formData, {
             timeout: 30000,
           });
@@ -64,15 +68,18 @@ export default function useAudioRecorder() {
 
           console.log("[AudioRecorder] Whisper transcription started");
 
+          console.log("[AudioRecorder] Full response.data:", JSON.stringify(response.data));
           const text = response.data?.transcript || response.data?.data?.transcript || "";
           console.log("[AudioRecorder] Whisper transcription completed");
-          console.log("[AudioRecorder] Transcript received:", JSON.stringify(text));
+          console.log("[AudioRecorder] Extracted text:", JSON.stringify(text));
+          console.log("[AudioRecorder] Calling setTranscript(text) with:", JSON.stringify(text));
 
           setTranscript(text);
           setRecordingState("ready");
         } catch (err) {
-          console.error("[AudioRecorder] Transcription failed:", err.message);
-          setError("Unable to transcribe audio. Please try again.");
+          const backendMsg = err.response?.data?.message;
+          console.error("[AudioRecorder] Transcription failed:", err.message, "| backend:", backendMsg);
+          setError(backendMsg || "Unable to transcribe audio. Please try again.");
           setRecordingState("idle");
         }
 
@@ -84,7 +91,7 @@ export default function useAudioRecorder() {
       recorder.start();
       console.log("[useAudioRecorder] recorder.start() called, MediaRecorder state:", recorder.state);
       setRecordingState("recording");
-      console.log("[useAudioRecorder] Recording STARTED — state set to 'recording'");
+      console.log("[AudioRecorder] Recording started");
     } catch (err) {
       console.error("[AudioRecorder] Failed to start recording:", err);
       if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {

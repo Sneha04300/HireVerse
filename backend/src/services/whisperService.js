@@ -21,9 +21,11 @@ async function transcribeAudio(filePath) {
     response_format: "json",
   });
 
+  console.log("[Whisper] Complete response:", JSON.stringify(transcription));
+
   const text = transcription.text || "";
 
-  console.log("[Whisper] Transcription completed");
+  console.log("[Whisper] Transcription completed, text:", JSON.stringify(text));
 
   return text;
 }
