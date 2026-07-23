@@ -27,6 +27,7 @@ export default function LeetCodeCard({ data, onConnect, connecting }) {
             onKeyDown={(e) => { if (e.key === "Enter") onConnect?.(username); }}
             placeholder="Your LeetCode username"
             className="input-field flex-1 text-xs"
+            style={{ paddingLeft: "1rem" }}
           />
           <button
             onClick={() => onConnect?.(username)}

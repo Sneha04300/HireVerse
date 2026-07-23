@@ -266,3 +266,15 @@
 [Piper] Speech Generated
 [Piper] Audio Path: /audio/question_1784734937188.wav
 [Interview] Speech Generated
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1
+[DIAG] GET /api/dsa/dashboard — userId: new ObjectId('6a5e84b8361935f6c733072e')
+[DIAG] Dashboard computed OK — totalSolved: 1

@@ -25,7 +25,6 @@ export default function GoalsCard({ goals: initialGoals }) {
 
       <div className="h-1.5 rounded-full" style={{ background: "var(--border)" }}>
         <div
-          className="h-1.5 rounded-full transition-all duration-500"
           className="h-1.5 rounded-full transition-all duration-500 bg-gradient-brand" style={{ width: `${(completed / goals.length) * 100}%` }}
         />
       </div>

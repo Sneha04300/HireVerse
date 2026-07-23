@@ -229,14 +229,14 @@ export default function ResumeAnalyzerPage() {
 
           {/* ── Loading State ── */}
           {analyzing && (
-            <div className="rounded-2xl" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
+            <div className="mb-6 rounded-2xl" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
               <LoadingState />
             </div>
           )}
 
           {/* ── Empty State ── */}
           {!analyzing && !analyzed && (
-            <div className="rounded-2xl" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
+            <div className="mb-6 rounded-2xl" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
               <EmptyState />
             </div>
           )}
@@ -338,11 +338,11 @@ export default function ResumeAnalyzerPage() {
                   />
 
                   {/* ATS Score + Breakdown */}
-                  <ATSScoreCard
+                  {/* <ATSScoreCard
                     atsScore={data.atsScore}
                     batchRank={data.batchRank}
                     breakdown={data.breakdown}
-                  />
+                  /> */}
 
                   {/* Strengths & Weaknesses */}
                   <StrengthsCard

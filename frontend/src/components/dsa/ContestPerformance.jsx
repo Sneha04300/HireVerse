@@ -17,7 +17,7 @@ export default function ContestPerformance({ data }) {
         {TOP_STATS.map((s) => (
           <div key={s.key} className="rounded-xl p-3" style={{ background: "var(--bg-elevated)", border: "0.5px solid var(--border)" }}>
             <p className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-1">{s.label}</p>
-            <p className="text-[var(--text-primary)] text-xl font-extrabold">{s.prefix || ""}{data[s.key]}</p>
+            <p className="text-[var(--text-primary)] text-xl font-extrabold">{s.prefix || ""}{data?.[s.key] ?? "—"}</p>
           </div>
         ))}
       </div>
@@ -25,7 +25,7 @@ export default function ContestPerformance({ data }) {
       <div>
         <p className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-2">Recent Contests</p>
         <div className="flex flex-col gap-2">
-          {data.recent.map((c) => (
+          {(data?.recent ?? []).map((c) => (
             <div key={c.name} className="flex items-center justify-between p-2.5 rounded-lg" style={{ background: "var(--bg-elevated)" }}>
               <div>
                 <p className="text-[var(--text-primary)] text-sm font-medium">{c.name}</p>

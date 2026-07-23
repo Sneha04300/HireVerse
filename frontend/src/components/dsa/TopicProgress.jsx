@@ -25,9 +25,9 @@ export default function TopicProgress({ topics }) {
     >
       <div className="flex items-center justify-between mb-5">
         <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Topic Progress</p>
-        <button className="text-sm font-medium transition-colors" style={{ color: "var(--brand-secondary)" }}>
+        <span className="text-sm font-medium transition-colors cursor-default" style={{ color: "var(--brand-secondary)" }}>
           View all →
-        </button>
+        </span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
         {topics.map((t) => (

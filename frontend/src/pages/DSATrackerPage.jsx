@@ -287,13 +287,13 @@ export default function DSATrackerPage() {
                 <div className="flex flex-col gap-6">
 
                   {/* Topic Progress + Activity Heatmap in a 2-col grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <TopicProgress topics={topics} />
                     <ActivityHeatmap data={dashboard.activity} />
                   </div>
 
                   {/* Weekly, Difficulty, Revision cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
                     {/* Weekly Insights */}
                     <div className="rounded-2xl p-5 flex flex-col gap-3" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
@@ -353,7 +353,7 @@ export default function DSATrackerPage() {
                   </div>
 
                   {/* Struggle Analysis + Contest Performance side by side */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <StruggleAnalysis data={STRUGGLE_ANALYSIS} />
                     <ContestPerformance data={CONTEST_PERFORMANCE} />
                   </div>

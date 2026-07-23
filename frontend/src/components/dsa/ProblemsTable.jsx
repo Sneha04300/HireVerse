@@ -74,9 +74,12 @@ export default function ProblemsTable({ problems, onEdit, onDelete, onBookmark, 
   return (
     <div className="flex flex-col gap-4">
       {/* Search + Filters row */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-3 overflow-x-auto pb-1 flex-nowrap">
         {/* Search */}
-        <div className="flex-1 min-w-[200px]">
+        <div className="relative min-w-[180px] flex-shrink-0">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -86,25 +89,25 @@ export default function ProblemsTable({ problems, onEdit, onDelete, onBookmark, 
         </div>
 
         {/* Difficulty filter */}
-        <select value={filterDifficulty} onChange={(e) => setFilterDifficulty(e.target.value)} className="input-field w-auto min-w-[100px]">
+        <select value={filterDifficulty} onChange={(e) => setFilterDifficulty(e.target.value)} className="input-field w-auto flex-shrink-0" style={{ paddingLeft: "1rem" }}>
           <option value="">All Difficulty</option>
           {DIFFICULTIES.map((d) => <option key={d} value={d}>{d}</option>)}
         </select>
 
         {/* Topic filter */}
-        <select value={filterTopic} onChange={(e) => setFilterTopic(e.target.value)} className="input-field w-auto min-w-[100px]">
+        <select value={filterTopic} onChange={(e) => setFilterTopic(e.target.value)} className="input-field w-auto flex-shrink-0" style={{ paddingLeft: "1rem" }}>
           <option value="">All Topics</option>
           {TOPICS.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
 
         {/* Status filter */}
-        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="input-field w-auto min-w-[100px]">
+        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="input-field w-auto flex-shrink-0" style={{ paddingLeft: "1rem" }}>
           <option value="">All Status</option>
           {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
 
         {/* Sort */}
-        <select value={sort} onChange={(e) => setSort(e.target.value)} className="input-field w-auto min-w-[110px]">
+        <select value={sort} onChange={(e) => setSort(e.target.value)} className="input-field w-auto flex-shrink-0" style={{ paddingLeft: "1rem" }}>
           {SORT_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>

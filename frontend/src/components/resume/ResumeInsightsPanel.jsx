@@ -36,7 +36,7 @@ function BenchmarkBar({ score, benchmark }) {
       <div className="relative h-2.5 rounded-full bg-[var(--border)]">
         <div className="absolute h-2.5 rounded-full" style={{ width: `${benchmark}%`, background: "var(--border)", border: "1px solid var(--text-muted)" }} />
         <div className="absolute h-2.5 rounded-full transition-all duration-700 bg-gradient-brand" style={{ width: `${score}%` }} />
-        <div className="absolute top-1/2 -translate-y-1/2 w-0.5 h-4" style={{ background: "var(--badge-yellow-text)" }} style={{ left: `${benchmark}%` }} />
+        <div className="absolute top-1/2 -translate-y-1/2 w-0.5 h-4" style={{ background: "var(--badge-yellow-text)", left: `${benchmark}%` }} />
       </div>
       <p className="text-[10px] text-[var(--text-tertiary)]">Yellow line = industry average</p>
     </div>
