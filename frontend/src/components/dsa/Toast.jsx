@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 
 let toastId = 0;
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useToast() {
   const [toasts, setToasts] = useState([]);
-
   const addToast = useCallback((message, type = "success") => {
     const id = ++toastId;
     setToasts((t) => [...t, { id, message, type }]);

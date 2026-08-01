@@ -49,7 +49,7 @@ export default function ActivityHeatmap({ data }) {
 
   return (
     <div
-      className="rounded-2xl p-5 flex flex-col gap-4"
+      className="rounded-2xl p-4 flex flex-col gap-3"
       style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
     >
       <div className="flex items-center justify-between">
@@ -57,7 +57,7 @@ export default function ActivityHeatmap({ data }) {
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] text-[var(--text-muted)]">Less</span>
           {LEVELS.map((_, i) => (
-            <span key={i} className={`w-2.5 h-2.5 rounded-sm ${getLevel(i > 0 ? LEVELS[i - 1]?.max || 0 : 0)}`}
+            <span key={i} className={`w-2 h-2 rounded-sm ${getLevel(i > 0 ? LEVELS[i - 1]?.max || 0 : 0)}`}
               style={i === 0 ? { background: "var(--heatmap-0)" } : undefined}
             />
           ))}
@@ -65,14 +65,14 @@ export default function ActivityHeatmap({ data }) {
         </div>
       </div>
 
-      <div className="flex gap-1 overflow-x-auto pb-1">
+      <div className="flex gap-[3px] overflow-x-auto pb-0.5">
         {weeks.map((week, wi) => (
-          <div key={wi} className="flex flex-col gap-1">
+          <div key={wi} className="flex flex-col gap-[3px]">
             {week.map((day, di) => (
               <div
                 key={di}
                 title={getTooltip(day)}
-                className={`w-3 h-3 rounded-[3px] ${getLevel(day.count)} cursor-pointer transition-transform hover:scale-125`}
+                className={`w-[10px] h-[10px] rounded-[2px] ${getLevel(day.count)} cursor-pointer transition-transform hover:scale-125`}
               />
             ))}
           </div>

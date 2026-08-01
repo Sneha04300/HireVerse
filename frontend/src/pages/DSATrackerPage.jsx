@@ -1,15 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
 import StatsCards from "../components/dsa/StatsCards";
-import TopicProgress from "../components/dsa/TopicProgress";
 import ActivityHeatmap from "../components/dsa/ActivityHeatmap";
 import CompanyReadiness from "../components/dsa/CompanyReadiness";
-import StruggleAnalysis from "../components/dsa/StruggleAnalysis";
-import ContestPerformance from "../components/dsa/ContestPerformance";
 import AIInsights from "../components/dsa/AIInsights";
 import LeetCodeCard from "../components/dsa/LeetCodeCard";
-import DSAReadiness from "../components/dsa/DSAReadiness";
 import ProblemModal from "../components/dsa/ProblemModal";
 import ProblemsTable from "../components/dsa/ProblemsTable";
 import ToastContainer, { useToast } from "../components/dsa/Toast";
@@ -26,29 +22,239 @@ import {
   getLeetCode,
   connectLeetCode,
 } from "../services/dsaService";
-import {
-  DSA_STATS,
-  TOPICS,
-  STRUGGLE_ANALYSIS,
-  CONTEST_PERFORMANCE,
-} from "../data/dsaDummyData";
 
-const TOPIC_COLORS = {
-  "Arrays": "#22c55e",
-  "Strings": "#22c55e",
-  "Hashing": "#06B6D4",
-  "Trees": "#06B6D4",
-  "Graphs": "#eab308",
-  "Dynamic Programming": "#eab308",
-  "Linked List": "#a78bfa",
-  "Stack": "#a78bfa",
-  "Queue": "#a78bfa",
-  "Heap": "#f97316",
-  "Binary Search": "#06B6D4",
-  "Greedy": "#22c55e",
-};
+const TOPICS = [
+  "Arrays", "Strings", "Hashing", "Linked List", "Stack", "Queue",
+  "Trees", "BST", "Graphs", "DP", "Greedy", "Heap", "Trie",
+  "Backtracking", "Sliding Window", "Binary Search", "Math", "Bit Manipulation",
+];
 
-const getColor = (topic) => TOPIC_COLORS[topic] || "#a78bfa";
+const DIFFICULTIES = ["Easy", "Medium", "Hard"];
+const STATUSES = ["Solved", "Attempted", "Revising"];
+
+function Card({ title, titleColor, children, className = "" }) {
+  return (
+    <div
+      className={`rounded-2xl p-5 flex flex-col gap-3 ${className}`}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
+    >
+      <p className={`text-[11px] font-semibold uppercase tracking-widest ${titleColor || "text-[var(--text-muted)]"}`}>{title}</p>
+      {children}
+    </div>
+  );
+}
+
+function WhereLosingTime({ problems }) {
+  const rows = useMemo(() => {
+    const map = {};
+    for (const p of problems) {
+      if (!p.timeTaken) continue;
+      for (const t of p.topic || []) {
+        if (!map[t]) map[t] = { total: 0, count: 0 };
+        map[t].total += p.timeTaken;
+        map[t].count += 1;
+      }
+    }
+    return Object.entries(map)
+      .map(([topic, d]) => ({ topic, avg: Math.round(d.total / d.count), count: d.count }))
+      .sort((a, b) => b.avg - a.avg)
+      .slice(0, 5);
+  }, [problems]);
+
+  if (rows.length === 0) {
+    return (
+      <p className="text-[var(--text-muted)] text-sm">
+        No time data yet. Add time spent per problem to see where your time goes.
+      </p>
+    );
+  }
+
+  const max = Math.max(...rows.map((r) => r.avg), 1);
+
+  return (
+    <div className="flex flex-col gap-3">
+      {rows.map((r) => (
+        <div key={r.topic} className="flex flex-col gap-1">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-[var(--text-primary)] font-medium">{r.topic}</span>
+            <span className="text-[var(--text-secondary)] font-semibold">{r.avg}m avg</span>
+          </div>
+          <div className="h-1.5 rounded-full" style={{ background: "var(--border)" }}>
+            <div className="h-1.5 rounded-full" style={{ width: `${(r.avg / max) * 100}%`, background: "#f97316" }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MostRetried({ problems }) {
+  const rows = [...problems]
+    .filter((p) => (p.revisionCount || 0) > 0 || (p.attempts || 0) > 1)
+    .sort((a, b) => (b.revisionCount || 0) - (a.revisionCount || 0) || (b.attempts || 0) - (a.attempts || 0))
+    .slice(0, 5);
+
+  if (rows.length === 0) {
+    return <p className="text-[var(--text-muted)] text-sm">No retried problems yet. Revise problems to build consistency.</p>;
+  }
+
+  return (
+    <div className="flex flex-col gap-2.5">
+      {rows.map((p) => (
+        <div key={p._id} className="flex items-center justify-between">
+          <span className="text-[var(--text-secondary)] text-sm truncate pr-2">{p.title}</span>
+          <span className="text-orange-400 text-xs font-bold flex-shrink-0">
+            {(p.revisionCount || 0) > 0 ? `${p.revisionCount} revis` : `${p.attempts} att`}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DifficultySplit({ data }) {
+  const items = [
+    { label: "Easy", value: data?.easy || 0, color: "#22c55e" },
+    { label: "Medium", value: data?.medium || 0, color: "#eab308" },
+    { label: "Hard", value: data?.hard || 0, color: "#ef4444" },
+  ];
+  const total = items.reduce((s, i) => s + i.value, 0) || 1;
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex h-2.5 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
+        {items.map((i) => (
+          <div key={i.label} style={{ width: `${(i.value / total) * 100}%`, background: i.color }} />
+        ))}
+      </div>
+      <div className="flex flex-col gap-2">
+        {items.map((i) => (
+          <div key={i.label} className="flex items-center justify-between text-xs">
+            <span className="flex items-center gap-2 text-[var(--text-secondary)]">
+              <span className="w-2 h-2 rounded-full" style={{ background: i.color }} />
+              {i.label}
+            </span>
+            <span className="text-[var(--text-primary)] font-bold">{i.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function WeeklyInsights({ data }) {
+  const pct = data?.improvementPercentage || 0;
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex justify-between items-center">
+        <span className="text-[var(--text-tertiary)] text-xs">This Week</span>
+        <span className="text-[var(--text-primary)] font-bold text-lg">{data?.solvedThisWeek || 0}</span>
+      </div>
+      <div className="flex justify-between items-center">
+        <span className="text-[var(--text-tertiary)] text-xs">Last Week</span>
+        <span className="text-[var(--text-secondary)] font-semibold text-lg">{data?.solvedLastWeek || 0}</span>
+      </div>
+      <div className="flex justify-between items-center pt-1 border-t border-[var(--border)]">
+        <span className="text-[var(--text-tertiary)] text-xs">Improvement</span>
+        <span className={`font-bold text-lg ${pct >= 0 ? "text-green-400" : "text-red-400"}`}>
+          {pct >= 0 ? "+" : ""}{pct}%
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function RecentContests({ leetcode, contestRating }) {
+  const contests = leetcode?.recentContests || [];
+  if (contests.length === 0) {
+    return (
+      <p className="text-[var(--text-muted)] text-sm">
+        {leetcode
+          ? "No recent contest data available."
+          : `Current rating ${contestRating || "—"}. Connect LeetCode to see contest history.`}
+      </p>
+    );
+  }
+  return (
+    <div className="flex flex-col gap-2">
+      {contests.slice(0, 5).map((c, i) => (
+        <div key={i} className="flex items-center justify-between p-2.5 rounded-lg" style={{ background: "var(--bg-elevated)" }}>
+          <div className="min-w-0">
+            <p className="text-[var(--text-primary)] text-sm font-medium truncate">{c.title}</p>
+            {c.rank != null && <p className="text-[var(--text-muted)] text-xs">Rank #{c.rank}</p>}
+          </div>
+          <span className="text-[var(--brand-secondary)] text-sm font-bold flex-shrink-0 ml-2">{c.rating}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProblemEntry({ filters, onChange, onAdd }) {
+  return (
+    <div
+      className="rounded-2xl p-4 flex flex-wrap items-center gap-3"
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
+    >
+      {/* Search */}
+      <div className="relative flex-1 min-w-[180px] flex-shrink-0">
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          value={filters.search}
+          onChange={(e) => onChange("search", e.target.value)}
+          placeholder="Search problems..."
+          className="input-field w-full"
+        />
+      </div>
+
+      {/* Difficulty */}
+      <select
+        value={filters.difficulty}
+        onChange={(e) => onChange("difficulty", e.target.value)}
+        className="input-field w-auto flex-shrink-0"
+        style={{ paddingLeft: "1rem" }}
+      >
+        <option value="">All Difficulty</option>
+        {DIFFICULTIES.map((d) => <option key={d} value={d}>{d}</option>)}
+      </select>
+
+      {/* Topic */}
+      <select
+        value={filters.topic}
+        onChange={(e) => onChange("topic", e.target.value)}
+        className="input-field w-auto flex-shrink-0"
+        style={{ paddingLeft: "1rem" }}
+      >
+        <option value="">All Topics</option>
+        {TOPICS.map((t) => <option key={t} value={t}>{t}</option>)}
+      </select>
+
+      {/* Status */}
+      <select
+        value={filters.status}
+        onChange={(e) => onChange("status", e.target.value)}
+        className="input-field w-auto flex-shrink-0"
+        style={{ paddingLeft: "1rem" }}
+      >
+        <option value="">All Status</option>
+        {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+      </select>
+
+      {/* Add Problem */}
+      <button
+        onClick={onAdd}
+        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 btn-gradient flex-shrink-0"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Problem
+      </button>
+    </div>
+  );
+}
 
 export default function DSATrackerPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -62,6 +268,7 @@ export default function DSATrackerPage() {
   const [editingProblem, setEditingProblem] = useState(null);
   const [leetcode, setLeetcode] = useState(null);
   const [leetcodeConnecting, setLeetcodeConnecting] = useState(false);
+  const [filters, setFilters] = useState({ search: "", difficulty: "", topic: "", status: "" });
   const { toasts, addToast } = useToast();
 
   const fetchDashboard = useCallback(async () => {
@@ -108,10 +315,8 @@ export default function DSATrackerPage() {
   }, [fetchDashboard, fetchLeetCode]);
 
   useEffect(() => {
-    if (dashboard && dashboard.overview.totalSolved > 0) {
-      fetchProblems();
-    }
-  }, [dashboard, fetchProblems]);
+    fetchProblems();
+  }, [fetchProblems]);
 
   const handleConnectLeetCode = async (username) => {
     if (!username.trim()) return;
@@ -140,29 +345,7 @@ export default function DSATrackerPage() {
         contestRating: dashboard.overview.contestRating,
         maxRating: dashboard.overview.contestRating,
       }
-    : DSA_STATS;
-
-  const readinessData = dashboard
-    ? {
-        score: dashboard.readiness.score,
-        strengths: dashboard.readiness.strongestTopics,
-        gaps: dashboard.readiness.weakestTopics,
-      }
-    : { score: 0, strengths: [], gaps: [] };
-
-  const topics = dashboard
-    ? dashboard.topicProgress.map((t) => ({
-        id: t.topic.toLowerCase().replace(/\s+/g, "-"),
-        label: t.topic,
-        solved: t.solved,
-        total: t.total,
-        color: getColor(t.topic),
-      }))
-    : TOPICS;
-
-  const weekly = dashboard?.weeklyProgress;
-  const diff = dashboard?.difficulty;
-  const rev = dashboard?.revision;
+    : null;
 
   const openAddModal = () => {
     setEditingProblem(null);
@@ -222,7 +405,8 @@ export default function DSATrackerPage() {
     }
   };
 
-  const showTable = dashboard && dashboard.overview.totalSolved > 0;
+  const handleFilterChange = (key, value) =>
+    setFilters((prev) => ({ ...prev, [key]: value }));
 
   return (
     <div className="min-h-screen" style={{ background: "var(--bg-gradient-hero)" }}>
@@ -233,28 +417,15 @@ export default function DSATrackerPage() {
         className="transition-all duration-300 pt-14"
         style={{ marginLeft: sidebarOpen ? "220px" : "0px" }}
       >
-        <div className="px-6 py-8 max-w-[1400px]">
+        <div className="px-6 py-6 max-w-[1400px]">
 
-          {/* ── Hero ── */}
-          <div className="mb-8 flex items-start justify-between">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-brand mb-2">Practice</p>
-              <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">DSA Tracker</h1>
-              <p className="text-[var(--text-muted)] text-sm mt-2 max-w-xl">
-                Track your coding progress, streaks, topic mastery and placement readiness.
-              </p>
-            </div>
-            {showTable && (
-              <button
-                onClick={openAddModal}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 btn-gradient"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
-                Add Problem
-              </button>
-            )}
+          {/* ── Header ── */}
+          <div className="mb-6">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-brand mb-2">Practice</p>
+            <h1 className="text-3xl font-extrabold text-[var(--text-primary)]">DSA Tracker</h1>
+            <p className="text-[var(--text-muted)] text-sm mt-2 max-w-xl">
+              Track your coding progress, streaks, topic mastery and placement readiness.
+            </p>
           </div>
 
           {/* ── Loading ── */}
@@ -272,96 +443,44 @@ export default function DSATrackerPage() {
 
           {/* ── Dashboard ── */}
           {!loading && !error && !isEmpty && dashboard && (
-            <div className="flex flex-col gap-6 animate-fade-in">
+            <div className="flex flex-col gap-5 animate-fade-in">
 
-              {/* Top stat cards */}
+              {/* 4 Stat cards */}
               <StatsCards stats={stats} />
 
-              {/* DSA Readiness — large hero card */}
-              <DSAReadiness data={readinessData} />
+              {/* Problem Entry */}
+              <ProblemEntry filters={filters} onChange={handleFilterChange} onAdd={openAddModal} />
 
-              {/* 2-col: main content + right rail */}
-              <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">
+              {/* Analytics grid: LEFT 70% / RIGHT 30% */}
+              <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,7fr)_minmax(0,3fr)] gap-5">
 
                 {/* ── Left column ── */}
-                <div className="flex flex-col gap-6">
-
-                  {/* Topic Progress + Activity Heatmap in a 2-col grid */}
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                    <TopicProgress topics={topics} />
-                    <ActivityHeatmap data={dashboard.activity} />
-                  </div>
-
-                  {/* Weekly, Difficulty, Revision cards */}
+                <div className="flex flex-col gap-5 min-w-0">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                    {/* Weekly Insights */}
-                    <div className="rounded-2xl p-5 flex flex-col gap-3" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
-                      <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Weekly Insights</p>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex justify-between items-center">
-                          <span className="text-[var(--text-tertiary)] text-xs">This Week</span>
-                          <span className="text-[var(--text-primary)] font-bold text-lg">{weekly?.solvedThisWeek || 0}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-[var(--text-tertiary)] text-xs">Last Week</span>
-                          <span className="text-[var(--text-secondary)] font-semibold text-lg">{weekly?.solvedLastWeek || 0}</span>
-                        </div>
-                        <div className="flex justify-between items-center pt-1 border-t border-[var(--border)]">
-                          <span className="text-[var(--text-tertiary)] text-xs">Improvement</span>
-                          <span className={`font-bold text-lg ${(weekly?.improvementPercentage || 0) >= 0 ? "text-green-400" : "text-red-400"}`}>
-                            {(weekly?.improvementPercentage || 0) >= 0 ? "+" : ""}{weekly?.improvementPercentage || 0}%
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Difficulty Distribution */}
-                    <div className="rounded-2xl p-5 flex flex-col gap-3" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
-                      <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Difficulty</p>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex justify-between items-center">
-                          <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-400" /> Easy</span>
-                          <span className="text-[var(--text-primary)] font-bold">{diff?.easy || 0}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-yellow-400" /> Medium</span>
-                          <span className="text-[var(--text-primary)] font-bold">{diff?.medium || 0}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-400" /> Hard</span>
-                          <span className="text-[var(--text-primary)] font-bold">{diff?.hard || 0}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Revision */}
-                    <div className="rounded-2xl p-5 flex flex-col gap-3" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
-                      <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Revision</p>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex justify-between items-center">
-                          <span className="text-[var(--text-tertiary)] text-xs">Bookmarks</span>
-                          <span className="text-[var(--text-primary)] font-bold text-lg">{rev?.totalBookmarks || 0}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-[var(--text-tertiary)] text-xs">Total Revisions</span>
-                          <span className="text-[var(--text-primary)] font-bold text-lg">{rev?.totalRevisions || 0}</span>
-                        </div>
-                      </div>
-                    </div>
-
+                    <Card title="Where You're Losing Time" titleColor="text-orange-400">
+                      <WhereLosingTime problems={problems} />
+                    </Card>
+                    <Card title="Most Retried Problems" titleColor="text-orange-400">
+                      <MostRetried problems={problems} />
+                    </Card>
+                    <Card title="Difficulty Split" titleColor="text-brand">
+                      <DifficultySplit data={dashboard.difficulty} />
+                    </Card>
                   </div>
 
-                  {/* Struggle Analysis + Contest Performance side by side */}
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                    <StruggleAnalysis data={STRUGGLE_ANALYSIS} />
-                    <ContestPerformance data={CONTEST_PERFORMANCE} />
-                  </div>
+                  <ActivityHeatmap data={dashboard.activity} />
 
+                  <Card title="Weekly Insights" titleColor="text-brand">
+                    <WeeklyInsights data={dashboard.weeklyProgress} />
+                  </Card>
+
+                  <Card title="Recent Contests" titleColor="text-brand">
+                    <RecentContests leetcode={leetcode} contestRating={dashboard.overview.contestRating} />
+                  </Card>
                 </div>
 
-                {/* ── Right rail ── */}
-                <div className="flex flex-col gap-6 xl:sticky xl:top-20 xl:self-start">
+                {/* ── Right column ── */}
+                <div className="flex flex-col gap-5 min-w-0">
                   <CompanyReadiness data={dashboard} />
                   {coachLoading ? <DSACoachLoadingState /> : <AIInsights data={coach} />}
                   <LeetCodeCard data={leetcode} onConnect={handleConnectLeetCode} connecting={leetcodeConnecting} />
@@ -370,10 +489,11 @@ export default function DSATrackerPage() {
               </div>
 
               {/* ── My Problems Table ── */}
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3 pt-1">
                 <h2 className="text-xl font-bold text-[var(--text-primary)]">My Problems</h2>
                 <ProblemsTable
                   problems={problems}
+                  filters={filters}
                   onEdit={openEditModal}
                   onDelete={handleDelete}
                   onBookmark={handleBookmark}

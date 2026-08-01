@@ -13,14 +13,6 @@ const DIFF_COLORS = {
   Hard: "text-red-400",
 };
 
-const TOPICS = [
-  "Arrays", "Strings", "Hashing", "Linked List", "Stack", "Queue",
-  "Trees", "BST", "Graphs", "DP", "Greedy", "Heap", "Trie",
-  "Backtracking", "Sliding Window", "Binary Search", "Math", "Bit Manipulation",
-];
-
-const STATUSES = ["Solved", "Attempted", "Revising"];
-const DIFFICULTIES = ["Easy", "Medium", "Hard"];
 const SORT_OPTIONS = ["Newest", "Oldest", "Difficulty"];
 
 function SortIcon({ active, dir }) {
@@ -35,14 +27,14 @@ function SortIcon({ active, dir }) {
   );
 }
 
-export default function ProblemsTable({ problems, onEdit, onDelete, onBookmark, onRevision, onAddFirst }) {
-  const [search, setSearch] = useState("");
-  const [filterDifficulty, setFilterDifficulty] = useState("");
-  const [filterTopic, setFilterTopic] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [filterCompany, setFilterCompany] = useState("");
+export default function ProblemsTable({ problems, filters, onEdit, onDelete, onBookmark, onRevision, onAddFirst }) {
   const [sort, setSort] = useState("Newest");
   const [confirmDelete, setConfirmDelete] = useState(null);
+
+  const search = filters?.search || "";
+  const filterDifficulty = filters?.difficulty || "";
+  const filterTopic = filters?.topic || "";
+  const filterStatus = filters?.status || "";
 
   const filtered = useMemo(() => {
     let list = [...problems];
@@ -54,7 +46,6 @@ export default function ProblemsTable({ problems, onEdit, onDelete, onBookmark, 
     if (filterDifficulty) list = list.filter((p) => p.difficulty === filterDifficulty);
     if (filterTopic) list = list.filter((p) => (p.topic || []).includes(filterTopic));
     if (filterStatus) list = list.filter((p) => p.status === filterStatus);
-    if (filterCompany) list = list.filter((p) => (p.companies || []).includes(filterCompany));
 
     const diffRank = { Easy: 0, Medium: 1, Hard: 2 };
     list.sort((a, b) => {
@@ -65,48 +56,19 @@ export default function ProblemsTable({ problems, onEdit, onDelete, onBookmark, 
     });
 
     return list;
-  }, [problems, search, filterDifficulty, filterTopic, filterStatus, filterCompany, sort]);
+  }, [problems, search, filterDifficulty, filterTopic, filterStatus, sort]);
 
   if (!problems || problems.length === 0) {
     return <DSAEmptyState onAddFirst={onAddFirst} />;
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Search + Filters row */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-1 flex-nowrap">
-        {/* Search */}
-        <div className="relative min-w-[180px] flex-shrink-0">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search problems..."
-            className="input-field w-full"
-          />
-        </div>
-
-        {/* Difficulty filter */}
-        <select value={filterDifficulty} onChange={(e) => setFilterDifficulty(e.target.value)} className="input-field w-auto flex-shrink-0" style={{ paddingLeft: "1rem" }}>
-          <option value="">All Difficulty</option>
-          {DIFFICULTIES.map((d) => <option key={d} value={d}>{d}</option>)}
-        </select>
-
-        {/* Topic filter */}
-        <select value={filterTopic} onChange={(e) => setFilterTopic(e.target.value)} className="input-field w-auto flex-shrink-0" style={{ paddingLeft: "1rem" }}>
-          <option value="">All Topics</option>
-          {TOPICS.map((t) => <option key={t} value={t}>{t}</option>)}
-        </select>
-
-        {/* Status filter */}
-        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="input-field w-auto flex-shrink-0" style={{ paddingLeft: "1rem" }}>
-          <option value="">All Status</option>
-          {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
-
-        {/* Sort */}
+    <div className="flex flex-col gap-3">
+      {/* Sort + result count row */}
+      <div className="flex items-center justify-between">
+        <span className="text-xs text-[var(--text-muted)]">
+          {filtered.length} of {problems.length} problems
+        </span>
         <select value={sort} onChange={(e) => setSort(e.target.value)} className="input-field w-auto flex-shrink-0" style={{ paddingLeft: "1rem" }}>
           {SORT_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
@@ -129,79 +91,87 @@ export default function ProblemsTable({ problems, onEdit, onDelete, onBookmark, 
               </tr>
             </thead>
             <tbody>
-              {filtered.map((p) => (
-                <tr key={p._id} className="border-t border-[var(--border)] transition-colors hover:brightness-110" style={{ background: "var(--bg-card)" }}>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-col">
-                      <span className="text-[var(--text-primary)] font-medium">{p.title}</span>
-                      {p.platform && <span className="text-[10px] text-[var(--text-muted)]">{p.platform}</span>}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`font-semibold text-xs ${DIFF_COLORS[p.difficulty]}`}>{p.difficulty}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {(p.topic || []).slice(0, 2).map((t) => (
-                        <span key={t} className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "var(--bg-elevated)", border: "0.5px solid var(--border)" }}>
-                          {t}
-                        </span>
-                      ))}
-                      {(p.topic || []).length > 2 && (
-                        <span className="text-[10px] text-[var(--text-muted)]">+{p.topic.length - 2}</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1.5">
-                      {STATUS_ICON[p.status]}
-                      <span className="text-xs text-[var(--text-secondary)]">{p.status}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-center text-[var(--text-secondary)] text-xs">{p.attempts}</td>
-                  <td className="px-4 py-3 text-center">
-                    <button onClick={() => onBookmark(p._id)} className="transition-colors">
-                      {p.bookmarked ? (
-                        <svg className="w-4 h-4 text-brand" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                        </svg>
-                      )}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      <span className="text-xs text-[var(--text-secondary)]">{p.revisionCount || 0}</span>
-                      <button
-                        onClick={() => onRevision(p._id)}
-                        className="text-[var(--text-muted)] hover:text-brand transition-colors"
-                        title="Increment revision"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-center gap-1.5">
-                      <ActionBtn onClick={() => onEdit(p)} title="Edit" color="text-brand">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </ActionBtn>
-                      <ActionBtn onClick={() => setConfirmDelete(p._id)} title="Delete" color="text-red-400">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </ActionBtn>
-                    </div>
+              {filtered.length === 0 ? (
+                <tr className="border-t border-[var(--border)]" style={{ background: "var(--bg-card)" }}>
+                  <td colSpan={8} className="px-4 py-10 text-center text-[var(--text-muted)] text-sm">
+                    No problems match your filters.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filtered.map((p) => (
+                  <tr key={p._id} className="border-t border-[var(--border)] transition-colors hover:brightness-110" style={{ background: "var(--bg-card)" }}>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col">
+                        <span className="text-[var(--text-primary)] font-medium">{p.title}</span>
+                        {p.platform && <span className="text-[10px] text-[var(--text-muted)]">{p.platform}</span>}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`font-semibold text-xs ${DIFF_COLORS[p.difficulty]}`}>{p.difficulty}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {(p.topic || []).slice(0, 2).map((t) => (
+                          <span key={t} className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "var(--bg-elevated)", border: "0.5px solid var(--border)" }}>
+                            {t}
+                          </span>
+                        ))}
+                        {(p.topic || []).length > 2 && (
+                          <span className="text-[10px] text-[var(--text-muted)]">+{p.topic.length - 2}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1.5">
+                        {STATUS_ICON[p.status]}
+                        <span className="text-xs text-[var(--text-secondary)]">{p.status}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-center text-[var(--text-secondary)] text-xs">{p.attempts}</td>
+                    <td className="px-4 py-3 text-center">
+                      <button onClick={() => onBookmark(p._id)} className="transition-colors">
+                        {p.bookmarked ? (
+                          <svg className="w-4 h-4 text-brand" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                          </svg>
+                        )}
+                      </button>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <span className="text-xs text-[var(--text-secondary)]">{p.revisionCount || 0}</span>
+                        <button
+                          onClick={() => onRevision(p._id)}
+                          className="text-[var(--text-muted)] hover:text-brand transition-colors"
+                          title="Increment revision"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <ActionBtn onClick={() => onEdit(p)} title="Edit" color="text-brand">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </ActionBtn>
+                        <ActionBtn onClick={() => setConfirmDelete(p._id)} title="Delete" color="text-red-400">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </ActionBtn>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

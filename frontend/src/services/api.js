@@ -12,7 +12,6 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    console.log(`[API] >>> ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`, config.data || "");
     return config;
   },
   (error) => {
@@ -22,12 +21,25 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => {
-    console.log(`[API] <<< ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url}`, response.data);
-    return response;
-  },
+  (response) => response,
   (error) => {
-    console.error(`[API] ERROR ${error.response?.status || "NETWORK"} ${error.config?.method?.toUpperCase()} ${error.config?.url}`, error.response?.data || error.message);
+    const status = error.response?.status;
+
+    // Only handle genuine auth failures on protected endpoints.
+    // Login/Register return 400, so this won't interfere with the auth flow.
+    if (status === 401 && !error.config?.url?.includes("/auth/")) {
+      const message = error.response?.data?.message || "";
+      const tokenInvalid = /token/i.test(message) && /(expired|invalid|not provided)/i.test(message);
+
+      if (tokenInvalid) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        if (!window.location.pathname.startsWith("/login")) {
+          window.location.assign("/login");
+        }
+      }
+    }
+
     return Promise.reject(error);
   }
 );

@@ -84,6 +84,7 @@ export default function LiveTranscript({
         textareaRef.current.focus();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageState, questionNum]);
 
   useEffect(() => {

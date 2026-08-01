@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
 import CopilotChat from "../components/copilot/CopilotChat";
@@ -8,30 +8,60 @@ import FocusAreas from "../components/copilot/FocusAreas";
 import QuickInsights, { WeeklyChecklistCard } from "../components/copilot/QuickInsights";
 import { CopilotLoadingState, CopilotEmptyState } from "../components/copilot/CopilotStates";
 import api from "../services/api";
-import {
-  CHAT_HISTORY,
-  AMAZON_READINESS,
-  THIRTY_DAY_PLAN,
-  SUGGESTED_PROMPTS,
-  PLACEMENT_READINESS,
-  FOCUS_AREAS,
-  WEEKLY_CHECKLIST,
-  AI_INSIGHTS,
-} from "../data/copilotDummyData";
 
-// Change to "loading" | "empty" | "data" to preview states
-const PAGE_STATE = "data";
+const SUGGESTED_PROMPTS = [
+  "Build me a 30-day Amazon prep plan",
+  "Review my last mock interview",
+  "Compare my profile vs Google bar",
+  "What should I learn next week?",
+];
 
 let nextId = 1000;
 
+const toChatMessage = (item) => ({
+  id: nextId++,
+  role: item.role === "user" ? "user" : "ai",
+  text: item.message || item.text || "",
+});
+
 export default function CareerCopilotPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [pageState, setPageState] = useState(PAGE_STATE);
-  const [messages, setMessages] = useState(PAGE_STATE === "empty" ? [] : CHAT_HISTORY);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [dashboard, setDashboard] = useState(null);
+  const [sending, setSending] = useState(false);
+
+  const loadDashboard = useCallback(async () => {
+    try {
+      const res = await api.get("/copilot/dashboard");
+      setDashboard(res.data.data);
+    } catch (err) {
+      console.error("[CareerCopilotPage] Dashboard error", err);
+      setError(true);
+    }
+  }, []);
+
+  const loadChat = useCallback(async () => {
+    try {
+      const res = await api.get("/copilot/chat");
+      const history = res.data.data?.chatHistory || [];
+      setMessages(history.map(toChatMessage));
+    } catch (err) {
+      console.error("[CareerCopilotPage] Chat history error", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    Promise.all([loadDashboard(), loadChat()]).finally(() => setLoading(false));
+  }, [loadDashboard, loadChat]);
 
   const handleSend = async (text) => {
-    setPageState("data");
+    if (!text.trim() || sending) return;
+    setSending(true);
+    setError(false);
+
     const userMsg = { id: nextId++, role: "user", text };
     setMessages((prev) => [...prev, userMsg]);
     setInputValue("");
@@ -41,7 +71,7 @@ export default function CareerCopilotPage() {
       const aiMsg = {
         id: nextId++,
         role: "ai",
-        text: data.reply,
+        text: data.reply || "I couldn't process that request. Please try again.",
       };
       setMessages((prev) => [...prev, aiMsg]);
     } catch (err) {
@@ -52,6 +82,8 @@ export default function CareerCopilotPage() {
         text: "Sorry, I couldn't process that request. Please try again.",
       };
       setMessages((prev) => [...prev, errMsg]);
+    } finally {
+      setSending(false);
     }
   };
 
@@ -79,24 +111,39 @@ export default function CareerCopilotPage() {
             </p>
           </div>
 
-          {/* ── States ── */}
-          {pageState === "loading" && <CopilotLoadingState />}
+          {/* ── Loading ── */}
+          {loading && <CopilotLoadingState />}
 
-          {pageState === "empty" && (
+          {/* ── Error ── */}
+          {!loading && error && (
+            <div className="rounded-2xl p-8 flex flex-col items-center gap-4 text-center" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
+              <p className="text-[var(--text-primary)] font-semibold">Couldn't load your Copilot data</p>
+              <button
+                onClick={() => { setLoading(true); setError(false); Promise.all([loadDashboard(), loadChat()]).finally(() => setLoading(false)); }}
+                className="px-5 py-2.5 rounded-xl text-white font-bold text-sm btn-gradient"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {/* ── Empty (no messages yet) ── */}
+          {!loading && !error && messages.length === 0 && (
             <div className="rounded-2xl" style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}>
               <CopilotEmptyState onPromptClick={handleSend} />
             </div>
           )}
 
-          {pageState === "data" && (
+          {/* ── Data ── */}
+          {!loading && !error && messages.length > 0 && (
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-6 animate-fade-in">
 
-              {/* ── Left column (70%) ── */}
+              {/* ── Left column ── */}
               <div className="flex flex-col gap-6 min-w-0">
                 <CopilotChat
                   messages={messages}
-                  readinessData={AMAZON_READINESS}
-                  planData={THIRTY_DAY_PLAN}
+                  readinessData={dashboard?.readiness || null}
+                  planData={dashboard?.actionPlan || []}
                   inputValue={inputValue}
                   onInputChange={setInputValue}
                   onSend={handleSend}
@@ -104,12 +151,15 @@ export default function CareerCopilotPage() {
                 <SuggestedPrompts prompts={SUGGESTED_PROMPTS} onSelect={handlePromptSelect} />
               </div>
 
-              {/* ── Right column (30%) ── */}
+              {/* ── Right column ── */}
               <div className="flex flex-col gap-6 xl:sticky xl:top-20 xl:self-start">
-                <ReadinessRingCard score={PLACEMENT_READINESS.score} label={PLACEMENT_READINESS.label} />
-                <FocusAreas areas={FOCUS_AREAS} />
-                <WeeklyChecklistCard checklist={WEEKLY_CHECKLIST} />
-                <QuickInsights insights={AI_INSIGHTS} />
+                <ReadinessRingCard
+                  score={dashboard?.readiness?.score ?? 0}
+                  label={`${dashboard?.readiness?.company || "Placement"} readiness`}
+                />
+                <FocusAreas areas={dashboard?.focusAreas || []} />
+                <WeeklyChecklistCard checklist={dashboard?.weeklyGoals || []} />
+                <QuickInsights insights={dashboard?.insights || []} />
               </div>
 
             </div>

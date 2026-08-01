@@ -67,8 +67,7 @@ export function CopilotEmptyState({ onPromptClick }) {
       </div>
       <button
         onClick={() => onPromptClick?.("Build me a 30-day Amazon prep plan")}
-        className="px-6 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90"
-        className="btn-gradient"
+        className="px-6 py-3 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 btn-gradient"
       >
         Try a suggested prompt
       </button>
