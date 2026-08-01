@@ -1,34 +1,19 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { DSAEmptyState } from "./DSAStates";
 
 const STATUS_ICON = {
-  Solved: <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />,
-  Attempted: <span className="w-2 h-2 rounded-full bg-yellow-400 inline-block" />,
-  Revising: <span className="w-2 h-2 rounded-full bg-red-400 inline-block" />,
+  Solved: <span className="w-2 h-2 rounded-full bg-[#22C55E] inline-block" />,
+  Attempted: <span className="w-2 h-2 rounded-full bg-[#EAB308] inline-block" />,
+  Revising: <span className="w-2 h-2 rounded-full bg-[#EF4444] inline-block" />,
 };
 
 const DIFF_COLORS = {
-  Easy: "text-green-400",
-  Medium: "text-yellow-400",
-  Hard: "text-red-400",
+  Easy: "text-[#22C55E]",
+  Medium: "text-[#EAB308]",
+  Hard: "text-[#EF4444]",
 };
 
-const SORT_OPTIONS = ["Newest", "Oldest", "Difficulty"];
-
-function SortIcon({ active, dir }) {
-  return (
-    <svg className={`w-3.5 h-3.5 ${active ? "text-brand" : "text-[var(--text-muted)]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      {dir === "asc" ? (
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-      ) : (
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-      )}
-    </svg>
-  );
-}
-
-export default function ProblemsTable({ problems, filters, onEdit, onDelete, onBookmark, onRevision, onAddFirst }) {
-  const [sort, setSort] = useState("Newest");
+export default function ProblemsTable({ problems, filters, sort, onEdit, onDelete, onBookmark, onRevision, onAddFirst }) {
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   const search = filters?.search || "";
@@ -63,19 +48,15 @@ export default function ProblemsTable({ problems, filters, onEdit, onDelete, onB
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Sort + result count row */}
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-end">
         <span className="text-xs text-[var(--text-muted)]">
           {filtered.length} of {problems.length} problems
         </span>
-        <select value={sort} onChange={(e) => setSort(e.target.value)} className="input-field w-auto flex-shrink-0" style={{ paddingLeft: "1rem" }}>
-          {SORT_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl overflow-hidden" style={{ border: "0.5px solid var(--border)" }}>
+      <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--border)" }}>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -93,26 +74,26 @@ export default function ProblemsTable({ problems, filters, onEdit, onDelete, onB
             <tbody>
               {filtered.length === 0 ? (
                 <tr className="border-t border-[var(--border)]" style={{ background: "var(--bg-card)" }}>
-                  <td colSpan={8} className="px-4 py-10 text-center text-[var(--text-muted)] text-sm">
+                  <td colSpan={8} className="px-4 py-10 text-center text-[var(--text-muted)] text-[13px]">
                     No problems match your filters.
                   </td>
                 </tr>
               ) : (
                 filtered.map((p) => (
-                  <tr key={p._id} className="border-t border-[var(--border)] transition-colors hover:brightness-110" style={{ background: "var(--bg-card)" }}>
-                    <td className="px-4 py-3">
+                  <tr key={p._id} className="border-t border-[var(--border)] transition-colors hover:bg-[var(--bg-hover)]" style={{ background: "var(--bg-card)" }}>
+                    <td className="px-4 py-2.5">
                       <div className="flex flex-col">
-                        <span className="text-[var(--text-primary)] font-medium">{p.title}</span>
+                        <span className="text-[13px] font-medium text-[var(--text-primary)]">{p.title}</span>
                         {p.platform && <span className="text-[10px] text-[var(--text-muted)]">{p.platform}</span>}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2.5">
                       <span className={`font-semibold text-xs ${DIFF_COLORS[p.difficulty]}`}>{p.difficulty}</span>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2.5">
                       <div className="flex flex-wrap gap-1">
                         {(p.topic || []).slice(0, 2).map((t) => (
-                          <span key={t} className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "var(--bg-elevated)", border: "0.5px solid var(--border)" }}>
+                          <span key={t} className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)" }}>
                             {t}
                           </span>
                         ))}
@@ -121,14 +102,14 @@ export default function ProblemsTable({ problems, filters, onEdit, onDelete, onB
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2.5">
                       <div className="flex items-center gap-1.5">
                         {STATUS_ICON[p.status]}
                         <span className="text-xs text-[var(--text-secondary)]">{p.status}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-center text-[var(--text-secondary)] text-xs">{p.attempts}</td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-2.5 text-center text-xs text-[var(--text-secondary)]">{p.attempts}</td>
+                    <td className="px-4 py-2.5 text-center">
                       <button onClick={() => onBookmark(p._id)} className="transition-colors">
                         {p.bookmarked ? (
                           <svg className="w-4 h-4 text-brand" fill="currentColor" viewBox="0 0 24 24">
@@ -141,7 +122,7 @@ export default function ProblemsTable({ problems, filters, onEdit, onDelete, onB
                         )}
                       </button>
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-2.5 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <span className="text-xs text-[var(--text-secondary)]">{p.revisionCount || 0}</span>
                         <button
@@ -155,14 +136,14 @@ export default function ProblemsTable({ problems, filters, onEdit, onDelete, onB
                         </button>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2.5">
                       <div className="flex items-center justify-center gap-1.5">
                         <ActionBtn onClick={() => onEdit(p)} title="Edit" color="text-brand">
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
                         </ActionBtn>
-                        <ActionBtn onClick={() => setConfirmDelete(p._id)} title="Delete" color="text-red-400">
+                        <ActionBtn onClick={() => setConfirmDelete(p._id)} title="Delete" color="text-[#EF4444]">
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
@@ -182,19 +163,19 @@ export default function ProblemsTable({ problems, filters, onEdit, onDelete, onB
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setConfirmDelete(null)}>
           <div className="fixed inset-0 bg-black/50" />
           <div
-            className="relative rounded-2xl p-6 max-w-sm w-full flex flex-col gap-4"
-            style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
+            className="relative rounded-xl p-5 max-w-sm w-full flex flex-col gap-4"
+            style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-[var(--text-primary)] font-bold text-base">Delete Problem</h3>
             <p className="text-[var(--text-secondary)] text-sm">Are you sure? This action cannot be undone.</p>
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setConfirmDelete(null)} className="px-4 py-2 rounded-xl text-sm font-semibold text-[var(--text-muted)]" style={{ border: "0.5px solid var(--border)" }}>
+            <div className="flex justify-end gap-2.5">
+              <button onClick={() => setConfirmDelete(null)} className="px-4 py-2 rounded-[10px] text-sm font-semibold text-[var(--text-muted)]" style={{ border: "1px solid var(--border)" }}>
                 Cancel
               </button>
               <button
                 onClick={() => { onDelete(confirmDelete); setConfirmDelete(null); }}
-                className="px-4 py-2 rounded-xl bg-red-500 text-white font-bold text-sm"
+                className="px-4 py-2 rounded-[10px] bg-[#EF4444] text-white font-bold text-sm"
               >
                 Delete
               </button>
@@ -208,7 +189,7 @@ export default function ProblemsTable({ problems, filters, onEdit, onDelete, onB
 
 function TH({ children, className = "" }) {
   return (
-    <th className={`px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] ${className}`}>
+    <th className={`px-4 py-2.5 text-left text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] ${className}`}>
       {children}
     </th>
   );

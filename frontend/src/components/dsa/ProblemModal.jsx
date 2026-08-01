@@ -16,16 +16,16 @@ function Chip({ label, selected, onClick, onRemove }) {
     <button
       type="button"
       onClick={onClick}
-      className="text-xs px-2.5 py-1 rounded-full transition-colors flex items-center gap-1"
+      className="text-xs px-2.5 py-1 rounded-md transition-colors flex items-center gap-1"
       style={{
-        background: selected ? "rgba(6,182,212,0.15)" : "var(--bg-elevated)",
-        border: selected ? "0.5px solid rgba(6,182,212,0.4)" : "0.5px solid var(--border)",
+        background: selected ? "rgba(139,92,246,0.14)" : "var(--bg-elevated)",
+        border: selected ? "1px solid rgba(139,92,246,0.4)" : "1px solid var(--border)",
         color: selected ? "var(--text-primary)" : "var(--text-secondary)",
       }}
     >
       {label}
       {onRemove && (
-        <span className="ml-0.5 text-[var(--text-muted)] hover:text-red-400" onClick={(e) => { e.stopPropagation(); onRemove(); }}>&times;</span>
+        <span className="ml-0.5 text-[var(--text-muted)] hover:text-[#EF4444]" onClick={(e) => { e.stopPropagation(); onRemove(); }}>&times;</span>
       )}
     </button>
   );
@@ -115,8 +115,8 @@ export default function ProblemModal({ open, onClose, onSave, problem }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="fixed inset-0 bg-black/50" />
       <div
-        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl p-6 flex flex-col gap-5"
-        style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl p-5 flex flex-col gap-4"
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
@@ -126,7 +126,7 @@ export default function ProblemModal({ open, onClose, onSave, problem }) {
           <button onClick={onClose} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-xl leading-none">&times;</button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           {/* Title */}
           <div>
             <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Problem Title *</label>
@@ -161,9 +161,9 @@ export default function ProblemModal({ open, onClose, onSave, problem }) {
             <div className="flex gap-2">
               {["Easy", "Medium", "Hard"].map((d) => {
                 const colors = {
-                  Easy: { bg: "rgba(34,197,94,0.12)", border: "rgba(34,197,94,0.3)", text: "text-green-400" },
-                  Medium: { bg: "rgba(234,179,8,0.12)", border: "rgba(234,179,8,0.3)", text: "text-yellow-400" },
-                  Hard: { bg: "rgba(239,68,68,0.12)", border: "rgba(239,68,68,0.3)", text: "text-red-400" },
+                  Easy: { bg: "rgba(34,197,94,0.12)", border: "rgba(34,197,94,0.3)", text: "text-[#22C55E]" },
+                  Medium: { bg: "rgba(234,179,8,0.12)", border: "rgba(234,179,8,0.3)", text: "text-[#EAB308]" },
+                  Hard: { bg: "rgba(239,68,68,0.12)", border: "rgba(239,68,68,0.3)", text: "text-[#EF4444]" },
                 };
                 const c = colors[d];
                 const active = form.difficulty === d;
@@ -175,7 +175,7 @@ export default function ProblemModal({ open, onClose, onSave, problem }) {
                     className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${c.text}`}
                     style={{
                       background: active ? c.bg : "var(--bg-elevated)",
-                      border: active ? c.border : "0.5px solid var(--border)",
+                      border: active ? c.border : "1px solid var(--border)",
                     }}
                   >
                     {d}
@@ -257,6 +257,7 @@ export default function ProblemModal({ open, onClose, onSave, problem }) {
               rows={3}
               placeholder="Key insights, approach, edge cases..."
               className="input-field resize-none"
+              style={{ height: "auto", paddingTop: "0.5rem" }}
             />
           </div>
 
@@ -266,20 +267,20 @@ export default function ProblemModal({ open, onClose, onSave, problem }) {
               type="checkbox"
               checked={form.bookmarked}
               onChange={(e) => setForm((f) => ({ ...f, bookmarked: e.target.checked }))}
-              className="w-4 h-4 rounded accent-cyan-500"
+              className="w-4 h-4 rounded accent-[#22D3EE]"
             />
             <span className="text-sm text-[var(--text-secondary)]">Bookmark for revision</span>
           </label>
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-2 border-t border-[var(--border)]">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-sm font-semibold text-[var(--text-muted)]" style={{ border: "0.5px solid var(--border)" }}>
+            <button type="button" onClick={onClose} className="px-4 py-2 rounded-[10px] text-sm font-semibold text-[var(--text-muted)]" style={{ border: "1px solid var(--border)" }}>
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving || !form.title.trim()}
-              className="px-5 py-2 rounded-xl text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 disabled:opacity-50 btn-gradient"
+              className="px-5 py-2 rounded-[10px] text-white font-bold text-sm tracking-wide transition-opacity hover:opacity-90 disabled:opacity-50 btn-gradient"
             >
               {saving ? "Saving..." : isEdit ? "Update Problem" : "Add Problem"}
             </button>

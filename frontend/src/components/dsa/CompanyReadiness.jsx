@@ -65,22 +65,18 @@ export default function CompanyReadiness({ data }) {
   if (!data) return null;
 
   return (
-    <div
-      className="rounded-2xl p-5 flex flex-col gap-4"
-      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
-    >
-      <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Company Readiness</p>
-
-      <div className="flex flex-col gap-3">
+    <div className="dsa-card p-4 flex flex-col gap-3">
+      <p className="section-label text-[var(--text-muted)]">Company Readiness</p>
+      <div className="flex flex-col gap-2">
         {scores.map((c) => (
           <div key={c.company} className="flex flex-col gap-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[var(--text-primary)] font-medium">{c.company}</span>
-              <span className="font-bold" style={{ color: c.color }}>{c.score}%</span>
+              <span className="text-[13px] font-medium text-[var(--text-primary)]">{c.company}</span>
+              <span className="text-xs font-bold" style={{ color: c.color }}>{c.score}%</span>
             </div>
-            <div className="h-1.5 rounded-full" style={{ background: "var(--border)" }}>
+            <div className="h-1 rounded-full" style={{ background: "var(--border)" }}>
               <div
-                className="h-1.5 rounded-full transition-all duration-700"
+                className="h-1 rounded-full transition-all duration-700"
                 style={{ width: `${c.score}%`, background: c.color }}
               />
             </div>

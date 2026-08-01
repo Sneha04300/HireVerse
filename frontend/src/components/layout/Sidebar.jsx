@@ -87,7 +87,7 @@ export default function Sidebar({ open }) {
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              `flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors whitespace-nowrap ${
                 isActive
                   ? "bg-active text-primary-custom"
                   : "text-secondary hover:text-primary-custom hover:bg-[var(--bg-hover)]"

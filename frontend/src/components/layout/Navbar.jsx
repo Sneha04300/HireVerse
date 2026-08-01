@@ -82,7 +82,7 @@ export default function Navbar({ onSidebarToggle }) {
             border: "1px solid var(--border)",
             color: "var(--text-primary)",
           }}
-          className="w-full rounded-lg pl-9 pr-4 py-2 text-sm placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-focus)] transition-colors"
+          className="w-full rounded-[10px] pl-9 pr-4 py-2 text-sm placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-focus)] transition-colors"
         />
       </div>
 

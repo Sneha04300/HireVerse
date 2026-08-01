@@ -8,6 +8,10 @@ const LEVELS = [
   { max: Infinity, className: "bg-[var(--heatmap-4)]" },
 ];
 
+const CELL = 10;
+const GAP = 3;
+const PITCH = CELL + GAP;
+
 function getLevel(count) {
   for (const l of LEVELS) {
     if (count <= l.max) return l.className;
@@ -32,14 +36,23 @@ export default function ActivityHeatmap({ data }) {
     return groups;
   }, [data]);
 
+  const monthLabels = useMemo(() => {
+    const labels = [];
+    let prev = "";
+    weeks.forEach((week, wi) => {
+      const d = new Date(week[0].date);
+      const label = d.toLocaleDateString("en-US", { month: "short" });
+      if (wi === 0 || label !== prev) labels.push({ wi, label });
+      prev = label;
+    });
+    return labels;
+  }, [weeks]);
+
   if (!data || data.length === 0) {
     return (
-      <div
-        className="rounded-2xl p-6 flex flex-col gap-4"
-        style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
-      >
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Activity</p>
-        <p className="text-[var(--text-muted)] text-sm">No activity data yet.</p>
+      <div className="dsa-card p-4 flex flex-col gap-3">
+        <p className="section-label text-[var(--text-muted)]">Activity</p>
+        <p className="text-[13px] text-[var(--text-muted)]">No activity data yet.</p>
       </div>
     );
   }
@@ -48,21 +61,30 @@ export default function ActivityHeatmap({ data }) {
   const maxCount = Math.max(...data.map((d) => d.count), 1);
 
   return (
-    <div
-      className="rounded-2xl p-4 flex flex-col gap-3"
-      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
-    >
+    <div className="dsa-card p-4 flex flex-col gap-2.5">
       <div className="flex items-center justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">Activity</p>
+        <p className="section-label text-[var(--text-muted)]">Activity</p>
         <div className="flex items-center gap-1.5">
-          <span className="text-[10px] text-[var(--text-muted)]">Less</span>
+          <span className="text-[9px] text-[var(--text-muted)]">Less</span>
           {LEVELS.map((_, i) => (
-            <span key={i} className={`w-2 h-2 rounded-sm ${getLevel(i > 0 ? LEVELS[i - 1]?.max || 0 : 0)}`}
+            <span key={i} className={`w-2 h-2 rounded-[2px] ${getLevel(i > 0 ? LEVELS[i - 1]?.max || 0 : 0)}`}
               style={i === 0 ? { background: "var(--heatmap-0)" } : undefined}
             />
           ))}
-          <span className="text-[10px] text-[var(--text-muted)]">More</span>
+          <span className="text-[9px] text-[var(--text-muted)]">More</span>
         </div>
+      </div>
+
+      <div className="relative h-4">
+        {monthLabels.map(({ wi, label }) => (
+          <span
+            key={wi}
+            className="absolute top-0 text-[9px] font-medium text-[var(--text-muted)] whitespace-nowrap"
+            style={{ left: `${wi * PITCH}px` }}
+          >
+            {label}
+          </span>
+        ))}
       </div>
 
       <div className="flex gap-[3px] overflow-x-auto pb-0.5">
@@ -72,15 +94,15 @@ export default function ActivityHeatmap({ data }) {
               <div
                 key={di}
                 title={getTooltip(day)}
-                className={`w-[10px] h-[10px] rounded-[2px] ${getLevel(day.count)} cursor-pointer transition-transform hover:scale-125`}
+                className={`w-[10px] h-[10px] rounded-[2px] cursor-pointer transition-transform hover:scale-125 ${getLevel(day.count)}`}
               />
             ))}
           </div>
         ))}
       </div>
 
-      <p className="text-[var(--text-muted)] text-[11px]">
-        {totalActive} active day{totalActive !== 1 ? "s" : ""} in the last 90 days &middot; max {maxCount} problem{maxCount !== 1 ? "s" : ""}
+      <p className="text-[10px] text-[var(--text-muted)]">
+        {totalActive} active day{totalActive !== 1 ? "s" : ""} in the last 90 days &middot; max {maxCount} problem{maxCount !== 1 ? "s" : ""} in a day
       </p>
     </div>
   );

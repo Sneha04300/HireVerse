@@ -1,0 +1,202 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   DSA Tracker page design tokens + component overrides.
+   Scoped under `.dsa-tracker` so other pages are untouched.
+   Two palettes: light (default / `.light`) and dark (`.dark`).
+   Theme toggle works by the `.dark` / `.light` class on <html>.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Light palette ────────────────────────────────────────────────────────── */
+.dsa-tracker {
+  --bg-app: #f6f8fb;
+  --bg-base: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f8fafc;
+  --bg-elevated: #f1f5f9;
+  --bg-input: #ffffff;
+  --bg-inset: #eef4ff;
+  --bg-hover: #f1f5f9;
+  --bg-active: #eef4ff;
+  --bg-tooltip: #ffffff;
+  --bg-navbar: rgba(255, 255, 255, 0.85);
+  --bg-sidebar: #ffffff;
+  --bg-gradient-hero: linear-gradient(135deg, #ffffff 0%, #eef4ff 100%);
+  --bg-gradient-card: #ffffff;
+
+  --border: rgba(15, 23, 42, 0.1);
+  --border-light: rgba(15, 23, 42, 0.12);
+  --border-focus: rgba(124, 58, 237, 0.5);
+
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
+
+  --brand-primary: #7c3aed;
+  --brand-secondary: #06b6d4;
+  --brand-accent: #06b6d4;
+  --gradient-brand: linear-gradient(90deg, #7c3aed 0%, #06b6d4 100%);
+  --gradient-brand-hover: linear-gradient(90deg, #6d28d9 0%, #0891b2 100%);
+  --gradient-brand-subtle: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%);
+
+  --badge-green-bg: rgba(22, 163, 74, 0.1);
+  --badge-green-border: rgba(22, 163, 74, 0.25);
+  --badge-green-text: #16a34a;
+  --badge-red-bg: rgba(220, 38, 38, 0.1);
+  --badge-red-border: rgba(220, 38, 38, 0.25);
+  --badge-red-text: #dc2626;
+  --badge-yellow-bg: rgba(217, 119, 6, 0.1);
+  --badge-yellow-border: rgba(217, 119, 6, 0.25);
+  --badge-yellow-text: #d97706;
+  --badge-cyan-bg: rgba(6, 182, 212, 0.1);
+  --badge-cyan-border: rgba(6, 182, 212, 0.3);
+  --badge-cyan-text: #0891b2;
+  --badge-purple-bg: rgba(124, 58, 237, 0.1);
+  --badge-purple-border: rgba(124, 58, 237, 0.25);
+  --badge-purple-text: #7c3aed;
+  --badge-blue-bg: rgba(37, 99, 235, 0.1);
+  --badge-blue-border: rgba(37, 99, 235, 0.25);
+  --badge-blue-text: #2563eb;
+
+  --ring-track: #e2e8f0;
+  --ring-gradient-from: #7c3aed;
+  --ring-gradient-to: #06b6d4;
+
+  --heatmap-0: #e2e8f0;
+  --heatmap-1: rgba(124, 58, 237, 0.2);
+  --heatmap-2: rgba(124, 58, 237, 0.4);
+  --heatmap-3: rgba(124, 58, 237, 0.7);
+  --heatmap-4: #7c3aed;
+
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-track: #f1f5f9;
+
+  --autofill-bg: #ffffff;
+  --autofill-text: #0f172a;
+
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --focus-ring: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+/* ── Dark palette ─────────────────────────────────────────────────────────── */
+.dark .dsa-tracker {
+  --bg-app: #0b1220;
+  --bg-base: #0b1220;
+  --bg-card: #111827;
+  --bg-card-alt: #0f1522;
+  --bg-elevated: #161e30;
+  --bg-input: #0d1524;
+  --bg-inset: #0b1220;
+  --bg-hover: #182135;
+  --bg-active: #1a2334;
+  --bg-tooltip: #161e30;
+  --bg-navbar: rgba(11, 18, 32, 0.9);
+  --bg-sidebar: rgba(9, 14, 26, 0.98);
+  --bg-gradient-hero: #0b1220;
+  --bg-gradient-card: #111827;
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(139, 92, 246, 0.6);
+
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --text-muted: #64748b;
+  --text-inverse: #0b1220;
+
+  --brand-primary: #8b5cf6;
+  --brand-secondary: #22d3ee;
+  --brand-accent: #22d3ee;
+  --gradient-brand: linear-gradient(90deg, #8b5cf6 0%, #22d3ee 100%);
+  --gradient-brand-hover: linear-gradient(90deg, #7c3aed 0%, #0891b2 100%);
+  --gradient-brand-subtle: linear-gradient(135deg, #8b5cf6 0%, #22d3ee 100%);
+
+  --badge-green-bg: rgba(34, 197, 94, 0.12);
+  --badge-green-border: rgba(34, 197, 94, 0.3);
+  --badge-green-text: #22c55e;
+  --badge-red-bg: rgba(239, 68, 68, 0.12);
+  --badge-red-border: rgba(239, 68, 68, 0.3);
+  --badge-red-text: #ef4444;
+  --badge-yellow-bg: rgba(245, 158, 11, 0.12);
+  --badge-yellow-border: rgba(245, 158, 11, 0.3);
+  --badge-yellow-text: #f59e0b;
+  --badge-cyan-bg: rgba(34, 211, 238, 0.12);
+  --badge-cyan-border: rgba(34, 211, 238, 0.3);
+  --badge-cyan-text: #22d3ee;
+  --badge-purple-bg: rgba(139, 92, 246, 0.14);
+  --badge-purple-border: rgba(139, 92, 246, 0.3);
+  --badge-purple-text: #a78bfa;
+  --badge-blue-bg: rgba(59, 130, 246, 0.12);
+  --badge-blue-border: rgba(59, 130, 246, 0.3);
+  --badge-blue-text: #60a5fa;
+
+  --ring-track: #1a2334;
+  --ring-gradient-from: #8b5cf6;
+  --ring-gradient-to: #22d3ee;
+
+  --heatmap-0: #1a2334;
+  --heatmap-1: rgba(139, 92, 246, 0.3);
+  --heatmap-2: rgba(139, 92, 246, 0.5);
+  --heatmap-3: rgba(167, 139, 250, 0.8);
+  --heatmap-4: #a78bfa;
+
+  --scrollbar-thumb: #26314a;
+  --scrollbar-track: #0b1220;
+
+  --autofill-bg: #111827;
+  --autofill-text: #ffffff;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --focus-ring: 0 0 0 3px rgba(139, 92, 246, 0.25);
+}
+
+/* Card base: subtle border, 12px radius, no pill shapes */
+.dsa-tracker .dsa-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+/* Section / card titles: 11px uppercase */
+.dsa-tracker .section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Compact inputs: height 36px, radius 10px */
+.dsa-tracker .input-field {
+  height: 36px;
+  padding: 0.5rem 0.85rem;
+  font-size: 13px;
+  border-radius: 10px;
+  background: var(--bg-input);
+}
+.dsa-tracker .input-field:focus {
+  box-shadow: var(--focus-ring);
+}
+
+/* Gradient buttons: purple → cyan, radius 10px */
+.dsa-tracker .btn-gradient {
+  background: var(--gradient-brand);
+  border-radius: 10px;
+}
+.dsa-tracker .btn-gradient:hover {
+  background: var(--gradient-brand-hover);
+}
+
+/* Stat card hover glow */
+.dsa-tracker .stat-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.dsa-tracker .stat-card:hover {
+  border-color: rgba(139, 92, 246, 0.35);
+  box-shadow: 0 0 22px rgba(139, 92, 246, 0.1);
+}
