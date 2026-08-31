@@ -109,57 +109,99 @@ const submitAnswer = async (doc, answerText) => {
     throw new Error("Interview already has all questions answered.");
   }
 
-  doc.questions[idx].answer = answerText;
+  // Detect retry: if the answer is already saved for this question,
+  // skip evaluation and just retry question generation.
+  const isRetry = doc.questions[idx].answer && doc.questions[idx].answer.trim();
 
-  appendTranscriptLine(doc, "User", answerText);
+  if (!isRetry) {
+    doc.questions[idx].answer = answerText;
+    appendTranscriptLine(doc, "User", answerText);
+    doc.status = "in_progress";
 
-  doc.status = "in_progress";
-
-  // Evaluate the answer (with retry, don't crash on failure)
-  const q = doc.questions[idx];
-  try {
-    const evaluation = await evaluateWithRetry(q.question, answerText, doc.type, doc.difficulty);
-    q.evaluation = evaluation;
-    console.log(`[Interview] Evaluation saved for Q${idx + 1}: overallScore=${evaluation.overallScore}`);
-  } catch (err) {
-    console.error(`[Interview] Evaluation failed for Q${idx + 1} after retries:`, err.message);
+    // Evaluate the answer (with retry, don't crash on failure)
+    const q = doc.questions[idx];
+    try {
+      const evaluation = await evaluateWithRetry(q.question, answerText, doc.type, doc.difficulty);
+      q.evaluation = evaluation;
+      console.log(`[Interview] Evaluation saved for Q${idx + 1}: overallScore=${evaluation.overallScore}`);
+    } catch (err) {
+      console.error(`[Interview] Evaluation failed for Q${idx + 1} after retries:`, err.message);
+    }
+  } else {
+    console.log(`[Interview] Retry detected for Q${idx + 1} — skipping evaluation, retrying question generation`);
   }
 
   let nextQuestion = null;
   let nextQuestionNumber = null;
   let report = null;
+  let questionGenerationFailed = false;
   const nextNum = idx + 2;
 
   if (nextNum <= QUESTIONS_PER_INTERVIEW) {
     const previousQuestions = doc.questions
-      .filter((q) => q.question)
+      .filter((q) => q.question && q.question.trim())
       .map((q) => q.question);
 
-    nextQuestion = await groqService.generateInterviewQuestion(doc.type, doc.difficulty, previousQuestions);
-    nextQuestionNumber = nextNum;
+    try {
+      nextQuestion = await groqService.generateInterviewQuestion(doc.type, doc.difficulty, previousQuestions);
+      nextQuestionNumber = nextNum;
 
-    doc.questions.push({
-      number: nextNum,
-      question: nextQuestion,
-      answer: "",
-      source: "groq",
-      generatedBy: "groq-llama",
-      createdAt: new Date(),
-    });
-    doc.currentQuestionIndex = idx + 1;
+      doc.questions.push({
+        number: nextNum,
+        question: nextQuestion,
+        answer: "",
+        source: "groq",
+        generatedBy: "groq-llama",
+        createdAt: new Date(),
+      });
+      doc.currentQuestionIndex = idx + 1;
 
-    console.log(`[Interview] Question ${nextQuestionNumber} generated:`, JSON.stringify(nextQuestion).slice(0, 80));
+      console.log(`[Interview] Question ${nextQuestionNumber} generated:`, JSON.stringify(nextQuestion).slice(0, 80));
+    } catch (err) {
+      console.error(`[Interview] Question generation failed for Q${nextNum} after retries:`, err.message);
+      questionGenerationFailed = true;
+      // Do NOT add an empty question, do NOT increment currentQuestionIndex.
+      // The answer is already saved on the document.
+    }
   } else {
     // Last question — auto-generate report and complete interview
-    const completed = await generateReport(doc);
-    report = completed.report;
+    try {
+      const completed = await generateReport(doc);
+      report = completed.report;
+    } catch (err) {
+      console.error(`[Interview] Final report generation failed:`, err.message);
+      // Fallback: create a basic report from averages
+      const answered = doc.questions.filter((q) => q.answer && q.answer.trim());
+      const evaluations = answered.map((q) => q.evaluation).filter(Boolean);
+      const avg = (arr, key) => {
+        const vals = arr.map((e) => e[key]).filter((v) => v != null);
+        return vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
+      };
+      report = {
+        overallScore: avg(evaluations, "overallScore"),
+        communication: avg(evaluations, "communicationScore"),
+        technicalKnowledge: avg(evaluations, "technicalScore"),
+        confidence: avg(evaluations, "confidenceScore"),
+        problemSolving: avg(evaluations, "problemSolvingScore"),
+        strengths: [],
+        weaknesses: [],
+        recommendations: [],
+        summary: "Interview completed. Report generation encountered an issue.",
+        hiringDecision: "Consider",
+        difficultyLevel: doc.difficulty,
+      };
+      doc.report = report;
+      doc.status = "completed";
+      doc.endedAt = new Date();
+      doc.duration = Math.max(0, Math.round((doc.endedAt - doc.startedAt) / 1000));
+    }
   }
 
   await doc.save();
 
-  console.log(`[Interview] Answer saved for Q${idx + 1}. Next: Q${nextQuestionNumber || "none"}`);
+  console.log(`[Interview] Answer saved for Q${idx + 1}. Next: Q${nextQuestionNumber || "none"}${questionGenerationFailed ? " (generation failed, user can retry)" : ""}`);
 
-  return { doc, nextQuestion, nextQuestionNumber, report };
+  return { doc, nextQuestion, nextQuestionNumber, report, questionGenerationFailed };
 };
 
 const endInterview = async (doc) => {

@@ -114,7 +114,7 @@ const submitAnswer = async (req, res) => {
       return res.status(400).json({ success: false, message: "This interview has already ended." });
     }
 
-    const { doc: updated, nextQuestion, nextQuestionNumber, report } = await mockInterviewService.submitAnswer(doc, answer);
+    const { doc: updated, nextQuestion, nextQuestionNumber, report, questionGenerationFailed } = await mockInterviewService.submitAnswer(doc, answer);
 
     let audioUrl = null;
     if (nextQuestion) {
@@ -125,6 +125,22 @@ const submitAnswer = async (req, res) => {
       } catch (piperErr) {
         console.error("[Piper] Error generating next question speech:", piperErr.message);
       }
+    }
+
+    if (questionGenerationFailed) {
+      return res.status(200).json({
+        success: true,
+        message: "Answer submitted, but the next question could not be generated. Please try again.",
+        data: {
+          interviewId: updated._id,
+          status: updated.status,
+          nextQuestion: null,
+          nextQuestionNumber: null,
+          audioUrl: null,
+          report: null,
+          questionGenerationFailed: true,
+        },
+      });
     }
 
     return res.status(200).json({

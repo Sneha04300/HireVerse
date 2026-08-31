@@ -39,6 +39,8 @@ export default function MockInterviewPage() {
 
   const timerRef = useRef(null);
   const recorder = useAudioRecorder();
+  const startInProgressRef = useRef(false);
+  const submitInProgressRef = useRef(false);
 
   useEffect(() => {
     return () => {};
@@ -60,6 +62,9 @@ export default function MockInterviewPage() {
   }, [recorder.recordingState, recorder.transcript]);
 
   const handleStart = useCallback(async ({ type, difficulty }) => {
+    if (startInProgressRef.current) return;
+    startInProgressRef.current = true;
+
     setError(null);
     setIsProcessing(true);
     try {
@@ -98,11 +103,15 @@ export default function MockInterviewPage() {
         "Failed to start interview. Please try again."
       );
       setIsProcessing(false);
+    } finally {
+      startInProgressRef.current = false;
     }
   }, []);
 
   const handleSubmitAnswer = useCallback(async (answer) => {
     if (!answer.trim() || !interviewId) return;
+    if (submitInProgressRef.current) return;
+    submitInProgressRef.current = true;
 
     recorder.resetTranscript();
     setTranscriptReady(false);
@@ -115,6 +124,18 @@ export default function MockInterviewPage() {
       console.log("[Interview] Answer submitted");
 
       setTranscriptLines((prev) => [...prev, { speaker: "User", text: answer }]);
+
+      if (data.questionGenerationFailed) {
+        // Answer was saved, but next question generation failed.
+        // Show error and let the user retry (the backend will detect the retry
+        // and skip re-evaluation, just retrying question generation).
+        setError(
+          data.message ||
+          "Answer submitted, but the next question could not be generated. Please try again."
+        );
+        setIsProcessing(false);
+        return;
+      }
 
       if (data.report) {
         setReport(data.report);
@@ -146,6 +167,8 @@ export default function MockInterviewPage() {
         "Failed to submit answer. Please try again."
       );
       setIsProcessing(false);
+    } finally {
+      submitInProgressRef.current = false;
     }
   }, [interviewId, recorder]);
 
